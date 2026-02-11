@@ -1,0 +1,1236 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TV Show Presentation</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Rajdhani:wght@500;700;900&display=swap"
+        rel="stylesheet">
+
+    <style>
+        /* --- CORE VARIABLES & RESET --- */
+        :root {
+            --primary-blue: #004d99;
+            --neon-blue: #00ffff;
+            --deep-purple: #1a0b2e;
+            --accent-orange: #ff9900;
+            --ent-pink: #ff00cc;
+            --sports-green: #00ff88;
+            --local-yellow: #ffcc00;
+            --intl-indigo: #6600cc;
+            --dark-bg: #050505;
+            --glass-bg: rgba(15, 15, 25, 0.75);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --font-head: 'Rajdhani', sans-serif;
+            --font-body: 'Inter', sans-serif;
+        }
+
+        body,
+        html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            font-family: var(--font-body);
+            background-color: var(--dark-bg);
+            color: white;
+            user-select: none;
+            /* Kiosk feel */
+        }
+
+        /* --- BACKGROUND SYSTEM --- */
+        .studio-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 50% 50%, #1a1a2e 0%, #050505 100%);
+            z-index: 0;
+            transition: background 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .studio-background::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            opacity: 0.4;
+        }
+
+        .studio-grid {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-image:
+                linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+            background-size: 80px 80px;
+            perspective: 1000px;
+            transform: perspective(100vh) rotateX(5deg) scale(1.1);
+            opacity: 0.5;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        /* --- NAVIGATION HEADER --- */
+        .top-bar {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 70px;
+            background: linear-gradient(90deg, #a30000 0%, #660000 100%);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 40px;
+            box-sizing: border-box;
+            z-index: 100;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.6);
+            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .brand-area {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .brand-text {
+            font-family: var(--font-head);
+            font-weight: 900;
+            font-size: 1.5rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .live-badge {
+            background: white;
+            color: #cc0000;
+            padding: 5px 12px;
+            border-radius: 4px;
+            font-weight: 900;
+            font-size: 0.9rem;
+            animation: pulse-red 2s infinite;
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 10px;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 5px;
+            border-radius: 8px;
+        }
+
+        .nav-btn {
+            background: transparent;
+            border: none;
+            color: rgba(255, 255, 255, 0.7);
+            padding: 8px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            text-transform: uppercase;
+            font-weight: 700;
+            font-size: 0.85rem;
+            transition: all 0.2s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-btn:hover {
+            color: white;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-btn.active {
+            background: white;
+            color: #990000;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        #clock {
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+            font-size: 1.2rem;
+            margin-left: auto;
+        }
+
+        /* --- VIEWPORT & SLIDES --- */
+        .view-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            padding-top: 70px;
+            padding-bottom: 80px;
+            /* Space for header/footer */
+            box-sizing: border-box;
+            z-index: 10;
+        }
+
+        .slide {
+            display: none;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transform: scale(1.05);
+            filter: blur(10px);
+            transition: opacity 0.8s cubic-bezier(0.2, 0.8, 0.2, 1),
+                transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1),
+                filter 0.5s ease;
+        }
+
+        .slide.active-slide {
+            display: flex;
+            opacity: 1;
+            transform: scale(1);
+            filter: blur(0);
+        }
+
+        /* --- GRAPHICS & UTILS --- */
+        .glass-panel {
+            background: var(--glass-bg);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        /* --- 1. MAIN SLIDE --- */
+        #slide-main {
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        .main-logo-container {
+            perspective: 800px;
+            text-align: center;
+            z-index: 2;
+        }
+
+        .main-logo {
+            font-family: var(--font-head);
+            font-size: 10rem;
+            font-weight: 900;
+            line-height: 0.85;
+            background: linear-gradient(180deg, #ffffff 30%, #80d4ff 100%);
+            -webkit-background-clip: text;
+            color: transparent;
+            text-shadow: 0 20px 50px rgba(0, 77, 153, 0.6);
+            transform: rotateX(5deg);
+            margin-bottom: 20px;
+            letter-spacing: -5px;
+        }
+
+        .main-subtitle {
+            font-family: var(--font-head);
+            font-size: 2.5rem;
+            letter-spacing: 8px;
+            color: var(--accent-orange);
+            text-transform: uppercase;
+            font-weight: 500;
+            text-shadow: 0 0 30px rgba(255, 153, 0, 0.8);
+        }
+
+        /* Spinning Earth BG for Main */
+        .world-bg {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80vh;
+            height: 80vh;
+            opacity: 0.2;
+            z-index: 1;
+            border-radius: 50%;
+            box-shadow: 0 0 100px rgba(0, 100, 255, 0.2);
+        }
+
+        /* --- 2. ENTERTAINMENT SLIDE --- */
+        #slide-entertainment {
+            padding: 40px;
+            display: none;
+            gap: 30px;
+        }
+
+        #slide-entertainment.active-slide {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+        }
+
+        .ent-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: 1fr 1fr;
+            gap: 20px;
+            height: 100%;
+        }
+
+        .ent-card {
+            border-radius: 12px;
+            overflow: hidden;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 25px;
+            transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            border: 1px solid rgba(255, 0, 204, 0.3);
+            background: black;
+            /* Fallback */
+        }
+
+        .ent-card:hover {
+            transform: translateY(-5px) scale(1.02);
+            z-index: 10;
+            border-color: var(--ent-pink);
+            box-shadow: 0 0 30px rgba(255, 0, 204, 0.3);
+        }
+
+        /* Simulated Images with CSS Gradients */
+        .img-sim {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.5s;
+            opacity: 0.7;
+        }
+
+        .ent-card:hover .img-sim {
+            transform: scale(1.1);
+            opacity: 1;
+        }
+
+        /* Gradient overlays on top of images */
+        .ent-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, transparent 40%, rgba(0, 0, 0, 0.9) 100%);
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .ent-content {
+            position: relative;
+            z-index: 2;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+        }
+
+        .ent-tag {
+            background: var(--ent-pink);
+            color: black;
+            font-weight: bold;
+            font-size: 0.75rem;
+            padding: 4px 10px;
+            border-radius: 20px;
+            display: inline-block;
+            margin-bottom: 8px;
+        }
+
+        .ent-headline {
+            font-family: var(--font-head);
+            font-size: 1.6rem;
+            font-weight: 700;
+            line-height: 1.1;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+        }
+
+        .sidebar-list {
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            border-radius: 12px;
+        }
+
+        .list-header {
+            font-size: 1.5rem;
+            color: var(--ent-pink);
+            text-transform: uppercase;
+            border-bottom: 2px solid var(--ent-pink);
+            padding-bottom: 10px;
+            margin-bottom: 10px;
+            font-weight: 800;
+        }
+
+        .trend-item {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 10px;
+        }
+
+        .trend-rank {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: rgba(255, 255, 255, 0.2);
+        }
+
+        /* --- 3. SPORTS SLIDE (Revised) --- */
+        #slide-sports {
+            padding: 0;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        /* Parallax Background for Sports */
+        .sports-bg-layer {
+            position: absolute;
+            top: -10%;
+            left: -10%;
+            width: 120%;
+            height: 120%;
+            background: url('sports.png') no-repeat center center/cover;
+            filter: brightness(0.4) contrast(1.2) grayscale(0.3);
+            z-index: 0;
+            animation: pan-sports 20s infinite alternate ease-in-out;
+        }
+
+        .sports-overlay-grid {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background:
+                linear-gradient(90deg, rgba(0, 255, 136, 0.03) 1px, transparent 1px),
+                linear-gradient(0deg, rgba(0, 255, 136, 0.03) 1px, transparent 1px);
+            background-size: 40px 40px;
+            z-index: 1;
+        }
+
+        .sports-content-wrapper {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            perspective: 1000px;
+        }
+
+        .sports-title {
+            font-family: var(--font-head);
+            font-size: 8rem;
+            font-weight: 900;
+            font-style: italic;
+            color: transparent;
+            -webkit-text-stroke: 2px white;
+            text-shadow: 0 0 30px var(--sports-green);
+            margin-bottom: 20px;
+            letter-spacing: -5px;
+            transform: skewX(-10deg);
+        }
+
+        .stats-ticker-bar {
+            width: 100%;
+            background: rgba(0, 255, 136, 0.1);
+            border-top: 1px solid var(--sports-green);
+            border-bottom: 1px solid var(--sports-green);
+            padding: 10px 0;
+            margin-bottom: 40px;
+            backdrop-filter: blur(5px);
+            display: flex;
+            justify-content: center;
+            gap: 50px;
+            font-family: 'Courier New', monospace;
+            color: var(--sports-green);
+            font-weight: bold;
+            font-size: 1.2rem;
+            text-shadow: 0 0 10px var(--sports-green);
+        }
+
+        .scoreboard {
+            display: flex;
+            gap: 30px;
+            width: 90%;
+            justify-content: center;
+            transform: rotateX(10deg);
+            transform-style: preserve-3d;
+        }
+
+        .score-box {
+            flex: 1;
+            background: rgba(0, 20, 10, 0.85);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-top: 4px solid var(--sports-green);
+            padding: 30px;
+            border-radius: 4px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            backdrop-filter: blur(10px);
+            transition: transform 0.3s;
+        }
+
+        .score-box:hover {
+            transform: translateZ(20px) scale(1.05);
+            border-color: var(--sports-green);
+            box-shadow: 0 0 30px rgba(0, 255, 136, 0.3);
+        }
+
+        .league-logo {
+            font-family: var(--font-head);
+            font-size: 1.5rem;
+            color: rgba(255, 255, 255, 0.6);
+            margin-bottom: 10px;
+            font-weight: 900;
+            letter-spacing: 4px;
+        }
+
+        .matchup {
+            font-family: var(--font-head);
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin: 15px 0;
+            text-align: center;
+            line-height: 1;
+        }
+
+        .score-time {
+            color: var(--sports-green);
+            font-family: var(--font-body);
+            font-weight: 600;
+            background: rgba(0, 255, 136, 0.1);
+            padding: 5px 15px;
+            border-radius: 20px;
+        }
+
+        @keyframes pan-sports {
+            0% {
+                transform: scale(1) translate(0, 0);
+            }
+
+            100% {
+                transform: scale(1.1) translate(-2%, -2%);
+            }
+        }
+
+        /* --- 4. LOCAL SLIDE (Revised - Bento Grid) --- */
+        #slide-local {
+            padding: 40px;
+            /* display handled by .slide */
+            gap: 30px;
+            align-items: stretch;
+        }
+
+        #slide-local.active-slide {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            /* Image Grid (Left) | Info Panel (Right) */
+        }
+
+        .local-gallery {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: 1fr 1fr;
+            gap: 20px;
+            height: 100%;
+        }
+
+        .local-img-card {
+            position: relative;
+            border-radius: 15px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 204, 0, 0.3);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            transition: transform 0.3s;
+            cursor: pointer;
+        }
+
+        .local-img-card:hover {
+            transform: scale(1.02);
+            border-color: var(--local-yellow);
+            z-index: 10;
+        }
+
+        .local-img-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s;
+        }
+
+        .local-img-card:hover img {
+            transform: scale(1.1);
+        }
+
+        .local-caption {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.9), transparent);
+            color: white;
+            font-family: var(--font-head);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all 0.3s;
+        }
+
+        .local-img-card:hover .local-caption {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Right Side Panels */
+        .local-info-col {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            height: 100%;
+        }
+
+        .weather-panel {
+            flex: 1;
+            background: linear-gradient(135deg, rgba(255, 204, 0, 0.1), rgba(255, 102, 0, 0.1));
+            border: 1px solid var(--local-yellow);
+            border-radius: 20px;
+            backdrop-filter: blur(15px);
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            position: relative;
+        }
+
+        .weather-panel::before {
+            content: '';
+            position: absolute;
+            top: 10%;
+            right: 10%;
+            width: 100px;
+            height: 100px;
+            background: radial-gradient(circle, #ffcc00, transparent);
+            opacity: 0.2;
+            filter: blur(20px);
+        }
+
+        /* Sun Animation */
+        .sun-icon {
+            width: 80px;
+            height: 80px;
+            background: radial-gradient(circle, #fff, #ffd700);
+            border-radius: 50%;
+            box-shadow: 0 0 40px #ffd700;
+            margin-bottom: 20px;
+            animation: sun-pulse 4s infinite alternate;
+        }
+
+        .temp-big {
+            font-family: var(--font-head);
+            font-size: 5rem;
+            font-weight: 900;
+            line-height: 1;
+            text-shadow: 0 0 20px rgba(255, 204, 0, 0.5);
+        }
+
+        .temp-desc {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--local-yellow);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .traffic-feed {
+            flex: 1.5;
+            overflow-y: hidden;
+            /* Hide scrollbar for cleaner look */
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-left: 4px solid var(--local-yellow);
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+        }
+
+        .traffic-alert {
+            background: rgba(255, 204, 0, 0.05);
+            border-left: 2px solid var(--local-yellow);
+            padding: 12px;
+            margin-bottom: 12px;
+            font-size: 1rem;
+            color: #ddd;
+            transition: background 0.2s;
+        }
+
+        .traffic-alert:hover {
+            background: rgba(255, 204, 0, 0.15);
+        }
+
+        .traffic-alert strong {
+            color: var(--local-yellow);
+            text-transform: uppercase;
+        }
+
+        /* --- 5. INTERNATIONAL SLIDE (Revised - War Room/Hologram) --- */
+        #slide-intl {
+            padding: 0;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+            gap: 50px;
+            perspective: 1500px;
+            overflow: hidden;
+        }
+
+        /* Background grid for World */
+        #slide-intl::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background:
+                linear-gradient(to right, rgba(102, 0, 204, 0.05) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(102, 0, 204, 0.05) 1px, transparent 1px);
+            background-size: 50px 50px;
+            z-index: 0;
+        }
+
+        /* Holographic Map Container */
+        .holo-map-container {
+            width: 600px;
+            height: 600px;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transform-style: preserve-3d;
+            transform: rotateY(15deg);
+        }
+
+        /* The World Map Image as Hologram */
+        .holo-map-img {
+            width: 100%;
+            height: auto;
+            opacity: 0.8;
+            filter: drop-shadow(0 0 20px rgba(100, 100, 255, 0.6)) hue-rotate(180deg) brightness(1.5);
+            animation: float-map 6s ease-in-out infinite;
+        }
+
+        /* Scanning Line Effect */
+        .scan-line {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: rgba(0, 255, 255, 0.8);
+            box-shadow: 0 0 15px rgba(0, 255, 255, 1);
+            animation: scan 4s linear infinite;
+            opacity: 0.5;
+            pointer-events: none;
+        }
+
+        .news-dossier {
+            width: 500px;
+            background: rgba(10, 0, 30, 0.9);
+            border: 1px solid var(--intl-indigo);
+            border-left: 6px solid #ff0033;
+            /* Red for alert */
+            padding: 40px;
+            box-shadow: 0 0 50px rgba(0, 0, 0, 0.8);
+            transform: rotateY(-10deg);
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            position: relative;
+        }
+
+        .news-dossier::before {
+            content: 'TOP SECRET // MARKET INTEL';
+            position: absolute;
+            top: -15px;
+            left: 20px;
+            background: #ff0033;
+            color: black;
+            font-weight: bold;
+            font-size: 0.8rem;
+            padding: 2px 10px;
+            letter-spacing: 2px;
+        }
+
+        .dossier-headline {
+            font-family: var(--font-head);
+            font-size: 3rem;
+            line-height: 1;
+            font-weight: 900;
+            color: white;
+            text-transform: uppercase;
+        }
+
+        .dossier-sub {
+            color: #ff0033;
+            font-weight: bold;
+            letter-spacing: 3px;
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .dossier-body {
+            font-family: 'Courier New', monospace;
+            font-size: 1rem;
+            line-height: 1.6;
+            color: #ccc;
+            border-top: 1px dashed rgba(255, 255, 255, 0.2);
+            padding-top: 20px;
+        }
+
+        .keyword {
+            color: var(--neon-blue);
+            font-weight: bold;
+            text-shadow: 0 0 5px rgba(0, 255, 255, 0.5);
+        }
+
+        @keyframes float-map {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-20px);
+            }
+        }
+
+        @keyframes scan {
+            0% {
+                top: 0%;
+                opacity: 0;
+            }
+
+            10% {
+                opacity: 1;
+            }
+
+            90% {
+                opacity: 1;
+            }
+
+            100% {
+                top: 100%;
+                opacity: 0;
+            }
+        }
+
+        /* --- FOOTER --- */
+        .universal-footer {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            z-index: 200;
+        }
+
+        .lower-third {
+            display: inline-block;
+            padding: 15px 40px;
+            margin-bottom: 20px;
+            margin-left: 50px;
+            background: rgba(0, 0, 0, 0.9);
+            clip-path: polygon(0 0, 100% 0, 95% 100%, 0% 100%);
+            border-left: 8px solid var(--accent-orange);
+            backdrop-filter: blur(10px);
+        }
+
+        .headline-text {
+            font-family: var(--font-head);
+            font-size: 2.2rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            margin: 0;
+            letter-spacing: 1px;
+        }
+
+        .ticker-wrap {
+            width: 100%;
+            background: #003366;
+            overflow: hidden;
+            padding: 10px 0;
+            border-top: 2px solid #00ccff;
+            box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.5);
+        }
+
+        .ticker {
+            display: inline-block;
+            white-space: nowrap;
+            animation: ticker 40s linear infinite;
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+
+        /* --- ANIMATIONS --- */
+        @keyframes sun-pulse {
+            0% {
+                transform: scale(1);
+                opacity: 0.9;
+            }
+
+            100% {
+                transform: scale(1.1);
+                opacity: 1;
+            }
+        }
+
+        @keyframes pulse-red {
+            0% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.6;
+            }
+
+            100% {
+                opacity: 1;
+            }
+        }
+
+        @keyframes ticker {
+            0% {
+                transform: translateX(100vw);
+            }
+
+            100% {
+                transform: translateX(-100%);
+            }
+        }
+
+        @keyframes rotate-globe {
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="studio-background" id="bg-layer"></div>
+    <div class="studio-grid"></div>
+
+    <!-- Header -->
+    <div class="top-bar">
+        <div class="brand-area">
+            <span class="brand-text">GLOBAL ONE</span>
+            <div class="live-badge">LIVE</div>
+        </div>
+        <div class="nav-buttons">
+            <button class="nav-btn active" onclick="nav('main', this)">Today</button>
+            <button class="nav-btn" onclick="nav('entertainment', this)">Entertainment</button>
+            <button class="nav-btn" onclick="nav('sports', this)">Sports</button>
+            <button class="nav-btn" onclick="nav('local', this)">Local</button>
+            <button class="nav-btn" onclick="nav('intl', this)">World</button>
+        </div>
+        <div id="clock">12:00:00</div>
+    </div>
+
+    <!-- Content -->
+    <div class="view-container">
+
+        <!-- 1. MAIN -->
+        <div id="slide-main" class="slide active-slide">
+
+            <!-- SVG Abstract Globe Background -->
+            <svg class="world-bg" viewBox="0 0 100 100">
+                <circle cx="50" cy="50" r="48" stroke="#0099ff" stroke-width="0.5" fill="none" />
+                <path d="M50 2 A 48 48 0 0 1 50 98" stroke="#0099ff" stroke-width="0.5" fill="none" opacity="0.5" />
+                <path d="M2 50 A 48 48 0 0 1 98 50" stroke="#0099ff" stroke-width="0.5" fill="none" opacity="0.5" />
+                <ellipse cx="50" cy="50" rx="48" ry="20" stroke="#0099ff" stroke-width="0.5" fill="none"
+                    transform="rotate(45 50 50)" />
+            </svg>
+
+            <div class="main-logo-container">
+                <div class="main-logo">THE DAILY<br>SHOW</div>
+                <div class="main-subtitle">Global Broadcast Network</div>
+            </div>
+        </div>
+
+        <!-- 2. ENTERTAINMENT -->
+        <div id="slide-entertainment" class="slide">
+            <div class="ent-grid">
+                <div class="ent-card">
+                    <img src="https://image.pollinations.ai/prompt/grammy%20awards%20trophy%20golden%20lighting%20prestigious%204k?width=600&height=400&nologo=true"
+                        class="img-sim" alt="Grammys">
+                    <div class="ent-content">
+                        <span class="ent-tag">AWARDS</span>
+                        <div class="ent-headline">Grammys 2026: Kendrick Lamar & The Cure Win Big</div>
+                    </div>
+                </div>
+                <div class="ent-card">
+                    <img src="https://image.pollinations.ai/prompt/harry%20styles%20concert%20live%20performance%20colorful%20lighting%204k?width=600&height=400&nologo=true"
+                        class="img-sim" alt="Harry Styles">
+                    <div class="ent-content">
+                        <span class="ent-tag">TOUR</span>
+                        <div class="ent-headline">Harry Styles Announces 30 MSG Nights</div>
+                    </div>
+                </div>
+                <div class="ent-card">
+                    <img src="https://image.pollinations.ai/prompt/scream%20ghostface%20mask%20horror%20movie%20poster%20rain%20neon%20red%204k?width=600&height=400&nologo=true"
+                        class="img-sim" alt="Scream 7">
+                    <div class="ent-content">
+                        <span class="ent-tag">CINEMA</span>
+                        <div class="ent-headline">'Scream 7' Crushes Box Office Records</div>
+                    </div>
+                </div>
+                <div class="ent-card">
+                    <img src="https://image.pollinations.ai/prompt/taylor%20swift%20eras%20tour%20concert%20stage%20glowing%20purple%20majestic%204k?width=600&height=400&nologo=true"
+                        class="img-sim" alt="Eras Tour">
+                    <div class="ent-content">
+                        <span class="ent-tag">MUSIC</span>
+                        <div class="ent-headline">Eras Tour Surpasses $2 Billion Revenue</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="sidebar-list glass-panel">
+                <div class="list-header">Trending Now</div>
+                <div class="trend-item"><span class="trend-rank">01</span><span>Michael Keaton: Man of the Year</span>
+                </div>
+                <div class="trend-item"><span class="trend-rank">02</span><span>BTS Comeback Album</span></div>
+                <div class="trend-item"><span class="trend-rank">03</span><span>Nintendo Switch 2 Games</span></div>
+            </div>
+        </div>
+
+        <!-- 3. SPORTS -->
+        <!-- 3. SPORTS -->
+        <div id="slide-sports" class="slide">
+            <div class="sports-bg-layer"></div>
+            <div class="sports-overlay-grid"></div>
+
+            <div class="sports-content-wrapper">
+                <div class="sports-title">SPORTS CENTER</div>
+                <div class="stats-ticker-bar">
+                    <span>LIVE: NFL DRAFT PREP</span>
+                    <span>NBA: LAKERS VS WARRIORS (TONIGHT)</span>
+                    <span>UCL: REAL MADRID ADVANCES</span>
+                </div>
+
+                <div class="scoreboard">
+                    <div class="score-box">
+                        <div class="league-logo">NFL</div>
+                        <div class="matchup">SUPER BOWL LX</div>
+                        <div class="score-time">FEB 8 - SANTA CLARA</div>
+                    </div>
+                    <div class="score-box">
+                        <div class="league-logo">OLYMPICS</div>
+                        <div class="matchup">MILAN 2026</div>
+                        <div class="score-time">OPENING CEREMONY</div>
+                    </div>
+                    <div class="score-box">
+                        <div class="league-logo">ICC T20</div>
+                        <div class="matchup">INDIA vs USA</div>
+                        <div class="score-time">LIVE: IND 145/3</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4. LOCAL -->
+        <div id="slide-local" class="slide">
+
+            <!-- Left: Image Gallery -->
+            <div class="local-gallery">
+                <div class="local-img-card">
+                    <img src="IMG_9789.jpeg" alt="Local Event 1">
+                    <div class="local-caption">Community Gathering</div>
+                </div>
+                <div class="local-img-card">
+                    <img src="IMG_9793.jpeg" alt="Local Event 2">
+                    <div class="local-caption">City Highlights</div>
+                </div>
+                <div class="local-img-card">
+                    <img src="IMG_9795.jpeg" alt="Local Event 3">
+                    <div class="local-caption">New Developments</div>
+                </div>
+                <div class="local-img-card">
+                    <img src="IMG_9797.jpeg" alt="Local Event 4">
+                    <div class="local-caption">Cultural Festival</div>
+                </div>
+            </div>
+
+            <!-- Right: Info Panel -->
+            <div class="local-info-col">
+                <div class="weather-panel">
+                    <div class="sun-icon"></div>
+                    <div class="temp-big">75°</div>
+                    <div class="temp-desc">SUNNY & CLEAR</div>
+                    <div style="margin-top:20px; font-weight:bold; color:white; opacity:0.8;">HUMIDITY: 45% • WIND: 5
+                        MPH</div>
+                </div>
+                <div class="traffic-feed">
+                    <div class="list-header"
+                        style="color:var(--local-yellow); border-color:var(--local-yellow); font-size:1.2rem;">
+                        City Updates
+                    </div>
+                    <div class="traffic-alert">🚧 <strong>TRAFFIC:</strong> Major delays on I-95 North due to
+                        construction.</div>
+                    <div class="traffic-alert">🚍 <strong>TRANSIT:</strong> New electric fleet rollout begins Monday.
+                    </div>
+                    <div class="traffic-alert">🏛️ <strong>CITY:</strong> Town Hall meeting on Green Initiative at 6 PM.
+                    </div>
+                    <div class="traffic-alert">🎉 <strong>EVENTS:</strong> Downtown Food Festival all weekend.</div>
+                    <div class="traffic-alert">⚠️ <strong>ALERT:</strong> Heat advisory in effect until 8 PM.</div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- 5. INTERNATIONAL -->
+        <!-- 5. INTERNATIONAL -->
+        <div id="slide-intl" class="slide">
+
+            <!-- Hologram Map -->
+            <div class="holo-map-container">
+                <img src="world.png" class="holo-map-img" alt="Holographic World Map">
+                <div class="scan-line"></div>
+            </div>
+
+            <!-- News Dossier -->
+            <div class="news-dossier">
+                <div class="dossier-sub">
+                    <span
+                        style="width:10px; height:10px; background:red; border-radius:50%; display:inline-block; animation:pulse-red 1s infinite;"></span>
+                    BREAKING NEWS // GLOBAL ECONOMY
+                </div>
+                <div class="dossier-headline">Trump <span style="color:var(--neon-blue);">Tariff</span> Shockwave</div>
+                <div class="dossier-body">
+                    <p>
+                        The administration has implemented an aggressive policy, highlighted by a <span
+                            class="keyword">10% UNIVERSAL TARIFF</span> on most imports.
+                    </p>
+                    <p>
+                        <strong>KEY IMPACTS:</strong><br>
+                        • EU Faces <span class="keyword">15-50% RECIPROCAL</span> rates.<br>
+                        • Auto sector hit with <span class="keyword">25% LEVY</span>.<br>
+                        • Global Steel & Aluminum: <span class="keyword">50%</span>.
+                    </p>
+                    <div style="margin-top:20px; font-size:0.8rem; opacity:0.7;">
+                        SOURCE: WHITE HOUSE BRIEFING // 14:00 EST
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Footer -->
+    <div class="universal-footer">
+        <div class="lower-third" id="lt-box">
+            <h2 class="headline-text" id="main-hl">BREAKING: GLOBAL MARKETS RALLY</h2>
+        </div>
+        <div class="ticker-wrap" id="ticker-wrap">
+            <div class="ticker" id="ticker">
+                +++ BREAKING NEWS +++ STOCKS UP 2% WORLDWIDE +++ WEATHER WARNING FOR COASTAL REGIONS +++ TECH SECTOR
+                BOOMS AMID AI REGULATION TALKS +++
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Clock
+        setInterval(() => {
+            const now = new Date();
+            document.getElementById('clock').innerText = now.toLocaleTimeString('en-US');
+        }, 1000);
+
+        // Navigation Logic
+        function nav(id, btn) {
+            // Active States
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+
+            document.querySelectorAll('.slide').forEach(s => s.classList.remove('active-slide'));
+            document.getElementById('slide-' + id).classList.add('active-slide');
+
+            // Theming
+            const bg = document.getElementById('bg-layer');
+            const headline = document.getElementById('main-hl');
+            const ltBox = document.getElementById('lt-box');
+            const tickerText = document.getElementById('ticker');
+            const tickerWrap = document.getElementById('ticker-wrap');
+
+            // Defaults
+            let color = "#ff9900";
+            let hlText = "BREAKING: GLOBAL MARKETS RALLY";
+            let tText = "+++ NEWS UPDATE +++ STOCKS RISES +++ WEATHER ALERTS +++";
+            let grad = "radial-gradient(circle at 50% 50%, #1a1a2e 0%, #000000 100%)";
+
+            if (id === 'entertainment') {
+                color = "#ff00cc";
+                hlText = "ENT: GRAMMYS, HARRY STYLES & TAYLOR SWIFT";
+                tText = "+++ GRAMMY WINNERS ANNOUNCED +++ SCREAM 7 BOX OFFICE RECORD +++ HARRY STYLES MSG RESIDENCY +++";
+                grad = "radial-gradient(circle at 80% 20%, #2e002e 0%, #000000 100%)";
+            }
+            else if (id === 'sports') {
+                color = "#00ff88";
+                hlText = "SPORTS: WINTER OLYMPICS BEGIN IN MILAN";
+                tText = "+++ MILAN 2026 OPENING CEREMONY +++ SUPER BOWL LX PREVIEW +++ NBA TRADE DEADLINE APPROACHING +++";
+                grad = "radial-gradient(circle at 20% 80%, #002e1a 0%, #000000 100%)";
+            }
+            else if (id === 'local') {
+                color = "#ffcc00";
+                hlText = "LOCAL: COUNCIL APPROVES NEW TRANSIT PLAN";
+                tText = "+++ TRAFFIC ALERT: I-95 CONSTRUCTION +++ SUNNY WEATHER FORECAST +++ DOWNTOWN FOOD FESTIVAL +++";
+                grad = "radial-gradient(circle at 50% 10%, #2e2e00 0%, #000000 100%)";
+            }
+            else if (id === 'intl') {
+                color = "#6600cc";
+                hlText = "WORLD: TRUMP TARIFFS SHAKE GLOBAL MARKETS";
+                tText = "+++ US TARIFFS: 10% BASE RATE ON IMPORTS +++ EU FACES 15-50% RECIPROCAL TARIFFS +++ STEEL & ALUMINUM TARIFFS AT 50% +++";
+                grad = "radial-gradient(circle at 10% 50%, #1a0033 0%, #000000 100%)";
+            }
+
+            // Apply Theme
+            ltBox.style.borderLeftColor = color;
+            headline.style.color = color; // Make text colored for emphasis
+            tickerWrap.style.borderTopColor = color;
+            tickerText.innerText = tText;
+            bg.style.background = grad;
+        }
+    </script>
+</body>
+
+</html>
