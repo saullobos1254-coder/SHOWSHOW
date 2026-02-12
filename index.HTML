@@ -1,2982 +1,1266 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BEJS 24/7 - TV News Presentation</title>
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&family=Rajdhani:wght@400;500;600;700;900&display=swap"
-        rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-    <style>
-        /* --- CORE VARIABLES & RESET --- */
-        :root {
-            --primary-blue: #004d99;
-            --neon-blue: #00ffff;
-            --deep-purple: #1a0b2e;
-            --accent-orange: #ff9900;
-            --ent-pink: #ff00cc;
-            --sports-green: #00ff88;
-            --local-yellow: #ffcc00;
-            --intl-indigo: #6600cc;
-            --alert-red: #ff0033;
-            --dark-bg: #050505;
-            --glass-bg: rgba(15, 15, 25, 0.85);
-            --glass-border: rgba(255, 255, 255, 0.15);
-            --font-head: 'Rajdhani', sans-serif;
-            --font-body: 'Inter', sans-serif;
-            --transition-smooth: cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body,
-        html {
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            font-family: var(--font-body);
-            background-color: var(--dark-bg);
-            color: white;
-            user-select: none;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-        }
-
-        /* --- FULLSCREEN CONTROLS --- */
-        .fullscreen-controls {
-            position: fixed;
-            top: 100px;
-            right: 20px;
-            z-index: 2000;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .control-btn {
-            width: 50px;
-            height: 50px;
-            background: rgba(0, 0, 0, 0.7);
-            border: 2px solid var(--neon-blue);
-            border-radius: 10px;
-            color: var(--neon-blue);
-            font-size: 1.5rem;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s var(--transition-smooth);
-            backdrop-filter: blur(10px);
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
-        }
-
-        .control-btn:hover {
-            background: rgba(0, 100, 255, 0.3);
-            transform: scale(1.1);
-            box-shadow: 0 0 20px var(--neon-blue);
-        }
-
-        .control-btn:active {
-            transform: scale(0.95);
-        }
-
-        .control-btn.esc-btn {
-            border-color: var(--alert-red);
-            color: var(--alert-red);
-        }
-
-        .control-btn.esc-btn:hover {
-            background: rgba(255, 50, 50, 0.3);
-            box-shadow: 0 0 20px var(--alert-red);
-        }
-
-        .key-hint {
-            position: absolute;
-            top: -25px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(0, 0, 0, 0.8);
-            padding: 2px 8px;
-            border-radius: 4px;
-            font-size: 0.7rem;
-            opacity: 0;
-            transition: opacity 0.3s;
-            white-space: nowrap;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-
-        .control-btn:hover .key-hint {
-            opacity: 1;
-        }
-
-        /* --- ENHANCED BACKGROUND SYSTEM --- */
-        .studio-background {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(circle at 50% 50%, #1a1a2e 0%, #050505 100%);
-            z-index: 0;
-            transition: background 1.5s var(--transition-smooth);
-        }
-
-        .studio-background::after {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
-            opacity: 0.4;
-        }
-
-        .studio-grid {
-            position: fixed;
-            width: 100%;
-            height: 100%;
-            background-image:
-                linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
-            background-size: 80px 80px;
-            perspective: 1000px;
-            transform: perspective(100vh) rotateX(5deg) scale(1.1);
-            opacity: 0.5;
-            z-index: 1;
-            pointer-events: none;
-            animation: grid-shift 20s infinite linear;
-        }
-
-        /* --- ENHANCED NAVIGATION HEADER --- */
-        .top-bar {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 80px;
-            background: linear-gradient(90deg, rgba(163, 0, 0, 0.95) 0%, rgba(102, 0, 0, 0.95) 100%);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0 40px;
-            z-index: 1000;
-            backdrop-filter: blur(10px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-            transition: all 0.3s var(--transition-smooth);
-        }
-
-        .top-bar:hover {
-            height: 85px;
-            background: linear-gradient(90deg, rgba(200, 0, 0, 0.95) 0%, rgba(130, 0, 0, 0.95) 100%);
-        }
-
-        .brand-area {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .brand-text {
-            font-family: var(--font-head);
-            font-weight: 900;
-            font-size: 1.8rem;
-            letter-spacing: 3px;
-            text-transform: uppercase;
-            background: linear-gradient(90deg, #fff 0%, #ff6b6b 100%);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            text-shadow: 0 0 30px rgba(255, 0, 0, 0.5);
-            position: relative;
-            animation: text-glow 3s infinite alternate;
-        }
-
-        .brand-text::after {
-            content: '';
-            position: absolute;
-            right: -10px;
-            top: 0;
-            width: 3px;
-            height: 100%;
-            background: #ff0000;
-            animation: cursor-blink 1s infinite;
-        }
-
-        .live-badge {
-            background: linear-gradient(90deg, #ff0000, #ff6b6b);
-            color: white;
-            padding: 6px 15px;
-            border-radius: 20px;
-            font-weight: 900;
-            font-size: 0.9rem;
-            letter-spacing: 1px;
-            box-shadow: 0 0 20px rgba(255, 0, 0, 0.5);
-            animation: pulse-red 2s infinite;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        .live-badge::before {
-            content: '';
-            width: 8px;
-            height: 8px;
-            background: white;
-            border-radius: 50%;
-            animation: pulse-dot 1.5s infinite;
-        }
-
-        .nav-buttons {
-            display: flex;
-            gap: 8px;
-            background: rgba(0, 0, 0, 0.4);
-            padding: 8px;
-            border-radius: 12px;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .nav-btn {
-            background: transparent;
-            border: none;
-            color: rgba(255, 255, 255, 0.7);
-            padding: 10px 24px;
-            border-radius: 8px;
-            cursor: pointer;
-            text-transform: uppercase;
-            font-weight: 700;
-            font-size: 0.9rem;
-            letter-spacing: 1px;
-            transition: all 0.3s var(--transition-smooth);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .nav-btn::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
-            transition: left 0.5s;
-        }
-
-        .nav-btn:hover::before {
-            left: 100%;
-        }
-
-        .nav-btn:hover {
-            color: white;
-            background: rgba(255, 255, 255, 0.1);
-            transform: translateY(-2px);
-        }
-
-        .nav-btn.active {
-            background: white;
-            color: #990000;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-            transform: translateY(0);
-        }
-
-        #clock {
-            font-family: 'Courier New', monospace;
-            font-weight: 800;
-            font-size: 1.5rem;
-            letter-spacing: 2px;
-            background: linear-gradient(90deg, #fff, #ccc);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
-        }
-
-        /* --- ENHANCED VIEWPORT & SLIDES --- */
-        .view-container {
-            position: relative;
-            width: 100%;
-            height: 100vh;
-            padding-top: 80px;
-            padding-bottom: 100px;
-            z-index: 100;
-            overflow: hidden;
-        }
-
-        .slide {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            opacity: 0;
-            transform: scale(1.05);
-            filter: blur(10px);
-            pointer-events: none;
-            transition: opacity 0.8s var(--transition-smooth),
-                transform 0.8s var(--transition-smooth),
-                filter 0.8s var(--transition-smooth);
-        }
-
-        .slide.active-slide {
-            opacity: 1;
-            transform: scale(1);
-            filter: blur(0);
-            pointer-events: all;
-        }
-
-        /* --- 1. ENHANCED MAIN SLIDE --- */
-        #slide-main {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            position: relative;
-        }
-
-        .world-bg {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 80vh;
-            height: 80vh;
-            opacity: 0.2;
-            z-index: 1;
-            animation: rotate-globe 40s infinite linear;
-            filter: drop-shadow(0 0 50px rgba(0, 100, 255, 0.3));
-        }
-
-        .main-logo-container {
-            perspective: 800px;
-            text-align: center;
-            z-index: 2;
-            position: relative;
-        }
-
-        .main-logo {
-            font-family: var(--font-head);
-            font-size: 10rem;
-            font-weight: 900;
-            line-height: 0.85;
-            background: linear-gradient(180deg, #ffffff 30%, #80d4ff 100%);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            text-shadow: 0 20px 50px rgba(0, 77, 153, 0.6);
-            transform: rotateX(5deg);
-            margin-bottom: 20px;
-            letter-spacing: -5px;
-            animation: title-float 6s infinite ease-in-out;
-        }
-
-        .main-subtitle {
-            font-family: var(--font-head);
-            font-size: 2.5rem;
-            letter-spacing: 8px;
-            color: var(--accent-orange);
-            text-transform: uppercase;
-            font-weight: 500;
-            text-shadow: 0 0 30px rgba(255, 153, 0, 0.8);
-            animation: subtitle-glow 3s infinite alternate;
-        }
-
-        /* Particle effects for main slide */
-        .main-particles {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            z-index: 1;
-        }
-
-        .particle {
-            position: absolute;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 50%;
-            animation: float-particle 20s infinite linear;
-        }
-
-        /* --- NEW: PRESENTATION SLIDE --- */
-        #slide-presenters {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            padding: 40px;
-            gap: 40px;
-            background: radial-gradient(circle at center, #1a0b2e 0%, #050505 100%);
-        }
-
-        .presenters-title {
-            font-family: var(--font-head);
-            font-size: 4rem;
-            font-weight: 900;
-            text-transform: uppercase;
-            letter-spacing: 4px;
-            background: linear-gradient(90deg, #ff00cc, #00ff88, #ffcc00, #6600cc, #ff9900);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            text-shadow: 0 0 30px rgba(255, 255, 255, 0.3);
-            animation: presenters-title-glow 3s infinite alternate;
-            margin-bottom: 20px;
-        }
-
-        .presenters-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 30px;
-            width: 100%;
-            max-width: 1400px;
-        }
-
-        .presenter-card {
-            background: rgba(0, 0, 0, 0.7);
-            border-radius: 20px;
-            padding: 30px;
-            text-align: center;
-            backdrop-filter: blur(15px);
-            border: 2px solid transparent;
-            transition: all 0.4s var(--transition-smooth);
-            transform-style: preserve-3d;
-            perspective: 1000px;
-            cursor: pointer;
-            opacity: 0;
-            transform: translateY(50px) rotateY(20deg);
-            animation: presenter-appear 0.8s forwards;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .presenter-card:nth-child(1) {
-            animation-delay: 0.2s;
-            border-color: var(--ent-pink);
-        }
-
-        .presenter-card:nth-child(2) {
-            animation-delay: 0.4s;
-            border-color: var(--local-yellow);
-        }
-
-        .presenter-card:nth-child(3) {
-            animation-delay: 0.6s;
-            border-color: var(--sports-green);
-        }
-
-        .presenter-card:nth-child(4) {
-            animation-delay: 0.8s;
-            border-color: var(--intl-indigo);
-        }
-
-        .presenter-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.05) 50%, transparent 70%);
-            animation: card-shine 3s infinite linear;
-            pointer-events: none;
-        }
-
-        .presenter-card:hover {
-            transform: translateY(-15px) rotateY(0deg) scale(1.05);
-            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
-        }
-
-        .presenter-icon {
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            margin: 0 auto 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2.5rem;
-            background: rgba(0, 0, 0, 0.5);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .presenter-card:nth-child(1) .presenter-icon {
-            background: linear-gradient(135deg, var(--ent-pink), #cc00a3);
-            color: white;
-        }
-
-        .presenter-card:nth-child(2) .presenter-icon {
-            background: linear-gradient(135deg, var(--local-yellow), #cc9900);
-            color: black;
-        }
-
-        .presenter-card:nth-child(3) .presenter-icon {
-            background: linear-gradient(135deg, var(--sports-green), #00cc66);
-            color: black;
-        }
-
-        .presenter-card:nth-child(4) .presenter-icon {
-            background: linear-gradient(135deg, var(--intl-indigo), #330099);
-            color: white;
-        }
-
-        .presenter-name {
-            font-family: var(--font-head);
-            font-size: 2.2rem;
-            font-weight: 800;
-            margin-bottom: 10px;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-        }
-
-        .presenter-card:nth-child(1) .presenter-name {
-            color: var(--ent-pink);
-            text-shadow: 0 0 20px rgba(255, 0, 204, 0.5);
-        }
-
-        .presenter-card:nth-child(2) .presenter-name {
-            color: var(--local-yellow);
-            text-shadow: 0 0 20px rgba(255, 204, 0, 0.5);
-        }
-
-        .presenter-card:nth-child(3) .presenter-name {
-            color: var(--sports-green);
-            text-shadow: 0 0 20px rgba(0, 255, 136, 0.5);
-        }
-
-        .presenter-card:nth-child(4) .presenter-name {
-            color: var(--intl-indigo);
-            text-shadow: 0 0 20px rgba(102, 0, 204, 0.5);
-        }
-
-        .presenter-role {
-            font-size: 1.2rem;
-            opacity: 0.9;
-            margin-bottom: 15px;
-            font-weight: 600;
-        }
-
-        .presenter-topic {
-            font-size: 1.5rem;
-            font-weight: 700;
-            margin-bottom: 10px;
-            color: white;
-        }
-
-        .presenter-section {
-            font-size: 1rem;
-            opacity: 0.8;
-            font-style: italic;
-        }
-
-        .presenters-instruction {
-            margin-top: 40px;
-            font-size: 1.5rem;
-            text-align: center;
-            opacity: 0.7;
-            animation: instruction-pulse 2s infinite alternate;
-            font-family: var(--font-head);
-            letter-spacing: 2px;
-        }
-
-        /* --- 2. ENHANCED ENTERTAINMENT SLIDE --- */
-        #slide-entertainment {
-            padding: 40px;
-            gap: 30px;
-        }
-
-        #slide-entertainment.active-slide {
-            display: grid;
-            grid-template-columns: 2fr 1fr;
-            animation: slide-in 0.8s var(--transition-smooth);
-        }
-
-        .ent-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            grid-template-rows: 1fr 1fr;
-            gap: 25px;
-            height: 100%;
-        }
-
-        .ent-card {
-            border-radius: 16px;
-            overflow: hidden;
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-end;
-            padding: 25px;
-            transition: all 0.4s var(--transition-smooth);
-            border: 1px solid rgba(255, 0, 204, 0.3);
-            background: black;
-            cursor: pointer;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-        }
-
-        .ent-card:hover {
-            transform: translateY(-10px) scale(1.03);
-            z-index: 10;
-            border-color: var(--ent-pink);
-            box-shadow: 0 25px 50px rgba(255, 0, 204, 0.3);
-        }
-
-        .img-sim {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.8s var(--transition-smooth), opacity 0.5s;
-            opacity: 0.7;
-            filter: brightness(0.7);
-        }
-
-        .ent-card:hover .img-sim {
-            transform: scale(1.1);
-            opacity: 1;
-            filter: brightness(1);
-        }
-
-        .ent-card::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(to bottom, transparent 40%, rgba(0, 0, 0, 0.9) 100%);
-            z-index: 1;
-            pointer-events: none;
-        }
-
-        .ent-content {
-            position: relative;
-            z-index: 2;
-            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8);
-        }
-
-        .ent-tag {
-            background: linear-gradient(90deg, var(--ent-pink), #ff66cc);
-            color: black;
-            font-weight: 800;
-            font-size: 0.75rem;
-            padding: 5px 12px;
-            border-radius: 20px;
-            display: inline-block;
-            margin-bottom: 12px;
-            letter-spacing: 1px;
-            box-shadow: 0 0 10px rgba(255, 0, 204, 0.5);
-        }
-
-        .ent-headline {
-            font-family: var(--font-head);
-            font-size: 1.6rem;
-            font-weight: 700;
-            line-height: 1.2;
-            margin-bottom: 10px;
-            text-transform: uppercase;
-        }
-
-        .sidebar-list {
-            padding: 30px;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-            border-radius: 16px;
-            animation: fade-in 1s ease-out;
-        }
-
-        .list-header {
-            font-size: 1.5rem;
-            color: var(--ent-pink);
-            text-transform: uppercase;
-            border-bottom: 2px solid var(--ent-pink);
-            padding-bottom: 10px;
-            margin-bottom: 10px;
-            font-weight: 800;
-            letter-spacing: 2px;
-            text-shadow: 0 0 10px rgba(255, 0, 204, 0.5);
-        }
-
-        .trend-item {
-            display: flex;
-            gap: 15px;
-            align-items: center;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 12px 0;
-            transition: all 0.3s;
-            cursor: pointer;
-        }
-
-        .trend-item:hover {
-            transform: translateX(10px);
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 8px;
-            padding: 12px;
-        }
-
-        .trend-rank {
-            font-size: 1.8rem;
-            font-weight: 900;
-            color: rgba(255, 255, 255, 0.3);
-            min-width: 40px;
-        }
-
-        /* --- 3. ENHANCED SPORTS SLIDE --- */
-        #slide-sports {
-            padding: 0;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-        }
-
-        .sports-bg-layer {
-            position: absolute;
-            top: -10%;
-            left: -10%;
-            width: 120%;
-            height: 120%;
-            background: url('sports.png') no-repeat center center/cover;
-            filter: brightness(0.4) contrast(1.2) grayscale(0.3);
-            z-index: 0;
-            animation: pan-sports 20s infinite alternate ease-in-out;
-        }
-
-        .sports-overlay-grid {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background:
-                linear-gradient(90deg, rgba(0, 255, 136, 0.05) 1px, transparent 1px),
-                linear-gradient(0deg, rgba(0, 255, 136, 0.05) 1px, transparent 1px);
-            background-size: 40px 40px;
-            z-index: 1;
-            animation: grid-pulse 3s infinite alternate;
-        }
-
-        .sports-content-wrapper {
-            position: relative;
-            z-index: 2;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            perspective: 1000px;
-        }
-
-        .sports-title {
-            font-family: var(--font-head);
-            font-size: 8rem;
-            font-weight: 900;
-            font-style: italic;
-            color: transparent;
-            -webkit-text-stroke: 3px white;
-            text-shadow: 0 0 30px var(--sports-green);
-            margin-bottom: 20px;
-            letter-spacing: -5px;
-            transform: skewX(-10deg);
-            animation: sports-title-glow 3s infinite alternate;
-        }
-
-        .stats-ticker-bar {
-            width: 100%;
-            background: linear-gradient(90deg, transparent, rgba(0, 255, 136, 0.1), transparent);
-            border-top: 2px solid var(--sports-green);
-            border-bottom: 2px solid var(--sports-green);
-            padding: 15px 0;
-            margin-bottom: 40px;
-            backdrop-filter: blur(5px);
-            display: flex;
-            justify-content: center;
-            gap: 50px;
-            font-family: 'Courier New', monospace;
-            color: var(--sports-green);
-            font-weight: bold;
-            font-size: 1.2rem;
-            text-shadow: 0 0 10px var(--sports-green);
-            animation: ticker-scroll 20s linear infinite;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .stats-ticker-bar::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(0, 255, 136, 0.2), transparent);
-            animation: ticker-shine 3s infinite;
-        }
-
-        .scoreboard {
-            display: flex;
-            gap: 30px;
-            width: 90%;
-            justify-content: center;
-            transform: rotateX(10deg);
-            transform-style: preserve-3d;
-            animation: scoreboard-float 6s infinite ease-in-out;
-        }
-
-        .score-box {
-            flex: 1;
-            background: rgba(0, 20, 10, 0.85);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-top: 4px solid var(--sports-green);
-            padding: 30px;
-            border-radius: 4px;
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            backdrop-filter: blur(10px);
-            transition: all 0.3s var(--transition-smooth);
-            cursor: pointer;
-        }
-
-        .score-box:hover {
-            transform: translateZ(30px) scale(1.05);
-            border-color: var(--sports-green);
-            box-shadow: 0 0 40px rgba(0, 255, 136, 0.4);
-            background: rgba(0, 30, 15, 0.9);
-        }
-
-        .league-logo {
-            font-family: var(--font-head);
-            font-size: 1.5rem;
-            color: var(--sports-green);
-            margin-bottom: 10px;
-            font-weight: 900;
-            letter-spacing: 4px;
-            text-transform: uppercase;
-            text-shadow: 0 0 10px var(--sports-green);
-        }
-
-        .matchup {
-            font-family: var(--font-head);
-            font-size: 2.5rem;
-            font-weight: 800;
-            margin: 15px 0;
-            text-align: center;
-            line-height: 1;
-            background: linear-gradient(180deg, #fff, #aaffdd);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-        }
-
-        .score-time {
-            color: var(--sports-green);
-            font-family: var(--font-body);
-            font-weight: 600;
-            background: rgba(0, 255, 136, 0.1);
-            padding: 8px 20px;
-            border-radius: 20px;
-            border: 1px solid rgba(0, 255, 136, 0.3);
-            animation: score-pulse 2s infinite;
-        }
-
-        /* --- 4. ENHANCED LOCAL SLIDE --- */
-        #slide-local {
-            padding: 40px;
-            gap: 30px;
-        }
-
-        #slide-local.active-slide {
-            display: grid;
-            grid-template-columns: 2fr 1fr;
-            animation: slide-in-right 0.8s var(--transition-smooth);
-        }
-
-        .local-gallery {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            grid-template-rows: 1fr 1fr;
-            gap: 25px;
-            height: 100%;
-        }
-
-        .local-img-card {
-            position: relative;
-            border-radius: 16px;
-            overflow: hidden;
-            border: 2px solid rgba(255, 204, 0, 0.3);
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5);
-            transition: all 0.4s var(--transition-smooth);
-            cursor: pointer;
-        }
-
-        .local-img-card:hover {
-            transform: scale(1.05) rotateY(5deg);
-            border-color: var(--local-yellow);
-            z-index: 10;
-            box-shadow: 0 25px 60px rgba(255, 204, 0, 0.3);
-        }
-
-        .local-img-card img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.8s var(--transition-smooth);
-            filter: brightness(0.8);
-        }
-
-        .local-img-card:hover img {
-            transform: scale(1.1);
-            filter: brightness(1);
-        }
-
-        .local-caption {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            padding: 20px;
-            background: linear-gradient(to top, rgba(0, 0, 0, 0.9), transparent);
-            color: white;
-            font-family: var(--font-head);
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            opacity: 0;
-            transform: translateY(20px);
-            transition: all 0.4s var(--transition-smooth);
-            text-align: center;
-            backdrop-filter: blur(5px);
-        }
-
-        .local-img-card:hover .local-caption {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        .local-info-col {
-            display: flex;
-            flex-direction: column;
-            gap: 25px;
-            height: 100%;
-        }
-
-        .weather-panel {
-            flex: 1;
-            background: linear-gradient(135deg, rgba(255, 204, 0, 0.1), rgba(255, 102, 0, 0.1));
-            border: 2px solid var(--local-yellow);
-            border-radius: 20px;
-            backdrop-filter: blur(15px) saturate(180%);
-            padding: 30px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .weather-panel::before {
-            content: '';
-            position: absolute;
-            top: 10%;
-            right: 10%;
-            width: 150px;
-            height: 150px;
-            background: radial-gradient(circle, #ffcc00, transparent);
-            opacity: 0.2;
-            filter: blur(30px);
-            animation: sun-glow 4s infinite alternate;
-        }
-
-        .sun-icon {
-            width: 100px;
-            height: 100px;
-            background: radial-gradient(circle, #fff, #ffd700, #ff9900);
-            border-radius: 50%;
-            box-shadow: 0 0 60px #ffd700;
-            margin-bottom: 25px;
-            animation: sun-pulse 4s infinite alternate, sun-rotate 20s infinite linear;
-            position: relative;
-        }
-
-        .sun-icon::after {
-            content: '';
-            position: absolute;
-            top: -20px;
-            left: -20px;
-            right: -20px;
-            bottom: -20px;
-            background: radial-gradient(circle, transparent 30%, rgba(255, 215, 0, 0.1) 70%);
-            border-radius: 50%;
-            animation: sun-rays 3s infinite alternate;
-        }
-
-        .temp-big {
-            font-family: var(--font-head);
-            font-size: 5rem;
-            font-weight: 900;
-            line-height: 1;
-            text-shadow: 0 0 30px rgba(255, 204, 0, 0.7);
-            background: linear-gradient(180deg, #fff, #ffd700);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            animation: temp-glow 3s infinite alternate;
-        }
-
-        .temp-desc {
-            font-size: 1.8rem;
-            font-weight: 700;
-            color: var(--local-yellow);
-            text-transform: uppercase;
-            letter-spacing: 3px;
-            margin-top: 10px;
-            text-shadow: 0 0 20px rgba(255, 204, 0, 0.5);
-        }
-
-        .traffic-feed {
-            flex: 1.5;
-            overflow-y: auto;
-            padding: 25px;
-            background: rgba(0, 0, 0, 0.7);
-            border: 2px solid rgba(255, 255, 255, 0.1);
-            border-left: 6px solid var(--local-yellow);
-            border-radius: 16px;
-            backdrop-filter: blur(15px) saturate(180%);
-            scrollbar-width: thin;
-            scrollbar-color: var(--local-yellow) transparent;
-        }
-
-        .traffic-feed::-webkit-scrollbar {
-            width: 8px;
-        }
-
-        .traffic-feed::-webkit-scrollbar-track {
-            background: transparent;
-        }
-
-        .traffic-feed::-webkit-scrollbar-thumb {
-            background: var(--local-yellow);
-            border-radius: 4px;
-        }
-
-        .traffic-alert {
-            background: linear-gradient(90deg, rgba(255, 204, 0, 0.05), transparent);
-            border-left: 3px solid var(--local-yellow);
-            padding: 15px;
-            margin-bottom: 15px;
-            font-size: 1rem;
-            color: #ddd;
-            transition: all 0.3s var(--transition-smooth);
-            border-radius: 0 8px 8px 0;
-            cursor: pointer;
-        }
-
-        .traffic-alert:hover {
-            background: linear-gradient(90deg, rgba(255, 204, 0, 0.15), transparent);
-            transform: translateX(5px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-        }
-
-        .traffic-alert strong {
-            color: var(--local-yellow);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        /* --- 5. COMPLETELY REDESIGNED WORLD SLIDE - CENTERED AND ENHANCED --- */
-        #slide-intl {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 40px;
-            gap: 50px;
-            background: linear-gradient(135deg, #0a001e 0%, #050014 100%);
-            overflow: hidden;
-        }
-
-        /* Main Container - Centered */
-        .world-main-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 50px;
-            width: 100%;
-            max-width: 1600px;
-            height: 100%;
-        }
-
-        /* World Map Container - Improved */
-        .world-map-container {
-            width: 650px;
-            height: 650px;
-            position: relative;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            border-radius: 20px;
-            overflow: hidden;
-            box-shadow:
-                0 0 120px rgba(102, 0, 204, 0.8),
-                inset 0 0 100px rgba(0, 100, 255, 0.5);
-            border: 4px solid var(--intl-indigo);
-            transform-style: preserve-3d;
-            perspective: 1000px;
-        }
-
-        /* World Map Image */
-        .world-map-image {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            filter:
-                brightness(0.9) contrast(1.2) saturate(1.4) hue-rotate(200deg);
-            transition: transform 0.8s ease;
-            animation: map-pulse 10s infinite alternate;
-        }
-
-        /* Map Overlay Effects */
-        .map-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background:
-                linear-gradient(45deg,
-                    rgba(102, 0, 204, 0.4) 0%,
-                    rgba(0, 100, 255, 0.4) 50%,
-                    rgba(0, 200, 255, 0.4) 100%);
-            mix-blend-mode: overlay;
-            pointer-events: none;
-        }
-
-        /* Pulsing Points on Map - Improved */
-        .map-point {
-            position: absolute;
-            width: 16px;
-            height: 16px;
-            background: var(--neon-blue);
-            border-radius: 50%;
-            box-shadow: 0 0 30px var(--neon-blue);
-            animation: point-pulse 2s infinite;
-            transform: translate(-50%, -50%);
-            cursor: pointer;
-            z-index: 5;
-            transition: all 0.3s ease;
-        }
-
-        .map-point:hover {
-            transform: translate(-50%, -50%) scale(1.5);
-            box-shadow: 0 0 50px var(--neon-blue);
-        }
-
-        .map-point.na {
-            top: 35%;
-            left: 25%;
-            animation-delay: 0s;
-            background: #ff0033;
-        }
-
-        .map-point.eu {
-            top: 40%;
-            left: 50%;
-            animation-delay: 0.3s;
-            background: #00ff88;
-        }
-
-        .map-point.as {
-            top: 35%;
-            left: 75%;
-            animation-delay: 0.6s;
-            background: #ffcc00;
-        }
-
-        .map-point.sa {
-            top: 65%;
-            left: 30%;
-            animation-delay: 0.9s;
-            background: #ff00cc;
-        }
-
-        .map-point.af {
-            top: 55%;
-            left: 55%;
-            animation-delay: 1.2s;
-            background: #00ffff;
-        }
-
-        .map-point.oc {
-            top: 70%;
-            left: 85%;
-            animation-delay: 1.5s;
-            background: #9900ff;
-        }
-
-        /* Point Labels */
-        .point-label {
-            position: absolute;
-            background: rgba(0, 0, 0, 0.8);
-            color: white;
-            padding: 5px 10px;
-            border-radius: 4px;
-            font-size: 0.8rem;
-            font-weight: bold;
-            opacity: 0;
-            transform: translate(-50%, -150%);
-            transition: opacity 0.3s;
-            white-space: nowrap;
-            border: 1px solid var(--neon-blue);
-            z-index: 6;
-        }
-
-        .map-point:hover .point-label {
-            opacity: 1;
-        }
-
-        /* Scan Line Effect */
-        .map-scan-line {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 4px;
-            background: linear-gradient(90deg,
-                    transparent,
-                    var(--neon-blue),
-                    transparent);
-            box-shadow: 0 0 40px var(--neon-blue);
-            animation: map-scan 5s infinite linear;
-            z-index: 4;
-        }
-
-        /* Satellite Rings */
-        .satellite-ring {
-            position: absolute;
-            border-radius: 50%;
-            border: 1px solid rgba(0, 255, 255, 0.4);
-            animation: ring-rotate 30s infinite linear;
-            box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
-        }
-
-        .satellite-ring:nth-child(1) {
-            width: 750px;
-            height: 750px;
-            animation-duration: 40s;
-            animation-direction: reverse;
-        }
-
-        .satellite-ring:nth-child(2) {
-            width: 800px;
-            height: 800px;
-            animation-duration: 50s;
-        }
-
-        .satellite-ring:nth-child(3) {
-            width: 850px;
-            height: 850px;
-            animation-duration: 60s;
-            animation-direction: reverse;
-        }
-
-        /* Data Stream Effect */
-        .data-stream {
-            position: absolute;
-            width: 2px;
-            height: 100px;
-            background: linear-gradient(to bottom, transparent, var(--neon-blue), transparent);
-            animation: data-stream-flow 3s infinite linear;
-            opacity: 0.7;
-        }
-
-        /* News Dossier - Enhanced and Centered */
-        .news-dossier {
-            width: 550px;
-            min-height: 550px;
-            background: linear-gradient(135deg,
-                    rgba(20, 0, 40, 0.97),
-                    rgba(10, 0, 30, 0.97));
-            border: 3px solid var(--intl-indigo);
-            border-left: 10px solid var(--alert-red);
-            padding: 45px;
-            box-shadow:
-                0 30px 80px rgba(0, 0, 0, 0.9),
-                inset 0 0 80px rgba(102, 0, 204, 0.4);
-            display: flex;
-            flex-direction: column;
-            gap: 30px;
-            position: relative;
-            backdrop-filter: blur(20px);
-            border-radius: 12px;
-            z-index: 10;
-            animation: dossier-float 6s infinite ease-in-out;
-        }
-
-        .news-dossier::before {
-            content: 'TOP SECRET // MARKET INTEL';
-            position: absolute;
-            top: -18px;
-            left: 25px;
-            background: linear-gradient(90deg, var(--alert-red), #cc0022);
-            color: white;
-            font-weight: 900;
-            font-size: 0.9rem;
-            padding: 8px 20px;
-            letter-spacing: 3px;
-            border-radius: 6px;
-            box-shadow: 0 8px 25px rgba(255, 0, 51, 0.7);
-            z-index: 11;
-            font-family: var(--font-head);
-            text-transform: uppercase;
-        }
-
-        .news-dossier::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background:
-                repeating-linear-gradient(0deg,
-                    transparent,
-                    transparent 1px,
-                    rgba(255, 0, 51, 0.07) 1px,
-                    rgba(255, 0, 51, 0.07) 3px),
-                repeating-linear-gradient(90deg,
-                    transparent,
-                    transparent 1px,
-                    rgba(0, 255, 255, 0.04) 1px,
-                    rgba(0, 255, 255, 0.04) 3px);
-            pointer-events: none;
-            z-index: 9;
-        }
-
-        .dossier-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 10px;
-        }
-
-        .dossier-sub {
-            color: var(--alert-red);
-            font-weight: 900;
-            letter-spacing: 4px;
-            font-size: 1.3rem;
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            position: relative;
-            z-index: 11;
-            text-transform: uppercase;
-            font-family: var(--font-head);
-        }
-
-        .alert-dot {
-            width: 14px;
-            height: 14px;
-            background: var(--alert-red);
-            border-radius: 50%;
-            display: inline-block;
-            animation: alert-pulse 1.5s infinite;
-            box-shadow: 0 0 20px var(--alert-red);
-        }
-
-        .timestamp {
-            color: var(--neon-blue);
-            font-family: 'Courier New', monospace;
-            font-size: 1rem;
-            opacity: 0.8;
-        }
-
-        .dossier-headline {
-            font-family: var(--font-head);
-            font-size: 3.5rem;
-            line-height: 1.1;
-            font-weight: 900;
-            color: white;
-            text-transform: uppercase;
-            position: relative;
-            z-index: 11;
-            text-shadow: 0 2px 15px rgba(0, 0, 0, 0.9);
-            margin-bottom: 20px;
-            background: linear-gradient(180deg, #ffffff, #ccccff);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-        }
-
-        .neon-text {
-            color: var(--neon-blue);
-            text-shadow:
-                0 0 15px var(--neon-blue),
-                0 0 30px var(--neon-blue);
-            animation: neon-pulse 2s infinite alternate;
-        }
-
-        .dossier-body {
-            font-family: 'Courier New', monospace;
-            font-size: 1.15rem;
-            line-height: 1.8;
-            color: #e0e0ff;
-            border-top: 3px dashed rgba(255, 255, 255, 0.2);
-            padding-top: 30px;
-            position: relative;
-            z-index: 11;
-            flex-grow: 1;
-        }
-
-        .keyword {
-            color: var(--neon-blue);
-            font-weight: bold;
-            text-shadow: 0 0 10px rgba(0, 255, 255, 0.9);
-            animation: keyword-pulse 3s infinite alternate;
-            padding: 2px 8px;
-            background: rgba(0, 255, 255, 0.15);
-            border-radius: 4px;
-            border: 1px solid rgba(0, 255, 255, 0.3);
-            font-family: var(--font-head);
-            font-size: 1.2rem;
-        }
-
-        .impact-list {
-            margin: 25px 0;
-            padding-left: 20px;
-        }
-
-        .impact-list li {
-            margin-bottom: 15px;
-            padding-left: 10px;
-            border-left: 3px solid var(--alert-red);
-            padding: 8px 15px;
-            background: rgba(255, 0, 51, 0.05);
-            border-radius: 0 8px 8px 0;
-        }
-
-        .dossier-source {
-            margin-top: 40px;
-            font-size: 0.9rem;
-            opacity: 0.8;
-            font-style: italic;
-            text-align: right;
-            color: #aaaaff;
-            border-top: 2px solid rgba(255, 255, 255, 0.15);
-            padding-top: 20px;
-            position: relative;
-            z-index: 11;
-            font-family: 'Courier New', monospace;
-        }
-
-        /* Market Impact Widget */
-        .market-impact {
-            margin-top: 30px;
-            padding: 25px;
-            background: rgba(0, 0, 0, 0.4);
-            border-radius: 10px;
-            border: 2px solid rgba(255, 0, 51, 0.3);
-        }
-
-        .market-title {
-            color: var(--alert-red);
-            font-weight: bold;
-            margin-bottom: 15px;
-            font-size: 1.2rem;
-        }
-
-        .market-stats {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            gap: 15px;
-        }
-
-        .stat {
-            text-align: center;
-            padding: 15px;
-            background: rgba(0, 0, 0, 0.3);
-            border-radius: 8px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .stat-value {
-            font-size: 2rem;
-            font-weight: 900;
-            font-family: var(--font-head);
-        }
-
-        .stat-label {
-            font-size: 0.9rem;
-            opacity: 0.7;
-            margin-top: 5px;
-        }
-
-        .negative {
-            color: #ff3333;
-        }
-
-        .positive {
-            color: #00ff88;
-        }
-
-        /* --- ENHANCED FOOTER --- */
-        .universal-footer {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            z-index: 1000;
-        }
-
-        .lower-third {
-            display: inline-block;
-            padding: 20px 50px;
-            margin-bottom: 20px;
-            margin-left: 50px;
-            background: linear-gradient(90deg, rgba(0, 0, 0, 0.95) 0%, transparent 100%);
-            clip-path: polygon(0 0, 100% 0, 95% 100%, 0% 100%);
-            border-left: 8px solid var(--accent-orange);
-            backdrop-filter: blur(15px) saturate(180%);
-            transition: all 0.3s var(--transition-smooth);
-            border-radius: 0 8px 8px 0;
-        }
-
-        .lower-third:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-            border-left-width: 10px;
-        }
-
-        .headline-text {
-            font-family: var(--font-head);
-            font-size: 2.5rem;
-            font-weight: 800;
-            text-transform: uppercase;
-            margin: 0;
-            letter-spacing: 1px;
-            line-height: 1.2;
-            background: linear-gradient(90deg, #fff, var(--accent-orange));
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            text-shadow: 0 0 20px rgba(255, 153, 0, 0.3);
-            animation: headline-glow 3s infinite alternate;
-        }
-
-        .ticker-wrap {
-            width: 100%;
-            background: linear-gradient(90deg, rgba(0, 51, 102, 0.95) 0%, rgba(0, 20, 40, 0.95) 100%);
-            overflow: hidden;
-            padding: 15px 0;
-            border-top: 3px solid var(--neon-blue);
-            box-shadow: 0 -5px 30px rgba(0, 0, 0, 0.5);
-            backdrop-filter: blur(10px);
-            position: relative;
-        }
-
-        .ticker-wrap::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 1px;
-            background: linear-gradient(90deg, transparent, var(--neon-blue), transparent);
-            animation: ticker-shine 3s infinite;
-        }
-
-        .ticker {
-            display: inline-block;
-            white-space: nowrap;
-            animation: ticker 40s linear infinite;
-            font-size: 1.3rem;
-            font-weight: 600;
-            padding-left: 100%;
-            text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
-        }
-
-        /* --- ENHANCED CRT EFFECT --- */
-        .crt-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background:
-                linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%),
-                linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
-            background-size: 100% 3px, 4px 100%;
-            z-index: 9999;
-            pointer-events: none;
-            opacity: 0.6;
-            animation: crt-flicker 0.15s infinite;
-        }
-
-        /* --- FULLSCREEN MODE STYLES --- */
-        body.fullscreen-mode .top-bar {
-            opacity: 0;
-            transform: translateY(-100%);
-            pointer-events: none;
-        }
-
-        body.fullscreen-mode .universal-footer {
-            opacity: 0;
-            transform: translateY(100%);
-            pointer-events: none;
-        }
-
-        body.fullscreen-mode .fullscreen-controls {
-            opacity: 0.3;
-        }
-
-        body.fullscreen-mode .fullscreen-controls:hover {
-            opacity: 1;
-        }
-
-        body.fullscreen-mode .view-container {
-            padding-top: 0;
-            padding-bottom: 0;
-        }
-
-        body.fullscreen-mode .slide {
-            padding: 0;
-        }
-
-        body.fullscreen-mode #slide-presenters {
-            padding: 20px;
-        }
-
-        /* --- NEW ANIMATIONS FOR ENHANCED WORLD SLIDE --- */
-        @keyframes point-pulse {
-
-            0%,
-            100% {
-                transform: translate(-50%, -50%) scale(1);
-                opacity: 1;
-                box-shadow: 0 0 30px currentColor;
-            }
-
-            50% {
-                transform: translate(-50%, -50%) scale(1.4);
-                opacity: 0.8;
-                box-shadow: 0 0 60px currentColor;
-            }
-        }
-
-        @keyframes map-scan {
-            0% {
-                top: 0%;
-                opacity: 0;
-            }
-
-            10% {
-                opacity: 1;
-            }
-
-            90% {
-                opacity: 1;
-            }
-
-            100% {
-                top: 100%;
-                opacity: 0;
-            }
-        }
-
-        @keyframes ring-rotate {
-            from {
-                transform: rotate(0deg);
-            }
-
-            to {
-                transform: rotate(360deg);
-            }
-        }
-
-        @keyframes alert-pulse {
-
-            0%,
-            100% {
-                opacity: 1;
-                transform: scale(1);
-            }
-
-            50% {
-                opacity: 0.6;
-                transform: scale(1.2);
-            }
-        }
-
-        @keyframes neon-pulse {
-
-            0%,
-            100% {
-                text-shadow:
-                    0 0 15px var(--neon-blue),
-                    0 0 30px var(--neon-blue);
-            }
-
-            50% {
-                text-shadow:
-                    0 0 25px var(--neon-blue),
-                    0 0 50px var(--neon-blue),
-                    0 0 80px var(--neon-blue);
-            }
-        }
-
-        @keyframes keyword-pulse {
-
-            0%,
-            100% {
-                background: rgba(0, 255, 255, 0.15);
-                text-shadow: 0 0 10px rgba(0, 255, 255, 0.9);
-                box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
-            }
-
-            50% {
-                background: rgba(0, 255, 255, 0.25);
-                text-shadow: 0 0 20px rgba(0, 255, 255, 1);
-                box-shadow: 0 0 40px rgba(0, 255, 255, 0.5);
-            }
-        }
-
-        @keyframes map-pulse {
-
-            0%,
-            100% {
-                filter: brightness(0.9) contrast(1.2) saturate(1.4) hue-rotate(200deg);
-            }
-
-            50% {
-                filter: brightness(1.1) contrast(1.3) saturate(1.6) hue-rotate(210deg);
-            }
-        }
-
-        @keyframes dossier-float {
-
-            0%,
-            100% {
-                transform: translateY(0);
-                box-shadow: 0 30px 80px rgba(0, 0, 0, 0.9);
-            }
-
-            50% {
-                transform: translateY(-10px);
-                box-shadow: 0 40px 100px rgba(0, 0, 0, 1);
-            }
-        }
-
-        @keyframes data-stream-flow {
-            0% {
-                transform: translateY(-100px) rotate(0deg);
-                opacity: 0;
-            }
-
-            10% {
-                opacity: 0.7;
-            }
-
-            90% {
-                opacity: 0.7;
-            }
-
-            100% {
-                transform: translateY(100vh) rotate(360deg);
-                opacity: 0;
-            }
-        }
-
-        /* --- ENHANCED ANIMATIONS --- */
-        @keyframes rotate-globe {
-            from {
-                transform: translate(-50%, -50%) rotate(0deg);
-            }
-
-            to {
-                transform: translate(-50%, -50%) rotate(360deg);
-            }
-        }
-
-        @keyframes title-float {
-
-            0%,
-            100% {
-                transform: rotateX(5deg) translateY(0);
-            }
-
-            50% {
-                transform: rotateX(5deg) translateY(-10px);
-            }
-        }
-
-        @keyframes subtitle-glow {
-
-            0%,
-            100% {
-                text-shadow: 0 0 30px rgba(255, 153, 0, 0.8);
-            }
-
-            50% {
-                text-shadow: 0 0 50px rgba(255, 153, 0, 1);
-            }
-        }
-
-        @keyframes text-glow {
-
-            0%,
-            100% {
-                text-shadow: 0 0 30px rgba(255, 0, 0, 0.5);
-            }
-
-            50% {
-                text-shadow: 0 0 50px rgba(255, 0, 0, 0.8);
-            }
-        }
-
-        @keyframes cursor-blink {
-
-            0%,
-            100% {
-                opacity: 1;
-            }
-
-            50% {
-                opacity: 0;
-            }
-        }
-
-        @keyframes pulse-red {
-
-            0%,
-            100% {
-                opacity: 1;
-                transform: scale(1);
-                box-shadow: 0 0 20px rgba(255, 0, 0, 0.5);
-            }
-
-            50% {
-                opacity: 0.8;
-                transform: scale(1.05);
-                box-shadow: 0 0 30px rgba(255, 0, 0, 0.7);
-            }
-        }
-
-        @keyframes pulse-dot {
-
-            0%,
-            100% {
-                opacity: 1;
-            }
-
-            50% {
-                opacity: 0.3;
-            }
-        }
-
-        @keyframes float-particle {
-            0% {
-                transform: translateY(0) rotate(0deg);
-                opacity: 0;
-            }
-
-            10% {
-                opacity: 1;
-            }
-
-            90% {
-                opacity: 1;
-            }
-
-            100% {
-                transform: translateY(-100vh) rotate(360deg);
-                opacity: 0;
-            }
-        }
-
-        @keyframes grid-shift {
-            0% {
-                background-position: 0 0;
-            }
-
-            100% {
-                background-position: 80px 80px;
-            }
-        }
-
-        @keyframes slide-in {
-            0% {
-                opacity: 0;
-                transform: translateX(-100px);
-            }
-
-            100% {
-                opacity: 1;
-                transform: translateX(0);
-            }
-        }
-
-        @keyframes slide-in-right {
-            0% {
-                opacity: 0;
-                transform: translateX(100px);
-            }
-
-            100% {
-                opacity: 1;
-                transform: translateX(0);
-            }
-        }
-
-        @keyframes fade-in {
-            0% {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-
-            100% {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes pan-sports {
-            0% {
-                transform: scale(1) translate(0, 0);
-            }
-
-            100% {
-                transform: scale(1.1) translate(-3%, -3%);
-            }
-        }
-
-        @keyframes grid-pulse {
-
-            0%,
-            100% {
-                opacity: 0.5;
-            }
-
-            50% {
-                opacity: 0.8;
-            }
-        }
-
-        @keyframes sports-title-glow {
-
-            0%,
-            100% {
-                text-shadow: 0 0 30px var(--sports-green);
-            }
-
-            50% {
-                text-shadow: 0 0 50px var(--sports-green);
-            }
-        }
-
-        @keyframes ticker-scroll {
-            0% {
-                transform: translateX(0);
-            }
-
-            100% {
-                transform: translateX(-100%);
-            }
-        }
-
-        @keyframes ticker-shine {
-            0% {
-                transform: translateX(-100%);
-            }
-
-            100% {
-                transform: translateX(100%);
-            }
-        }
-
-        @keyframes scoreboard-float {
-
-            0%,
-            100% {
-                transform: rotateX(10deg) translateY(0);
-            }
-
-            50% {
-                transform: rotateX(10deg) translateY(-10px);
-            }
-        }
-
-        @keyframes score-pulse {
-
-            0%,
-            100% {
-                box-shadow: 0 0 0 rgba(0, 255, 136, 0.2);
-            }
-
-            50% {
-                box-shadow: 0 0 20px rgba(0, 255, 136, 0.4);
-            }
-        }
-
-        @keyframes sun-pulse {
-            0% {
-                transform: scale(1);
-                box-shadow: 0 0 60px #ffd700;
-            }
-
-            100% {
-                transform: scale(1.1);
-                box-shadow: 0 0 80px #ffd700;
-            }
-        }
-
-        @keyframes sun-rotate {
-            0% {
-                transform: rotate(0deg);
-            }
-
-            100% {
-                transform: rotate(360deg);
-            }
-        }
-
-        @keyframes sun-rays {
-            0% {
-                transform: scale(1);
-                opacity: 0.1;
-            }
-
-            100% {
-                transform: scale(1.2);
-                opacity: 0.3;
-            }
-        }
-
-        @keyframes sun-glow {
-            0% {
-                opacity: 0.1;
-                transform: scale(1);
-            }
-
-            100% {
-                opacity: 0.3;
-                transform: scale(1.2);
-            }
-        }
-
-        @keyframes temp-glow {
-
-            0%,
-            100% {
-                text-shadow: 0 0 30px rgba(255, 204, 0, 0.7);
-            }
-
-            50% {
-                text-shadow: 0 0 50px rgba(255, 204, 0, 0.9);
-            }
-        }
-
-        @keyframes headline-glow {
-
-            0%,
-            100% {
-                text-shadow: 0 0 20px rgba(255, 153, 0, 0.3);
-            }
-
-            50% {
-                text-shadow: 0 0 30px rgba(255, 153, 0, 0.5);
-            }
-        }
-
-        @keyframes ticker {
-            0% {
-                transform: translateX(0);
-            }
-
-            100% {
-                transform: translateX(-100%);
-            }
-        }
-
-        @keyframes crt-flicker {
-            0% {
-                opacity: 0.6;
-            }
-
-            50% {
-                opacity: 0.7;
-            }
-
-            100% {
-                opacity: 0.6;
-            }
-        }
-
-        /* NEW ANIMATIONS FOR PRESENTERS SLIDE */
-        @keyframes presenters-title-glow {
-
-            0%,
-            100% {
-                text-shadow: 0 0 30px rgba(255, 255, 255, 0.3);
-                background-position: 0% 50%;
-            }
-
-            50% {
-                text-shadow: 0 0 50px rgba(255, 255, 255, 0.5);
-                background-position: 100% 50%;
-            }
-        }
-
-        @keyframes presenter-appear {
-            0% {
-                opacity: 0;
-                transform: translateY(50px) rotateY(20deg);
-            }
-
-            100% {
-                opacity: 1;
-                transform: translateY(0) rotateY(0deg);
-            }
-        }
-
-        @keyframes card-shine {
-            0% {
-                transform: translateX(-100%) translateY(-100%) rotate(45deg);
-            }
-
-            100% {
-                transform: translateX(100%) translateY(100%) rotate(45deg);
-            }
-        }
-
-        @keyframes instruction-pulse {
-
-            0%,
-            100% {
-                opacity: 0.7;
-                transform: scale(1);
-            }
-
-            50% {
-                opacity: 1;
-                transform: scale(1.05);
-            }
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🇲🇽 100 MEXICANS SAID · EL GRAN PRESENTADOR</title>
+  <!-- Confetti & Icons -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&family=Montserrat:wght@800;900&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: radial-gradient(circle at 20% 30%, #1a2837, #0a1118);
+      font-family: 'Inter', sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 2rem 1.8rem;
+    }
+
+    /* ========== HOST SLIDE - INSPIRED BY YOUR IMAGE ========== */
+    .host-slide {
+      width: 100%;
+      max-width: 1400px;
+      background: linear-gradient(145deg, #1e3a5f, #0a1e2f);
+      border-radius: 80px 80px 80px 30px;
+      border: 8px solid #ffd700;
+      box-shadow: 0 30px 50px -10px black, inset 0 0 50px #ffd70040;
+      padding: 2.5rem 3rem;
+      margin-bottom: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 40px;
+      flex-wrap: wrap;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .host-slide::before {
+      content: "100";
+      position: absolute;
+      top: -20px;
+      left: -20px;
+      font-size: 15rem;
+      font-weight: 900;
+      color: rgba(255, 215, 0, 0.1);
+      font-family: 'Montserrat', sans-serif;
+      transform: rotate(-10deg);
+      pointer-events: none;
+    }
+
+    .host-slide::after {
+      content: "MEXICANOS";
+      position: absolute;
+      bottom: -20px;
+      right: -20px;
+      font-size: 8rem;
+      font-weight: 900;
+      color: rgba(255, 215, 0, 0.1);
+      font-family: 'Montserrat', sans-serif;
+      transform: rotate(5deg);
+      pointer-events: none;
+    }
+
+    .host-info {
+      flex: 1;
+      min-width: 320px;
+      z-index: 10;
+    }
+
+    .host-title {
+      font-size: 3.5rem;
+      font-weight: 900;
+      color: #ffd700;
+      text-shadow: 6px 6px 0 #00000070, 0 0 30px #ffaa00;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      font-family: 'Montserrat', sans-serif;
+      text-transform: uppercase;
+    }
+
+    .host-title span {
+      background: #ce1126;
+      color: white;
+      padding: 0.2rem 1rem;
+      border-radius: 60px;
+      font-size: 1.8rem;
+      border: 4px solid white;
+    }
+
+    .host-subtitle {
+      font-size: 1.8rem;
+      color: #ffffff;
+      font-weight: 800;
+      margin-bottom: 25px;
+      font-style: italic;
+      text-shadow: 3px 3px 0 #000000;
+      background: linear-gradient(145deg, #006847, #004d33);
+      display: inline-block;
+      padding: 0.5rem 2rem;
+      border-radius: 60px;
+      border: 3px solid #ffd700;
+    }
+
+    .host-description {
+      background: #001f33e0;
+      border-radius: 50px;
+      padding: 2rem;
+      color: white;
+      border: 4px solid #ffb347;
+      backdrop-filter: blur(5px);
+      box-shadow: 0 10px 30px black;
+    }
+
+    .host-description p {
+      margin-bottom: 15px;
+      font-size: 1.2rem;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .host-image {
+      width: 320px;
+      height: 320px;
+      background: linear-gradient(145deg, #2c5a6e, #1a3a48);
+      border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 10px solid #ffd700;
+      box-shadow: 0 0 0 10px #00000050, 0 20px 50px black;
+      overflow: hidden;
+      position: relative;
+      z-index: 20;
+      animation: float 6s ease-in-out infinite;
+    }
+
+    .host-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .host-image-placeholder {
+      font-size: 8rem;
+      color: #ffd700;
+      text-shadow: 6px 6px 0 #00000070;
+      background: #0a2a3a;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .host-badge {
+      position: absolute;
+      bottom: 30px;
+      right: 30px;
+      background: #ce1126;
+      color: white;
+      padding: 0.8rem 2rem;
+      border-radius: 60px;
+      font-weight: 900;
+      font-size: 1.3rem;
+      border: 4px solid #ffd700;
+      transform: rotate(-5deg);
+      box-shadow: 0 10px 0 #7a0a1a;
+    }
+
+    .start-button {
+      background: #ff9f1a;
+      border: none;
+      padding: 1.3rem 3.5rem;
+      border-radius: 80px;
+      font-size: 1.8rem;
+      font-weight: 900;
+      color: white;
+      border: 6px solid white;
+      box-shadow: 0 15px 0 #b85e00, 0 20px 40px black;
+      cursor: pointer;
+      margin-top: 30px;
+      display: inline-flex;
+      align-items: center;
+      gap: 20px;
+      transition: 0.08s;
+      text-transform: uppercase;
+    }
+
+    .start-button:active {
+      transform: translateY(15px);
+      box-shadow: 0 5px 0 #b85e00, 0 20px 40px black;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-20px) rotate(2deg); }
+    }
+
+    /* ----- 3 WINDOW GRID ----- */
+    .windows-grid {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: stretch;
+      gap: 2.2rem;
+      max-width: 1600px;
+      width: 100%;
+      margin-top: 20px;
+    }
+
+    /* ---------- WINDOW – INDEPENDENT, LUXURY ---------- */
+    .window {
+      flex: 1 1 350px;
+      min-width: 340px;
+      max-width: 500px;
+      background: rgba(253, 247, 236, 0.97);
+      backdrop-filter: blur(8px);
+      border-radius: 60px 60px 60px 28px;
+      border: 4px solid #ffcf5c;
+      box-shadow: 0 30px 50px -15px black, inset 0 0 30px #ffe68f80;
+      padding: 1.8rem 1.6rem;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      transition: all 0.25s;
+    }
+
+    .window:hover {
+      border-color: #ffb82e;
+      transform: translateY(-6px);
+    }
+
+    /* window bar */
+    .win-bar {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 1rem;
+      padding-bottom: 0.8rem;
+      border-bottom: 2px solid #ffd966c0;
+    }
+
+    .bar-dots {
+      display: flex;
+      gap: 8px;
+    }
+
+    .dot {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: #ff5f56;
+      border: 1px solid #ffb3aa;
+    }
+
+    .dot:nth-child(2) { background: #ffbd2e; }
+    .dot:nth-child(3) { background: #27c93f; }
+
+    .window-tag {
+      background: #1f3a4b;
+      color: #ffeaa5;
+      font-size: 0.8rem;
+      font-weight: 800;
+      padding: 0.3rem 1.5rem;
+      border-radius: 40px;
+      border: 1px solid #ffb86b;
+      margin-left: auto;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+    }
+
+    .bar-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* header logo */
+    .win-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.2rem;
+    }
+
+    .logo {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 900;
+      font-size: 1.6rem;
+      background: linear-gradient(145deg, #002856, #001e32);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .flag-mini {
+      display: inline-flex;
+      gap: 4px;
+    }
+
+    .flag-mini span {
+      width: 11px;
+      height: 24px;
+      background: #006847;
+      border-radius: 3px 0 0 3px;
+    }
+
+    .flag-mini span:nth-child(2) {
+      background: white;
+      border-left: 1px solid #aaa;
+      border-right: 1px solid #aaa;
+    }
+
+    .flag-mini span:nth-child(3) {
+      background: #ce1126;
+      border-radius: 0 3px 3px 0;
+    }
+
+    .round-badge {
+      background: #2e4a5b;
+      color: #ffe99b;
+      font-weight: 800;
+      font-size: 0.8rem;
+      padding: 0.4rem 1.3rem;
+      border-radius: 60px;
+      border: 2px solid #ffb347;
+      text-transform: uppercase;
+    }
+
+    /* ---------- FULLSCREEN BUTTON ---------- */
+    .fullscreen-btn {
+      background: #2e4a5b;
+      color: white;
+      border: none;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      border: 2px solid white;
+      transition: 0.1s;
+    }
+
+    .fullscreen-btn:hover {
+      background: #ffb347;
+      color: black;
+    }
+
+    /* ---------- SCOREBOARD ---------- */
+    .score-panel {
+      background: #0c1e28;
+      border-radius: 80px;
+      padding: 0.9rem 1.2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.2rem;
+      border: 2px solid #ffcc66;
+      box-shadow: inset 0 0 0 2px #1f3f4d;
+    }
+
+    .team {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      font-weight: 800;
+    }
+
+    .team-blue {
+      background: #004c7e;
+      color: white;
+      padding: 0.3rem 1.3rem;
+      border-radius: 60px;
+      border: 2px solid #7ac8ff;
+      font-size: 1rem;
+    }
+
+    .team-red {
+      background: #b13b4b;
+      color: white;
+      padding: 0.3rem 1.3rem;
+      border-radius: 60px;
+      border: 2px solid #ffa6a6;
+      font-size: 1rem;
+    }
+
+    .score-num {
+      background: #ffd966;
+      color: #002137;
+      padding: 0.1rem 1.1rem;
+      border-radius: 60px;
+      font-size: 1.9rem;
+      font-weight: 900;
+      min-width: 75px;
+      text-align: center;
+      border: 2px solid white;
+    }
+
+    /* ---------- TEAM SELECTOR ---------- */
+    .team-selector {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin-bottom: 1.5rem;
+    }
+
+    .selector-btn {
+      flex: 1;
+      background: #2e4a5b;
+      color: white;
+      border: none;
+      padding: 0.7rem 0;
+      border-radius: 60px;
+      font-weight: 900;
+      font-size: 1.1rem;
+      border: 3px solid white;
+      cursor: pointer;
+      transition: 0.08s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .selector-btn.active {
+      background: #004c7e;
+      box-shadow: 0 0 0 3px #7ac8ff;
+    }
+
+    .selector-btn.red.active {
+      background: #b13b4b;
+      box-shadow: 0 0 0 3px #ffa6a6;
+    }
+
+    /* ---------- QUESTION ---------- */
+    .question-card {
+      background: linear-gradient(145deg, #003862, #00223b);
+      border-radius: 40px 40px 40px 14px;
+      padding: 1.1rem 1.4rem;
+      margin-bottom: 1.3rem;
+      border-left: 12px solid #ffc107;
+    }
+
+    .question-text {
+      color: white;
+      font-size: 1.45rem;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .question-icon {
+      background: #ffc107;
+      color: #002b44;
+      padding: 0 14px;
+      border-radius: 60px;
+      font-size: 1.45rem;
+    }
+
+    /* ---------- ANSWERS HIDDEN ---------- */
+    .answers-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 0.9rem;
+      margin: 0.8rem 0 1.2rem;
+    }
+
+    .answer-card {
+      background: linear-gradient(145deg, #4a3a2a, #3a2e22);
+      border-radius: 30px;
+      border: 3px solid #b68b40;
+      box-shadow: 7px 7px 0 #0000003d;
+      padding: 1rem 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      transition: 0.15s;
+    }
+
+    .answer-card.revealed {
+      background: linear-gradient(145deg, #1e6a53, #124d3d);
+      border-color: #ffdb7c;
+      box-shadow: 0 0 0 4px #fffde7, 7px 7px 0 #0000004d;
+    }
+
+    .card-front {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      width: 100%;
+    }
+
+    .card-back {
+      display: none;
+    }
+
+    .answer-card.revealed .card-front {
+      display: none;
+    }
+
+    .answer-card.revealed .card-back {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+    }
+
+    .grepe-icon-small {
+      font-size: 1.8rem;
+      color: #ffd966;
+    }
+
+    .grepe-text-small {
+      font-size: 1.2rem;
+      font-weight: 800;
+      color: #ffd966;
+      text-transform: uppercase;
+      letter-spacing: 3px;
+    }
+
+    .answer-name {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: white;
+      text-shadow: 3px 3px 0 #00000070;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .points-badge {
+      background: #ffd700;
+      color: #001f33;
+      font-weight: 900;
+      padding: 0.3rem 1.6rem;
+      border-radius: 60px;
+      font-size: 1.1rem;
+      border: 2px solid white;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* ---------- INPUT FIELD ---------- */
+    .guess-area {
+      display: flex;
+      gap: 10px;
+      margin-top: 5px;
+      margin-bottom: 15px;
+    }
+
+    .guess-input {
+      flex: 1;
+      padding: 0.9rem 1.2rem;
+      border-radius: 60px;
+      border: 4px solid #ffd966;
+      background: #1e2e3a;
+      color: white;
+      font-size: 1.1rem;
+      font-weight: 600;
+      outline: none;
+    }
+
+    .guess-input::placeholder {
+      color: #ffd966c0;
+      font-style: italic;
+    }
+
+    .guess-btn {
+      background: #ff9f1a;
+      border: none;
+      border-radius: 60px;
+      padding: 0 1.8rem;
+      color: white;
+      font-weight: 900;
+      font-size: 1.1rem;
+      border: 3px solid white;
+      box-shadow: 0 6px 0 #b85e00;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      transition: 0.08s;
+    }
+
+    .guess-btn:active {
+      transform: translateY(6px);
+      box-shadow: 0 2px 0 #b85e00;
+    }
+
+    /* ----- REVEAL ALL BUTTON ----- */
+    .reveal-all-btn {
+      background: #7a4a2e;
+      border: none;
+      border-radius: 60px;
+      padding: 0.7rem 1.2rem;
+      color: white;
+      font-weight: 900;
+      font-size: 0.9rem;
+      border: 3px solid white;
+      box-shadow: 0 6px 0 #4e2e1e;
+      cursor: pointer;
+      margin-top: 5px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      transition: 0.08s;
+    }
+
+    .reveal-all-btn:active {
+      transform: translateY(6px);
+      box-shadow: 0 2px 0 #4e2e1e;
+    }
+
+    /* ----- REVEAL MISSING BUTTON (AFTER WINNER) ----- */
+    .reveal-missing-btn {
+      background: #5a3e2b;
+      border: none;
+      border-radius: 60px;
+      padding: 0.7rem 1.2rem;
+      color: white;
+      font-weight: 900;
+      font-size: 0.9rem;
+      border: 3px solid #ffd966;
+      box-shadow: 0 6px 0 #3a2a1e;
+      cursor: pointer;
+      margin-top: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      transition: 0.08s;
+    }
+
+    .reveal-missing-btn:active {
+      transform: translateY(6px);
+      box-shadow: 0 2px 0 #3a2a1e;
+    }
+
+    .remaining-badge {
+      margin-top: 12px;
+      text-align: right;
+      color: #8b7a4b;
+      font-weight: 700;
+      font-size: 0.9rem;
+    }
+
+    /* ----- WINNER OVERLAY ----- */
+    .winner-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.85);
+      backdrop-filter: blur(6px);
+      border-radius: 60px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      opacity: 0;
+      pointer-events: none;
+      transition: 0.3s;
+      border: 8px solid #ffd966;
+      box-shadow: 0 0 50px gold;
+    }
+
+    .winner-overlay.show {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .crown {
+      font-size: 5rem;
+      animation: bounce 1s infinite;
+    }
+
+    .winner-title {
+      font-size: 2.8rem;
+      font-weight: 900;
+      background: linear-gradient(45deg, #fff3bf, #ffd966);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .winner-team {
+      background: #001f33;
+      padding: 0.6rem 2.5rem;
+      border-radius: 80px;
+      font-size: 1.8rem;
+      font-weight: 900;
+      color: #ffe17a;
+      border: 4px solid white;
+      margin-top: 20px;
+    }
+
+    .reset-button {
+      margin-top: 30px;
+      background: #ffc107;
+      border: none;
+      padding: 0.8rem 2.5rem;
+      border-radius: 70px;
+      font-weight: 900;
+      font-size: 1.2rem;
+      color: #001f33;
+      border: 4px solid white;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      box-shadow: 0 6px 0 #b38f00;
+    }
+
+    .reset-button:active {
+      transform: translateY(6px);
+      box-shadow: 0 2px 0 #b38f00;
+    }
+
+    @keyframes bounce {
+      0%,100% { transform: translateY(0); }
+      50% { transform: translateY(-15px); }
+    }
+
+    .footer-note {
+      margin-top: 45px;
+      color: #ffdb9f;
+      text-align: center;
+      font-weight: 600;
+      letter-spacing: 2px;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+  </style>
 </head>
-
 <body>
-    <div class="crt-overlay"></div>
-    <div class="studio-background" id="bg-layer"></div>
-    <div class="studio-grid"></div>
 
-    <!-- Fullscreen Controls -->
-    <div class="fullscreen-controls">
-        <button class="control-btn fullscreen-btn" id="fullscreen-btn" title="Toggle Fullscreen">
-            <i class="fas fa-expand"></i>
-            <span class="key-hint">F11</span>
-        </button>
-        <button class="control-btn esc-btn" id="esc-btn" title="Exit Presentation">
-            <i class="fas fa-times"></i>
-            <span class="key-hint">ESC</span>
-        </button>
+  <!-- ========== HOST SLIDE - 100 MEXICANOS PRESENTADOR ========== -->
+  <div class="host-slide" id="hostSlide">
+    <div class="host-info">
+      <div class="host-title">
+        100 <span>MEXICANS</span>
+      </div>
+      <div class="host-subtitle">
+        <i class="fas fa-microphone-alt"></i> EL GRAN PRESENTADOR
+      </div>
+      <div class="host-description">
+        <p><i class="fas fa-check-circle" style="color:#ffd700;"></i> <strong>100 MEXICANS SAID</strong> - FAMILY FEUD STYLE</p>
+        <p><i class="fas fa-check-circle" style="color:#ffd700;"></i> 3 independent games: Street Food · Day of Dead · Mariachi</p>
+        <p><i class="fas fa-check-circle" style="color:#ffd700;"></i> <strong>WRITE the answer</strong> · If correct, card FLIPS and ADDS points</p>
+        <p><i class="fas fa-check-circle" style="color:#ffd700;"></i> <strong>YOU choose</strong> BLUE or RED team</p>
+        <p><i class="fas fa-check-circle" style="color:#ffd700;"></i> <strong>REVEAL MISSING</strong> appears AFTER winner - shows all answers you missed</p>
+        <p><i class="fas fa-check-circle" style="color:#ffd700;"></i> Fullscreen button · Most points WINS</p>
+      </div>
+      <button class="start-button" onclick="startGame()">
+        <i class="fas fa-play"></i> START GAMES
+      </button>
+    </div>
+    <div class="host-image">
+      <!-- IMAGEN DEL PRESENTADOR - ADAPTADA DE TU DISEÑO -->
+      <div class="host-image-placeholder" style="background: linear-gradient(145deg, #0a3a4a, #05222b);">
+        <div style="display: flex; flex-direction: column; align-items: center; gap: 10px;">
+          <i class="fas fa-user-tie" style="font-size: 6rem; color: #ffd700;"></i>
+          <span style="font-size: 2rem; font-weight: 900; color: white; background: #ce1126; padding: 0.3rem 1.5rem; border-radius: 60px; border: 4px solid #ffd700;">100</span>
+          <span style="font-size: 1.2rem; font-weight: 800; color: #ffd700;">MEXICANOS</span>
+        </div>
+      </div>
+    </div>
+    <div class="host-badge">
+      <i class="fas fa-crown"></i> HOST <i class="fas fa-crown"></i>
+    </div>
+  </div>
+
+  <!-- 3 INDEPENDENT WINDOWS (hidden initially) -->
+  <div class="windows-grid" id="windowsGrid" style="display: none;">
+
+    <!-- ========== WINDOW 1 – STREET FOOD ========== -->
+    <div class="window" id="window1">
+      <div class="winner-overlay" id="winnerOverlay1">
+        <div class="crown">👑🏆👑</div>
+        <div class="winner-title">WINNER</div>
+        <div class="winner-team" id="winnerTeam1">BLUE</div>
+        <button class="reset-button" onclick="resetWindow(1)"><i class="fas fa-rotate-right"></i> PLAY AGAIN</button>
+      </div>
+
+      <div class="win-bar">
+        <div class="bar-dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+        <div class="bar-right">
+          <button class="fullscreen-btn" onclick="toggleFullscreen(1)"><i class="fas fa-expand"></i></button>
+          <div class="window-tag"><i class="fas fa-utensils"></i> R1 · STREET</div>
+        </div>
+      </div>
+
+      <div class="win-header">
+        <div class="logo"><i class="fas fa-flag"></i> 100MS <span class="flag-mini"><span></span><span></span><span></span></span></div>
+        <div class="round-badge"><i class="fas fa-taco"></i> ANTOJITOS</div>
+      </div>
+
+      <!-- SCOREBOARD -->
+      <div class="score-panel">
+        <div class="team"><span class="team-blue"><i class="fas fa-shield"></i> BLUE</span><span id="blueScore1" class="score-num">0</span></div>
+        <div class="team"><span class="team-red"><i class="fas fa-shield"></i> RED</span><span id="redScore1" class="score-num">0</span></div>
+      </div>
+
+      <!-- TEAM SELECTOR -->
+      <div class="team-selector" id="selector1">
+        <button id="blueBtn1" class="selector-btn active" onclick="setActiveTeam(1, 'blue')"><i class="fas fa-shield"></i> BLUE</button>
+        <button id="redBtn1" class="selector-btn red" onclick="setActiveTeam(1, 'red')"><i class="fas fa-shield"></i> RED</button>
+      </div>
+
+      <!-- QUESTION -->
+      <div class="question-card">
+        <div class="question-text"><span class="question-icon">🌮</span> Name a Mexican street food?</div>
+      </div>
+
+      <!-- ANSWERS HIDDEN -->
+      <div class="answers-grid" id="answers1">
+        <div class="answer-card" data-points="84" data-name="TACOS" data-clean="tacos">
+          <div class="card-front">
+            <i class="fas fa-question-circle grepe-icon-small"></i>
+            <span class="grepe-text-small">?????</span>
+          </div>
+          <div class="card-back">
+            <span class="answer-name"><i class="fas fa-taco"></i> 🌮 TACOS</span>
+            <span class="points-badge"><i class="fas fa-trophy"></i> 84 pts</span>
+          </div>
+        </div>
+        <div class="answer-card" data-points="63" data-name="ELOTE" data-clean="elote">
+          <div class="card-front">
+            <i class="fas fa-question-circle grepe-icon-small"></i>
+            <span class="grepe-text-small">?????</span>
+          </div>
+          <div class="card-back">
+            <span class="answer-name"><i class="fas fa-corn"></i> 🌽 ELOTE</span>
+            <span class="points-badge"><i class="fas fa-trophy"></i> 63 pts</span>
+          </div>
+        </div>
+        <div class="answer-card" data-points="51" data-name="TAMALES" data-clean="tamales">
+          <div class="card-front">
+            <i class="fas fa-question-circle grepe-icon-small"></i>
+            <span class="grepe-text-small">?????</span>
+          </div>
+          <div class="card-back">
+            <span class="answer-name"><i class="fas fa-leaf"></i> 🫔 TAMALES</span>
+            <span class="points-badge"><i class="fas fa-trophy"></i> 51 pts</span>
+          </div>
+        </div>
+        <div class="answer-card" data-points="38" data-name="POZOLE" data-clean="pozole">
+          <div class="card-front">
+            <i class="fas fa-question-circle grepe-icon-small"></i>
+            <span class="grepe-text-small">?????</span>
+          </div>
+          <div class="card-back">
+            <span class="answer-name"><i class="fas fa-utensil-spoon"></i> 🥣 POZOLE</span>
+            <span class="points-badge"><i class="fas fa-trophy"></i> 38 pts</span>
+          </div>
+        </div>
+        <div class="answer-card" data-points="31" data-name="QUESADILLAS" data-clean="quesadillas">
+          <div class="card-front">
+            <i class="fas fa-question-circle grepe-icon-small"></i>
+            <span class="grepe-text-small">?????</span>
+          </div>
+          <div class="card-back">
+            <span class="answer-name"><i class="fas fa-cheese"></i> 🧀 QUESADILLAS</span>
+            <span class="points-badge"><i class="fas fa-trophy"></i> 31 pts</span>
+          </div>
+        </div>
+        <div class="answer-card" data-points="22" data-name="CHURROS" data-clean="churros">
+          <div class="card-front">
+            <i class="fas fa-question-circle grepe-icon-small"></i>
+            <span class="grepe-text-small">?????</span>
+          </div>
+          <div class="card-back">
+            <span class="answer-name"><i class="fas fa-donut"></i> 🍩 CHURROS</span>
+            <span class="points-badge"><i class="fas fa-trophy"></i> 22 pts</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- INPUT FIELD -->
+      <div class="guess-area">
+        <input type="text" id="guessInput1" class="guess-input" placeholder="Write an answer...">
+        <button class="guess-btn" onclick="checkAnswer(1)"><i class="fas fa-paper-plane"></i> GUESS</button>
+      </div>
+
+      <!-- REVEAL ALL BUTTON -->
+      <button class="reveal-all-btn" id="revealAllBtn1" onclick="revealAllAnswers(1)">
+        <i class="fas fa-eye"></i> REVEAL ALL ANSWERS
+      </button>
+
+      <!-- REVEAL MISSING BUTTON (hidden initially) -->
+      <button class="reveal-missing-btn hidden" id="revealMissingBtn1" onclick="revealMissingAnswers(1)">
+        <i class="fas fa-question-circle"></i> REVEAL MISSING ANSWERS
+      </button>
+
+      <div class="remaining-badge" id="remaining1"><i class="fas fa-hourglass-half"></i> 6 answers left</div>
     </div>
 
-    <!-- Header -->
-    <div class="top-bar">
-        <div class="brand-area">
-            <span class="brand-text glitch-text" data-text="BEJS 24/7">BEJS 24/7</span>
-            <div class="live-badge">LIVE</div>
+    <!-- ========== WINDOW 2 – DAY OF THE DEAD ========== -->
+    <div class="window" id="window2">
+      <div class="winner-overlay" id="winnerOverlay2">
+        <div class="crown">👑🏆👑</div>
+        <div class="winner-title">WINNER</div>
+        <div class="winner-team" id="winnerTeam2">BLUE</div>
+        <button class="reset-button" onclick="resetWindow(2)"><i class="fas fa-rotate-right"></i> PLAY AGAIN</button>
+      </div>
+      <div class="win-bar">
+        <div class="bar-dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+        <div class="bar-right">
+          <button class="fullscreen-btn" onclick="toggleFullscreen(2)"><i class="fas fa-expand"></i></button>
+          <div class="window-tag"><i class="fas fa-skull"></i> R2 · OFRENDA</div>
         </div>
-        <div class="nav-buttons">
-            <button class="nav-btn" onclick="nav('presenters', this)">Presenters</button>
-            <button class="nav-btn" onclick="nav('main', this)">Today</button>
-            <button class="nav-btn" onclick="nav('entertainment', this)">Entertainment</button>
-            <button class="nav-btn" onclick="nav('sports', this)">Sports</button>
-            <button class="nav-btn" onclick="nav('local', this)">Local</button>
-            <button class="nav-btn" onclick="nav('intl', this)">World</button>
-        </div>
-        <div id="clock">12:00:00</div>
+      </div>
+      <div class="win-header"><div class="logo"><i class="fas fa-flag"></i> 100MS <span class="flag-mini"><span></span><span></span><span></span></span></div><div class="round-badge"><i class="fas fa-candle-holder"></i> DAY OF DEAD</div></div>
+      <div class="score-panel"><div class="team"><span class="team-blue">🔵 BLUE</span><span id="blueScore2" class="score-num">0</span></div><div class="team"><span class="team-red">🔴 RED</span><span id="redScore2" class="score-num">0</span></div></div>
+      
+      <div class="team-selector" id="selector2">
+        <button id="blueBtn2" class="selector-btn active" onclick="setActiveTeam(2, 'blue')"><i class="fas fa-shield"></i> BLUE</button>
+        <button id="redBtn2" class="selector-btn red" onclick="setActiveTeam(2, 'red')"><i class="fas fa-shield"></i> RED</button>
+      </div>
+
+      <div class="question-card"><div class="question-text"><span class="question-icon">🕯️</span> Essential for Day of the Dead altar?</div></div>
+      
+      <div class="answers-grid" id="answers2">
+        <div class="answer-card" data-points="82" data-name="CEMPASUCHIL" data-clean="cempasuchil"><div class="card-front"><i class="fas fa-question-circle grepe-icon-small"></i><span class="grepe-text-small">?????</span></div><div class="card-back"><span class="answer-name">🌼 CEMPASUCHIL</span><span class="points-badge"><i class="fas fa-trophy"></i> 82 pts</span></div></div>
+        <div class="answer-card" data-points="69" data-name="PAN DE MUERTO" data-clean="pan de muerto"><div class="card-front"><i class="fas fa-question-circle grepe-icon-small"></i><span class="grepe-text-small">?????</span></div><div class="card-back"><span class="answer-name">🍞 PAN DE MUERTO</span><span class="points-badge"><i class="fas fa-trophy"></i> 69 pts</span></div></div>
+        <div class="answer-card" data-points="57" data-name="PHOTOS" data-clean="photos"><div class="card-front"><i class="fas fa-question-circle grepe-icon-small"></i><span class="grepe-text-small">?????</span></div><div class="card-back"><span class="answer-name">🖼️ PHOTOS</span><span class="points-badge"><i class="fas fa-trophy"></i> 57 pts</span></div></div>
+        <div class="answer-card" data-points="48" data-name="CANDLES" data-clean="candles"><div class="card-front"><i class="fas fa-question-circle grepe-icon-small"></i><span class="grepe-text-small">?????</span></div><div class="card-back"><span class="answer-name">🕯️ CANDLES</span><span class="points-badge"><i class="fas fa-trophy"></i> 48 pts</span></div></div>
+        <div class="answer-card" data-points="36" data-name="SUGAR SKULLS" data-clean="sugar skulls"><div class="card-front"><i class="fas fa-question-circle grepe-icon-small"></i><span class="grepe-text-small">?????</span></div><div class="card-back"><span class="answer-name">💀 SUGAR SKULLS</span><span class="points-badge"><i class="fas fa-trophy"></i> 36 pts</span></div></div>
+        <div class="answer-card" data-points="23" data-name="COPAL" data-clean="copal"><div class="card-front"><i class="fas fa-question-circle grepe-icon-small"></i><span class="grepe-text-small">?????</span></div><div class="card-back"><span class="answer-name">🪔 COPAL</span><span class="points-badge"><i class="fas fa-trophy"></i> 23 pts</span></div></div>
+      </div>
+
+      <div class="guess-area"><input type="text" id="guessInput2" class="guess-input" placeholder="Write an answer..."><button class="guess-btn" onclick="checkAnswer(2)"><i class="fas fa-paper-plane"></i> GUESS</button></div>
+      <button class="reveal-all-btn" id="revealAllBtn2" onclick="revealAllAnswers(2)"><i class="fas fa-eye"></i> REVEAL ALL ANSWERS</button>
+      <button class="reveal-missing-btn hidden" id="revealMissingBtn2" onclick="revealMissingAnswers(2)"><i class="fas fa-question-circle"></i> REVEAL MISSING ANSWERS</button>
+      <div class="remaining-badge" id="remaining2"><i class="fas fa-hourglass-half"></i> 6 answers left</div>
     </div>
 
-    <!-- Content -->
-    <div class="view-container">
-        <!-- NEW: PRESENTERS SLIDE -->
-        <div id="slide-presenters" class="slide active-slide">
-            <div class="presenters-title">MEET THE PRESENTERS</div>
-
-            <div class="presenters-grid">
-                <div class="presenter-card">
-                    <div class="presenter-icon">
-                        <i class="fas fa-film"></i>
-                    </div>
-                    <div class="presenter-name">SAUL</div>
-                    <div class="presenter-role">Entertainment Specialist</div>
-                    <div class="presenter-topic">Grammys & Pop Culture</div>
-                    <div class="presenter-section">Entertainment Segment</div>
-                </div>
-
-                <div class="presenter-card">
-                    <div class="presenter-icon">
-                        <i class="fas fa-city"></i>
-                    </div>
-                    <div class="presenter-name">BIANCA</div>
-                    <div class="presenter-role">Local Affairs Expert</div>
-                    <div class="presenter-topic">Community & City News</div>
-                    <div class="presenter-section">Local Segment</div>
-                </div>
-
-                <div class="presenter-card">
-                    <div class="presenter-icon">
-                        <i class="fas fa-trophy"></i>
-                    </div>
-                    <div class="presenter-name">JUSTYN</div>
-                    <div class="presenter-role">Sports Analyst</div>
-                    <div class="presenter-topic">Live Games & Analysis</div>
-                    <div class="presenter-section">Sports Segment</div>
-                </div>
-
-                <div class="presenter-card">
-                    <div class="presenter-icon">
-                        <i class="fas fa-globe-americas"></i>
-                    </div>
-                    <div class="presenter-name">ALONSO</div>
-                    <div class="presenter-role">World Affairs Correspondent</div>
-                    <div class="presenter-topic">Global Economy & Politics</div>
-                    <div class="presenter-section">World Segment</div>
-                </div>
-            </div>
-
-            <div class="presenters-instruction">
-                Click on any presenter's segment to jump directly to their section
-            </div>
+    <!-- ========== WINDOW 3 – MARIACHI ========== -->
+    <div class="window" id="window3">
+      <div class="winner-overlay" id="winnerOverlay3">
+        <div class="crown">👑🏆👑</div>
+        <div class="winner-title">WINNER</div>
+        <div class="winner-team" id="winnerTeam3">BLUE</div>
+        <button class="reset-button" onclick="resetWindow(3)"><i class="fas fa-rotate-right"></i> PLAY AGAIN</button>
+      </div>
+      <div class="win-bar">
+        <div class="bar-dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+        <div class="bar-right">
+          <button class="fullscreen-btn" onclick="toggleFullscreen(3)"><i class="fas fa-expand"></i></button>
+          <div class="window-tag"><i class="fas fa-guitar"></i> R3 · MARIACHI</div>
         </div>
+      </div>
+      <div class="win-header"><div class="logo"><i class="fas fa-flag"></i> 100MS <span class="flag-mini"><span></span><span></span><span></span></span></div><div class="round-badge"><i class="fas fa-music"></i> MARIACHI</div></div>
+      <div class="score-panel"><div class="team"><span class="team-blue">🔵 BLUE</span><span id="blueScore3" class="score-num">0</span></div><div class="team"><span class="team-red">🔴 RED</span><span id="redScore3" class="score-num">0</span></div></div>
+      
+      <div class="team-selector" id="selector3">
+        <button id="blueBtn3" class="selector-btn active" onclick="setActiveTeam(3, 'blue')"><i class="fas fa-shield"></i> BLUE</button>
+        <button id="redBtn3" class="selector-btn red" onclick="setActiveTeam(3, 'red')"><i class="fas fa-shield"></i> RED</button>
+      </div>
 
-        <!-- 1. MAIN -->
-        <div id="slide-main" class="slide">
-            <!-- Particle effects -->
-            <div class="main-particles" id="main-particles"></div>
+      <div class="question-card"><div class="question-text"><span class="question-icon">🎶</span> Classic Mariachi song?</div></div>
+      
+      <div class="answers-grid" id="answers3">
+        <div class="answer-card" data-points="78" data-name="CIELITO LINDO" data-clean="cielito lindo"><div class="card-front"><i class="fas fa-question-circle grepe-icon-small"></i><span class="grepe-text-small">?????</span></div><div class="card-back"><span class="answer-name">🎵 CIELITO LINDO</span><span class="points-badge"><i class="fas fa-trophy"></i> 78 pts</span></div></div>
+        <div class="answer-card" data-points="64" data-name="EL REY" data-clean="el rey"><div class="card-front"><i class="fas fa-question-circle grepe-icon-small"></i><span class="grepe-text-small">?????</span></div><div class="card-back"><span class="answer-name">👑 EL REY</span><span class="points-badge"><i class="fas fa-trophy"></i> 64 pts</span></div></div>
+        <div class="answer-card" data-points="52" data-name="MEXICO LINDO" data-clean="mexico lindo"><div class="card-front"><i class="fas fa-question-circle grepe-icon-small"></i><span class="grepe-text-small">?????</span></div><div class="card-back"><span class="answer-name">🌮 MEXICO LINDO</span><span class="points-badge"><i class="fas fa-trophy"></i> 52 pts</span></div></div>
+        <div class="answer-card" data-points="41" data-name="GUADALAJARA" data-clean="guadalajara"><div class="card-front"><i class="fas fa-question-circle grepe-icon-small"></i><span class="grepe-text-small">?????</span></div><div class="card-back"><span class="answer-name">🇲🇽 GUADALAJARA</span><span class="points-badge"><i class="fas fa-trophy"></i> 41 pts</span></div></div>
+        <div class="answer-card" data-points="33" data-name="VOLVER VOLVER" data-clean="volver volver"><div class="card-front"><i class="fas fa-question-circle grepe-icon-small"></i><span class="grepe-text-small">?????</span></div><div class="card-back"><span class="answer-name">↩️ VOLVER VOLVER</span><span class="points-badge"><i class="fas fa-trophy"></i> 33 pts</span></div></div>
+        <div class="answer-card" data-points="21" data-name="LA BAMBA" data-clean="la bamba"><div class="card-front"><i class="fas fa-question-circle grepe-icon-small"></i><span class="grepe-text-small">?????</span></div><div class="card-back"><span class="answer-name">🎸 LA BAMBA</span><span class="points-badge"><i class="fas fa-trophy"></i> 21 pts</span></div></div>
+      </div>
 
-            <!-- SVG Abstract Globe Background -->
-            <svg class="world-bg" viewBox="0 0 100 100">
-                <circle cx="50" cy="50" r="48" stroke="#0099ff" stroke-width="0.5" fill="none" />
-                <path d="M50 2 A 48 48 0 0 1 50 98" stroke="#0099ff" stroke-width="0.5" fill="none" opacity="0.5" />
-                <path d="M2 50 A 48 48 0 0 1 98 50" stroke="#0099ff" stroke-width="0.5" fill="none" opacity="0.5" />
-                <ellipse cx="50" cy="50" rx="48" ry="20" stroke="#0099ff" stroke-width="0.5" fill="none"
-                    transform="rotate(45 50 50)" />
-            </svg>
-
-            <div class="main-logo-container">
-                <div class="main-logo">BEJS<br>24/7</div>
-                <div class="main-subtitle">Global Broadcast Network</div>
-            </div>
-        </div>
-
-        <!-- 2. ENTERTAINMENT -->
-        <div id="slide-entertainment" class="slide">
-            <div class="ent-grid">
-                <div class="ent-card tilt-card">
-                    <img src="https://image.pollinations.ai/prompt/grammy%20awards%20trophy%20golden%20lighting%20prestigious%204k?width=600&height=400&nologo=true"
-                        class="img-sim" alt="Grammys">
-                    <div class="ent-content">
-                        <span class="ent-tag">AWARDS</span>
-                        <div class="ent-headline">Grammys 2026: Kendrick Lamar & The Cure Win Big</div>
-                    </div>
-                </div>
-                <div class="ent-card tilt-card">
-                    <img src="https://image.pollinations.ai/prompt/harry%20styles%20concert%20live%20performance%20colorful%20lighting%204k?width=600&height=400&nologo=true"
-                        class="img-sim" alt="Harry Styles">
-                    <div class="ent-content">
-                        <span class="ent-tag">TOUR</span>
-                        <div class="ent-headline">Harry Styles Announces 30 MSG Nights</div>
-                    </div>
-                </div>
-                <div class="ent-card tilt-card">
-                    <img src="https://image.pollinations.ai/prompt/scream%20ghostface%20mask%20horror%20movie%20poster%20rain%20neon%20red%204k?width=600&height=400&nologo=true"
-                        class="img-sim" alt="Scream 7">
-                    <div class="ent-content">
-                        <span class="ent-tag">CINEMA</span>
-                        <div class="ent-headline">'Scream 7' Crushes Box Office Records</div>
-                    </div>
-                </div>
-                <div class="ent-card tilt-card">
-                    <img src="https://image.pollinations.ai/prompt/taylor%20swift%20eras%20tour%20concert%20stage%20glowing%20purple%20majestic%204k?width=600&height=400&nologo=true"
-                        class="img-sim" alt="Eras Tour">
-                    <div class="ent-content">
-                        <span class="ent-tag">MUSIC</span>
-                        <div class="ent-headline">Eras Tour Surpasses $2 Billion Revenue</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="sidebar-list glass-panel">
-                <div class="list-header">Trending Now</div>
-                <div class="trend-item"><span class="trend-rank">01</span><span>Michael Keaton: Man of the Year</span>
-                </div>
-                <div class="trend-item"><span class="trend-rank">02</span><span>BTS Comeback Album</span></div>
-                <div class="trend-item"><span class="trend-rank">03</span><span>Nintendo Switch 2 Games</span></div>
-            </div>
-        </div>
-
-        <!-- 3. SPORTS -->
-        <div id="slide-sports" class="slide">
-            <div class="sports-bg-layer"></div>
-            <div class="sports-overlay-grid"></div>
-
-            <div class="sports-content-wrapper">
-                <div class="sports-title">SPORTS CENTER</div>
-                <div class="stats-ticker-bar">
-                    <span>LIVE: NFL DRAFT PREP</span>
-                    <span>NBA: LAKERS VS WARRIORS (TONIGHT)</span>
-                    <span>UCL: REAL MADRID ADVANCES</span>
-                </div>
-
-                <div class="scoreboard">
-                    <div class="score-box">
-                        <div class="league-logo">NFL</div>
-                        <div class="matchup">SUPER BOWL LX</div>
-                        <div class="score-time">FEB 8 - SANTA CLARA</div>
-                    </div>
-                    <div class="score-box">
-                        <div class="league-logo">OLYMPICS</div>
-                        <div class="matchup">MILAN 2026</div>
-                        <div class="score-time">OPENING CEREMONY</div>
-                    </div>
-                    <div class="score-box">
-                        <div class="league-logo">ICC T20</div>
-                        <div class="matchup">INDIA vs USA</div>
-                        <div class="score-time">LIVE: IND 145/3</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- 4. LOCAL -->
-        <div id="slide-local" class="slide">
-            <!-- Left: Image Gallery -->
-            <div class="local-gallery">
-                <div class="local-img-card tilt-card">
-                    <img src="IMG_9789.jpeg" alt="Local Event 1">
-                    <div class="local-caption">Community Gathering</div>
-                </div>
-                <div class="local-img-card tilt-card">
-                    <img src="IMG_9793.jpeg" alt="Local Event 2">
-                    <div class="local-caption">City Highlights</div>
-                </div>
-                <div class="local-img-card tilt-card">
-                    <img src="IMG_9795.jpeg" alt="Local Event 3">
-                    <div class="local-caption">New Developments</div>
-                </div>
-                <div class="local-img-card tilt-card">
-                    <img src="IMG_9797.jpeg" alt="Local Event 4">
-                    <div class="local-caption">Cultural Festival</div>
-                </div>
-            </div>
-
-            <!-- Right: Info Panel -->
-            <div class="local-info-col">
-                <div class="weather-panel">
-                    <div class="sun-icon"></div>
-                    <div class="temp-big">75°</div>
-                    <div class="temp-desc">SUNNY & CLEAR</div>
-                    <div style="margin-top:20px; font-weight:bold; color:white; opacity:0.8;">HUMIDITY: 45% • WIND: 5
-                        MPH</div>
-                </div>
-                <div class="traffic-feed">
-                    <div class="list-header"
-                        style="color:var(--local-yellow); border-color:var(--local-yellow); font-size:1.2rem; margin-bottom: 20px;">
-                        City Updates
-                    </div>
-                    <div class="traffic-alert">🚧 <strong>TRAFFIC:</strong> Major delays on I-95 North due to
-                        construction.</div>
-                    <div class="traffic-alert">🚍 <strong>TRANSIT:</strong> New electric fleet rollout begins Monday.
-                    </div>
-                    <div class="traffic-alert">🏛️ <strong>CITY:</strong> Town Hall meeting on Green Initiative at 6 PM.
-                    </div>
-                    <div class="traffic-alert">🎉 <strong>EVENTS:</strong> Downtown Food Festival all weekend.</div>
-                    <div class="traffic-alert">⚠️ <strong>ALERT:</strong> Heat advisory in effect until 8 PM.</div>
-                </div>
-            </div>
-        </div>
-
-        <!-- 5. ENHANCED WORLD SLIDE - COMPLETELY REDESIGNED AND CENTERED -->
-        <div id="slide-intl" class="slide">
-            <div class="world-main-container">
-                <!-- World Map with Enhanced Effects -->
-                <div class="world-map-container">
-                    <!-- Main Map Image -->
-                    <img src="https://images.unsplash.com/photo-1614730321146-b6fa6a46bcb4?q=80&w=1400&auto=format&fit=crop"
-                        class="world-map-image" alt="World Map"
-                        onerror="this.src='https://cdn.pixabay.com/photo/2012/04/14/16/26/world-34507_1280.png'">
-
-                    <!-- Map Overlay Effects -->
-                    <div class="map-overlay"></div>
-
-                    <!-- Pulsing Points for Major Locations with Labels -->
-                    <div class="map-point na">
-                        <div class="point-label">NORTH AMERICA</div>
-                    </div>
-                    <div class="map-point eu">
-                        <div class="point-label">EUROPE</div>
-                    </div>
-                    <div class="map-point as">
-                        <div class="point-label">ASIA</div>
-                    </div>
-                    <div class="map-point sa">
-                        <div class="point-label">SOUTH AMERICA</div>
-                    </div>
-                    <div class="map-point af">
-                        <div class="point-label">AFRICA</div>
-                    </div>
-                    <div class="map-point oc">
-                        <div class="point-label">OCEANIA</div>
-                    </div>
-
-                    <!-- Data Stream Effects -->
-                    <div class="data-stream" style="left: 30%; animation-delay: 0s;"></div>
-                    <div class="data-stream" style="left: 50%; animation-delay: 1s;"></div>
-                    <div class="data-stream" style="left: 70%; animation-delay: 2s;"></div>
-
-                    <!-- Scan Line Effect -->
-                    <div class="map-scan-line"></div>
-
-                    <!-- Satellite Rings -->
-                    <div class="satellite-ring"></div>
-                    <div class="satellite-ring"></div>
-                    <div class="satellite-ring"></div>
-                </div>
-
-                <!-- Enhanced News Dossier -->
-                <div class="news-dossier">
-                    <div class="dossier-header">
-                        <div class="dossier-sub">
-                            <span class="alert-dot"></span>
-                            BREAKING NEWS // GLOBAL ECONOMY
-                        </div>
-                        <div class="timestamp">14:00 EST</div>
-                    </div>
-
-                    <div class="dossier-headline">TRUMP <span class="neon-text">TARIFF</span> SHOCKWAVE</div>
-
-                    <div class="dossier-body">
-                        <p>
-                            The administration has implemented an aggressive policy, highlighted by a
-                            <span class="keyword">10% UNIVERSAL TARIFF</span> on most imports, sending shockwaves
-                            through global markets.
-                        </p>
-
-                        <div class="impact-list">
-                            <ul style="list-style: none;">
-                                <li><strong>EU FACES:</strong> <span class="keyword">15-50% RECIPROCAL</span> rates on
-                                    key exports</li>
-                                <li><strong>AUTO SECTOR:</strong> Hit with <span class="keyword">25% LEVY</span> on
-                                    vehicles and parts</li>
-                                <li><strong>STEEL & ALUMINUM:</strong> Global tariffs at <span
-                                        class="keyword">50%</span> effective immediately</li>
-                                <li><strong>TECH IMPACT:</strong> Semiconductors and electronics facing 15-30% increases
-                                </li>
-                            </ul>
-                        </div>
-
-                        <div class="market-impact">
-                            <div class="market-title">MARKET IMPACT</div>
-                            <div class="market-stats">
-                                <div class="stat">
-                                    <div class="stat-value negative">-2.3%</div>
-                                    <div class="stat-label">DOW JONES</div>
-                                </div>
-                                <div class="stat">
-                                    <div class="stat-value positive">+1.8%</div>
-                                    <div class="stat-label">EURO STOXX</div>
-                                </div>
-                                <div class="stat">
-                                    <div class="stat-value negative">-3.7%</div>
-                                    <div class="stat-label">ASIA MARKETS</div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="dossier-source">
-                            SOURCE: WHITE HOUSE BRIEFING // CLASSIFIED: LEVEL 4 // TRANSMISSION END
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+      <div class="guess-area"><input type="text" id="guessInput3" class="guess-input" placeholder="Write an answer..."><button class="guess-btn" onclick="checkAnswer(3)"><i class="fas fa-paper-plane"></i> GUESS</button></div>
+      <button class="reveal-all-btn" id="revealAllBtn3" onclick="revealAllAnswers(3)"><i class="fas fa-eye"></i> REVEAL ALL ANSWERS</button>
+      <button class="reveal-missing-btn hidden" id="revealMissingBtn3" onclick="revealMissingAnswers(3)"><i class="fas fa-question-circle"></i> REVEAL MISSING ANSWERS</button>
+      <div class="remaining-badge" id="remaining3"><i class="fas fa-hourglass-half"></i> 6 answers left</div>
     </div>
+  </div>
 
-    <!-- Footer -->
-    <div class="universal-footer">
-        <div class="lower-third" id="lt-box">
-            <h2 class="headline-text" id="main-hl">BREAKING: GLOBAL MARKETS RALLY</h2>
-        </div>
-        <div class="ticker-wrap" id="ticker-wrap">
-            <div class="ticker" id="ticker">
-                +++ BREAKING NEWS +++ STOCKS UP 2% WORLDWIDE +++ WEATHER WARNING FOR COASTAL REGIONS +++ TECH SECTOR
-                BOOMS AMID AI REGULATION TALKS +++
-            </div>
-        </div>
-    </div>
+  <div class="footer-note" id="footerNote" style="display: none;">
+    <i class="fas fa-pencil-alt"></i> WRITE THE ANSWER · IF CORRECT, IT FLIPS AND ADDS POINTS · YOU CHOOSE THE TEAM · REVEAL MISSING AFTER WINNER <i class="fas fa-pencil-alt"></i>
+  </div>
 
-    <script>
-        // Enhanced Clock with smooth updates
-        function updateClock() {
-            const now = new Date();
-            const timeStr = now.toLocaleTimeString('en-US', { hour12: false });
-            document.getElementById('clock').innerText = timeStr;
+  <script>
+    // ---------- START GAME (hide host slide, show games) ----------
+    function startGame() {
+      document.getElementById('hostSlide').style.display = 'none';
+      document.getElementById('windowsGrid').style.display = 'flex';
+      document.getElementById('footerNote').style.display = 'block';
+    }
 
-            // Add subtle animation to clock
-            const clock = document.getElementById('clock');
-            clock.style.transform = 'scale(1.05)';
-            setTimeout(() => {
-                clock.style.transform = 'scale(1)';
-            }, 100);
-        }
-        setInterval(updateClock, 1000);
-        updateClock();
+    // ---------- INDEPENDENT STATE FOR 3 WINDOWS ----------
+    const winState = {
+      1: { activeTeam: 'blue', scores: { blue: 0, red: 0 }, revealed: 0, total: 6, active: true, winnerDeclared: false },
+      2: { activeTeam: 'blue', scores: { blue: 0, red: 0 }, revealed: 0, total: 6, active: true, winnerDeclared: false },
+      3: { activeTeam: 'blue', scores: { blue: 0, red: 0 }, revealed: 0, total: 6, active: true, winnerDeclared: false }
+    };
 
-        // Create particle effects for main slide
-        function createParticles() {
-            const container = document.getElementById('main-particles');
-            if (!container) return;
-
-            for (let i = 0; i < 30; i++) {
-                const particle = document.createElement('div');
-                particle.classList.add('particle');
-                particle.style.width = `${Math.random() * 3 + 1}px`;
-                particle.style.height = particle.style.width;
-                particle.style.left = `${Math.random() * 100}%`;
-                particle.style.top = `${Math.random() * 100}%`;
-                particle.style.background = `rgba(255, 255, 255, ${Math.random() * 0.1 + 0.05})`;
-                particle.style.animationDuration = `${Math.random() * 20 + 10}s`;
-                particle.style.animationDelay = `${Math.random() * 5}s`;
-                container.appendChild(particle);
-            }
-        }
-
-        // Create data stream effects for world slide
-        function createDataStreams() {
-            const container = document.querySelector('.world-map-container');
-            if (!container) return;
-
-            for (let i = 0; i < 8; i++) {
-                const stream = document.createElement('div');
-                stream.classList.add('data-stream');
-                stream.style.left = `${Math.random() * 100}%`;
-                stream.style.animationDelay = `${Math.random() * 3}s`;
-                stream.style.animationDuration = `${Math.random() * 2 + 2}s`;
-                container.appendChild(stream);
-            }
-        }
-
-        // Fullscreen functionality
-        const fullscreenBtn = document.getElementById('fullscreen-btn');
-        const escBtn = document.getElementById('esc-btn');
-
-        function toggleFullscreen() {
-            if (!document.fullscreenElement) {
-                if (document.documentElement.requestFullscreen) {
-                    document.documentElement.requestFullscreen();
-                } else if (document.documentElement.webkitRequestFullscreen) {
-                    document.documentElement.webkitRequestFullscreen();
-                } else if (document.documentElement.msRequestFullscreen) {
-                    document.documentElement.msRequestFullscreen();
-                }
-                fullscreenBtn.innerHTML = '<i class="fas fa-compress"></i><span class="key-hint">F11</span>';
-                document.body.classList.add('fullscreen-mode');
-            } else {
-                if (document.exitFullscreen) {
-                    document.exitFullscreen();
-                } else if (document.webkitExitFullscreen) {
-                    document.webkitExitFullscreen();
-                } else if (document.msExitFullscreen) {
-                    document.msExitFullscreen();
-                }
-                fullscreenBtn.innerHTML = '<i class="fas fa-expand"></i><span class="key-hint">F11</span>';
-                document.body.classList.remove('fullscreen-mode');
-            }
-        }
-
-        function exitPresentation() {
-            // Exit fullscreen first
-            if (document.fullscreenElement) {
-                toggleFullscreen();
-            }
-
-            // Show exit confirmation
-            const confirmExit = confirm("¿Deseas salir de la presentación?");
-            if (confirmExit) {
-                alert("Presentación finalizada. Gracias por ver BEJS 24/7.");
-            }
-        }
-
-        // Button event listeners
-        fullscreenBtn.addEventListener('click', toggleFullscreen);
-        escBtn.addEventListener('click', exitPresentation);
-
-        // Keyboard shortcuts
-        document.addEventListener('keydown', (e) => {
-            // F11 for fullscreen
-            if (e.key === 'F11') {
-                e.preventDefault();
-                toggleFullscreen();
-            }
-
-            // ESC for exit
-            if (e.key === 'Escape') {
-                // Only exit presentation if not in fullscreen
-                if (!document.fullscreenElement) {
-                    exitPresentation();
-                } else {
-                    // If in fullscreen, first exit fullscreen
-                    toggleFullscreen();
-                }
-            }
-
-            // Space for next slide
-            if (e.key === ' ' || e.key === 'Spacebar') {
-                e.preventDefault();
-                rotateSlide();
-            }
+    // ---------- TOGGLE FULLSCREEN ----------
+    function toggleFullscreen(windowId) {
+      const windowEl = document.getElementById(`window${windowId}`);
+      if (!document.fullscreenElement) {
+        windowEl.requestFullscreen().catch(err => {
+          alert(`Error entering fullscreen: ${err.message}`);
         });
+      } else {
+        document.exitFullscreen();
+      }
+    }
 
-        // Fullscreen change listener
-        document.addEventListener('fullscreenchange', updateFullscreenButton);
-        document.addEventListener('webkitfullscreenchange', updateFullscreenButton);
-        document.addEventListener('msfullscreenchange', updateFullscreenButton);
+    // ---------- SET ACTIVE TEAM ----------
+    function setActiveTeam(windowId, team) {
+      if (!winState[windowId].active) {
+        alert('Game finished, press PLAY AGAIN');
+        return;
+      }
+      
+      winState[windowId].activeTeam = team;
+      
+      const blueBtn = document.getElementById(`blueBtn${windowId}`);
+      const redBtn = document.getElementById(`redBtn${windowId}`);
+      
+      if (team === 'blue') {
+        blueBtn.classList.add('active');
+        redBtn.classList.remove('active');
+      } else {
+        redBtn.classList.add('active');
+        blueBtn.classList.remove('active');
+      }
+    }
 
-        function updateFullscreenButton() {
-            if (document.fullscreenElement ||
-                document.webkitFullscreenElement ||
-                document.msFullscreenElement) {
-                fullscreenBtn.innerHTML = '<i class="fas fa-compress"></i><span class="key-hint">F11</span>';
-                document.body.classList.add('fullscreen-mode');
-            } else {
-                fullscreenBtn.innerHTML = '<i class="fas fa-expand"></i><span class="key-hint">F11</span>';
-                document.body.classList.remove('fullscreen-mode');
-            }
+    // ---------- CHECK ANSWER (WRITE & FLIP) ----------
+    function checkAnswer(windowId) {
+      if (!winState[windowId].active) {
+        alert('🏆 Game is over! Press PLAY AGAIN');
+        return;
+      }
+
+      const input = document.getElementById(`guessInput${windowId}`);
+      const guess = input.value.trim().toLowerCase();
+      
+      if (guess === '') {
+        alert('✏️ Write an answer');
+        return;
+      }
+
+      const answers = document.querySelectorAll(`#answers${windowId} .answer-card`);
+      let found = false;
+      let answerCard = null;
+      let points = 0;
+      let answerName = '';
+
+      answers.forEach(card => {
+        if (!card.classList.contains('revealed')) {
+          const cleanName = card.dataset.clean.toLowerCase();
+          if (guess === cleanName || guess.includes(cleanName) || cleanName.includes(guess)) {
+            found = true;
+            answerCard = card;
+            points = parseInt(card.dataset.points);
+            answerName = card.dataset.name;
+          }
         }
+      });
 
-        // Navigation Logic with enhanced effects
-        function nav(id, btn) {
-            // Enhanced transition effects
-            const currentSlide = document.querySelector('.slide.active-slide');
-            if (currentSlide) {
-                currentSlide.style.opacity = '0';
-                currentSlide.style.transform = 'scale(0.95)';
-                setTimeout(() => {
-                    currentSlide.classList.remove('active-slide');
-                }, 300);
-            }
+      if (!found) {
+        alert('❌ That answer is not in the list or already revealed');
+        input.value = '';
+        return;
+      }
 
-            // Active States with enhanced effects
-            document.querySelectorAll('.nav-btn').forEach(b => {
-                b.classList.remove('active');
-                b.style.transform = 'scale(1)';
-            });
+      const team = winState[windowId].activeTeam;
+      winState[windowId].scores[team] += points;
+      
+      document.getElementById(`blueScore${windowId}`).innerText = winState[windowId].scores.blue;
+      document.getElementById(`redScore${windowId}`).innerText = winState[windowId].scores.red;
 
-            btn.classList.add('active');
-            btn.style.transform = 'scale(1.1)';
+      answerCard.classList.add('revealed');
+      
+      winState[windowId].revealed++;
+      updateRemainingUI(windowId);
 
-            // Show new slide with enhanced effect
-            setTimeout(() => {
-                const newSlide = document.getElementById('slide-' + id);
-                newSlide.classList.add('active-slide');
-                newSlide.style.opacity = '0';
-                newSlide.style.transform = 'scale(1.05)';
+      alert(`🎯 CORRECT! TEAM ${team.toUpperCase()} · ${answerName}\n🏆 +${points} pts`);
 
-                // Animate in
-                setTimeout(() => {
-                    newSlide.style.opacity = '1';
-                    newSlide.style.transform = 'scale(1)';
-                }, 10);
-            }, 350);
+      input.value = '';
 
-            // Theming with enhanced animations
-            const bg = document.getElementById('bg-layer');
-            const headline = document.getElementById('main-hl');
-            const ltBox = document.getElementById('lt-box');
-            const tickerText = document.getElementById('ticker');
-            const tickerWrap = document.getElementById('ticker-wrap');
+      if (winState[windowId].revealed === winState[windowId].total) {
+        declareWinner(windowId);
+      }
+    }
 
-            // Defaults
-            let color = "#ff9900";
-            let hlText = "BREAKING: GLOBAL MARKETS RALLY";
-            let tText = "+++ BREAKING NEWS +++ STOCKS UP 2% WORLDWIDE +++ WEATHER WARNING FOR COASTAL REGIONS +++ TECH SECTOR BOOMS AMID AI REGULATION TALKS +++";
-            let grad = "radial-gradient(circle at 50% 50%, #1a1a2e 0%, #000000 100%)";
+    // ---------- REVEAL ALL ANSWERS (no points) ----------
+    function revealAllAnswers(windowId) {
+      if (!winState[windowId].active) {
+        alert('Game finished, press PLAY AGAIN');
+        return;
+      }
 
-            if (id === 'presenters') {
-                color = "#ffffff";
-                hlText = "MEET THE PRESENTERS: SAUL, BIANCA, JUSTYN & ALONSO";
-                tText = "+++ LIVE FROM STUDIO: MEET TODAY'S PRESENTERS +++ SAUL ON ENTERTAINMENT +++ BIANCA ON LOCAL NEWS +++ JUSTYN ON SPORTS +++ ALONSO ON WORLD AFFAIRS +++";
-                grad = "radial-gradient(circle at center, #1a0b2e 0%, #050505 100%)";
-            }
-            else if (id === 'entertainment') {
-                color = "#ff00cc";
-                hlText = "ENT: GRAMMYS, HARRY STYLES & TAYLOR SWIFT";
-                tText = "+++ GRAMMY WINNERS ANNOUNCED +++ SCREAM 7 BOX OFFICE RECORD +++ HARRY STYLES MSG RESIDENCY +++";
-                grad = "radial-gradient(circle at 80% 20%, #2e002e 0%, #000000 100%)";
-            }
-            else if (id === 'sports') {
-                color = "#00ff88";
-                hlText = "SPORTS: WINTER OLYMPICS BEGIN IN MILAN";
-                tText = "+++ MILAN 2026 OPENING CEREMONY +++ SUPER BOWL LX PREVIEW +++ NBA TRADE DEADLINE APPROACHING +++";
-                grad = "radial-gradient(circle at 20% 80%, #002e1a 0%, #000000 100%)";
-            }
-            else if (id === 'local') {
-                color = "#ffcc00";
-                hlText = "LOCAL: COUNCIL APPROVES NEW TRANSIT PLAN";
-                tText = "+++ TRAFFIC ALERT: I-95 CONSTRUCTION +++ SUNNY WEATHER FORECAST +++ DOWNTOWN FOOD FESTIVAL +++";
-                grad = "radial-gradient(circle at 50% 10%, #2e2e00 0%, #000000 100%)";
-            }
-            else if (id === 'intl') {
-                color = "#6600cc";
-                hlText = "WORLD: TRUMP TARIFFS SHAKE GLOBAL MARKETS";
-                tText = "+++ US TARIFFS: 10% BASE RATE ON IMPORTS +++ EU FACES 15-50% RECIPROCAL TARIFFS +++ STEEL & ALUMINUM TARIFFS AT 50% +++";
-                grad = "radial-gradient(circle at 10% 50%, #1a0033 0%, #000000 100%)";
-            }
+      const answers = document.querySelectorAll(`#answers${windowId} .answer-card`);
+      let revealedAny = false;
 
-            // Apply Theme with enhanced animations
-            ltBox.style.borderLeftColor = color;
-            ltBox.style.transform = 'translateY(-10px)';
-            setTimeout(() => {
-                ltBox.style.transform = 'translateY(0)';
-            }, 300);
-
-            headline.style.background = `linear-gradient(90deg, #fff, ${color})`;
-            headline.style.webkitBackgroundClip = 'text';
-            headline.style.backgroundClip = 'text';
-
-            // Animate headline text change
-            headline.style.opacity = '0';
-            setTimeout(() => {
-                headline.innerText = hlText;
-                headline.style.opacity = '1';
-            }, 200);
-
-            tickerWrap.style.borderTopColor = color;
-
-            // Animate ticker text change
-            tickerText.style.opacity = '0';
-            setTimeout(() => {
-                tickerText.innerText = tText;
-                tickerText.style.opacity = '1';
-            }, 200);
-
-            // Animate background transition
-            bg.style.transition = 'background 1s var(--transition-smooth)';
-            bg.style.background = grad;
+      answers.forEach(card => {
+        if (!card.classList.contains('revealed')) {
+          card.classList.add('revealed');
+          revealedAny = true;
+          winState[windowId].revealed++;
         }
+      });
 
-        // Make presenter cards clickable to navigate to their sections
-        document.querySelectorAll('.presenter-card').forEach((card, index) => {
-            card.addEventListener('click', () => {
-                const sections = ['entertainment', 'local', 'sports', 'intl'];
-                const targetSection = sections[index];
-                const btn = document.querySelector(`.nav-btn[onclick*="${targetSection}"]`);
-                if (btn) {
-                    nav(targetSection, btn);
-                }
-            });
-        });
-
-        // Enhanced 3D Tilt Logic with parallax
-        document.querySelectorAll('.tilt-card').forEach(card => {
-            card.addEventListener('mousemove', (e) => {
-                const rect = card.getBoundingClientRect();
-                const x = e.clientX - rect.left;
-                const y = e.clientY - rect.top;
-
-                const centerX = rect.width / 2;
-                const centerY = rect.height / 2;
-
-                const rotateX = ((y - centerY) / centerY) * -10;
-                const rotateY = ((x - centerX) / centerX) * 10;
-
-                // Add parallax effect to child elements
-                const img = card.querySelector('img');
-                if (img) {
-                    const moveX = (x - centerX) / 20;
-                    const moveY = (y - centerY) / 20;
-                    img.style.transform = `scale(1.1) translate(${moveX}px, ${moveY}px)`;
-                }
-
-                card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.05)`;
-
-                // Add glow effect
-                card.style.boxShadow = `0 30px 60px ${getCardColor(card)}`;
-            });
-
-            card.addEventListener('mouseleave', () => {
-                card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) scale(1)';
-                card.style.boxShadow = '';
-
-                const img = card.querySelector('img');
-                if (img) {
-                    img.style.transform = 'scale(1) translate(0, 0)';
-                }
-            });
-        });
-
-        function getCardColor(card) {
-            if (card.closest('#slide-entertainment')) return 'rgba(255, 0, 204, 0.3)';
-            if (card.closest('#slide-sports')) return 'rgba(0, 255, 136, 0.3)';
-            if (card.closest('#slide-local')) return 'rgba(255, 204, 0, 0.3)';
-            if (card.closest('#slide-intl')) return 'rgba(102, 0, 204, 0.3)';
-            return 'rgba(255, 153, 0, 0.3)';
+      if (revealedAny) {
+        updateRemainingUI(windowId);
+        alert(`⚠️ ALL ANSWERS REVEALED (no points awarded)`);
+        
+        if (winState[windowId].revealed === winState[windowId].total) {
+          declareWinner(windowId);
         }
+      } else {
+        alert('✅ All answers already revealed');
+      }
+    }
 
-        // Auto-rotate slides every 30 seconds
-        let currentSlideIndex = 0;
-        const slideOrder = ['presenters', 'main', 'entertainment', 'sports', 'local', 'intl'];
-        const navButtons = document.querySelectorAll('.nav-btn');
+    // ---------- REVEAL MISSING ANSWERS (after winner) ----------
+    function revealMissingAnswers(windowId) {
+      const answers = document.querySelectorAll(`#answers${windowId} .answer-card`);
+      let revealedAny = false;
 
-        function rotateSlide() {
-            currentSlideIndex = (currentSlideIndex + 1) % slideOrder.length;
-            const btn = navButtons[currentSlideIndex];
-            nav(slideOrder[currentSlideIndex], btn);
+      answers.forEach(card => {
+        if (!card.classList.contains('revealed')) {
+          card.classList.add('revealed');
+          revealedAny = true;
         }
+      });
 
-        let slideInterval = setInterval(rotateSlide, 30000);
+      if (revealedAny) {
+        alert(`🔍 MISSING ANSWERS REVEALED · No points awarded`);
+      } else {
+        alert('✅ All answers were already revealed');
+      }
+    }
 
-        // Pause auto-rotation on hover
-        document.querySelector('.view-container').addEventListener('mouseenter', () => {
-            clearInterval(slideInterval);
-        });
+    // ---------- DECLARE WINNER ----------
+    function declareWinner(windowId) {
+      winState[windowId].active = false;
+      winState[windowId].winnerDeclared = true;
+      
+      const blue = winState[windowId].scores.blue;
+      const red = winState[windowId].scores.red;
+      
+      let winner = '';
+      if (blue > red) winner = 'BLUE';
+      else if (red > blue) winner = 'RED';
+      else winner = 'TIE';
 
-        document.querySelector('.view-container').addEventListener('mouseleave', () => {
-            slideInterval = setInterval(rotateSlide, 30000);
-        });
+      const winnerTeamEl = document.getElementById(`winnerTeam${windowId}`);
+      if (winner === 'TIE') winnerTeamEl.innerText = '🤝 TIE GAME';
+      else winnerTeamEl.innerText = `🏆 TEAM ${winner}`;
 
-        // Keyboard navigation for slides
-        document.addEventListener('keydown', (e) => {
-            let newIndex = currentSlideIndex;
+      document.getElementById(`winnerOverlay${windowId}`).classList.add('show');
 
-            if (e.key === 'ArrowRight' || e.key === ' ') {
-                newIndex = (currentSlideIndex + 1) % slideOrder.length;
-            } else if (e.key === 'ArrowLeft') {
-                newIndex = (currentSlideIndex - 1 + slideOrder.length) % slideOrder.length;
-            } else if (e.key >= '1' && e.key <= '6') {
-                newIndex = parseInt(e.key) - 1;
-            } else {
-                return;
+      // ----- MOSTRAR BOTÓN REVEAL MISSING -----
+      const revealMissingBtn = document.getElementById(`revealMissingBtn${windowId}`);
+      if (revealMissingBtn) {
+        revealMissingBtn.classList.remove('hidden');
+      }
+
+      if (winner !== 'TIE') {
+        confetti({ particleCount: 180, spread: 75, origin: { x: 0.5, y: 0.5 } });
+        confetti({ particleCount: 120, spread: 45, origin: { x: 0.3, y: 0.6 } });
+        confetti({ particleCount: 120, spread: 45, origin: { x: 0.7, y: 0.6 } });
+      }
+
+      alert(`🏁 GAME OVER · WINDOW ${windowId}\n🔵 BLUE: ${blue}  🔴 RED: ${red}\n🥇 WINNER: ${winner}`);
+    }
+
+    // ---------- UPDATE REMAINING ANSWERS ----------
+    function updateRemainingUI(windowId) {
+      const left = winState[windowId].total - winState[windowId].revealed;
+      const remEl = document.getElementById(`remaining${windowId}`);
+      remEl.innerHTML = `<i class="fas fa-hourglass-half"></i> ${left} answers left`;
+    }
+
+    // ---------- RESET WINDOW ----------
+    function resetWindow(windowId) {
+      winState[windowId] = {
+        activeTeam: 'blue',
+        scores: { blue: 0, red: 0 },
+        revealed: 0,
+        total: 6,
+        active: true,
+        winnerDeclared: false
+      };
+
+      document.getElementById(`blueScore${windowId}`).innerText = '0';
+      document.getElementById(`redScore${windowId}`).innerText = '0';
+
+      const blueBtn = document.getElementById(`blueBtn${windowId}`);
+      const redBtn = document.getElementById(`redBtn${windowId}`);
+      blueBtn.classList.add('active');
+      redBtn.classList.remove('active');
+
+      document.getElementById(`winnerOverlay${windowId}`).classList.remove('show');
+
+      // ----- OCULTAR BOTÓN REVEAL MISSING -----
+      const revealMissingBtn = document.getElementById(`revealMissingBtn${windowId}`);
+      if (revealMissingBtn) {
+        revealMissingBtn.classList.add('hidden');
+      }
+
+      const answers = document.querySelectorAll(`#answers${windowId} .answer-card`);
+      answers.forEach(card => {
+        card.classList.remove('revealed');
+      });
+
+      const input = document.getElementById(`guessInput${windowId}`);
+      if (input) input.value = '';
+
+      updateRemainingUI(windowId);
+    }
+
+    // ---------- INIT ----------
+    window.onload = function() {
+      for (let i = 1; i <= 3; i++) {
+        updateRemainingUI(i);
+      }
+      
+      for (let i = 1; i <= 3; i++) {
+        const input = document.getElementById(`guessInput${i}`);
+        if (input) {
+          input.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+              checkAnswer(i);
             }
-
-            currentSlideIndex = newIndex;
-            const btn = navButtons[currentSlideIndex];
-            nav(slideOrder[currentSlideIndex], btn);
-        });
-
-        // Initialize particles and effects on load
-        document.addEventListener('DOMContentLoaded', () => {
-            createParticles();
-            createDataStreams();
-
-            // Add subtle animation to brand text
-            const brandText = document.querySelector('.brand-text');
-            setInterval(() => {
-                brandText.style.transform = 'scale(1.05)';
-                setTimeout(() => {
-                    brandText.style.transform = 'scale(1)';
-                }, 200);
-            }, 5000);
-
-            // Animate live badge
-            const liveBadge = document.querySelector('.live-badge');
-            setInterval(() => {
-                liveBadge.style.transform = 'scale(1.1)';
-                setTimeout(() => {
-                    liveBadge.style.transform = 'scale(1)';
-                }, 300);
-            }, 3000);
-
-            // Start with presenters slide
-            const presentersBtn = document.querySelector('.nav-btn[onclick*="presenters"]');
-            if (presentersBtn) {
-                nav('presenters', presentersBtn);
-            }
-
-            // Force display for world slide
-            const intlSlide = document.getElementById('slide-intl');
-            if (intlSlide) {
-                intlSlide.style.display = 'flex';
-            }
-
-            // Add hover effects to world map points
-            document.querySelectorAll('.map-point').forEach(point => {
-                point.addEventListener('mouseenter', () => {
-                    point.style.transform = 'translate(-50%, -50%) scale(1.8)';
-                });
-
-                point.addEventListener('mouseleave', () => {
-                    point.style.transform = 'translate(-50%, -50%) scale(1)';
-                });
-            });
-        });
-
-        // Add smooth scrolling to traffic feed
-        const trafficFeed = document.querySelector('.traffic-feed');
-        if (trafficFeed) {
-            let scrollPosition = 0;
-            setInterval(() => {
-                if (document.getElementById('slide-local').classList.contains('active-slide')) {
-                    scrollPosition += 1;
-                    if (scrollPosition >= trafficFeed.scrollHeight - trafficFeed.clientHeight) {
-                        scrollPosition = 0;
-                    }
-                    trafficFeed.scrollTop = scrollPosition;
-                }
-            }, 50);
+          });
         }
+      }
+    };
+  </script>
 
-        // Update market stats randomly for dynamic effect
-        function updateMarketStats() {
-            const stats = document.querySelectorAll('.stat-value');
-            if (stats.length > 0) {
-                stats.forEach(stat => {
-                    const current = parseFloat(stat.textContent);
-                    const change = (Math.random() - 0.5) * 0.5;
-                    const newValue = current + change;
-
-                    stat.textContent = (newValue > 0 ? '+' : '') + newValue.toFixed(1) + '%';
-
-                    // Update color
-                    if (newValue > 0) {
-                        stat.classList.remove('negative');
-                        stat.classList.add('positive');
-                    } else {
-                        stat.classList.remove('positive');
-                        stat.classList.add('negative');
-                    }
-                });
-            }
-        }
-
-        // Update market stats every 5 seconds when on world slide
-        setInterval(() => {
-            if (document.getElementById('slide-intl').classList.contains('active-slide')) {
-                updateMarketStats();
-            }
-        }, 5000);
-    </script>
+  <!-- Font Awesome fallback -->
+  <script>
+    document.querySelectorAll('.fa-taco').forEach(el => el.classList.add('fa-solid'));
+  </script>
 </body>
-
 </html>
-
