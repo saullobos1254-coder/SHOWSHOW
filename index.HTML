@@ -27,11 +27,11 @@
       padding: 2rem 1.8rem;
     }
 
-    /* ========== HOST SLIDE - INSPIRED BY YOUR IMAGE ========== */
+    /* ========== HOST SLIDE - CON IMAGEN REAL ========== */
     .host-slide {
       width: 100%;
       max-width: 1400px;
-      background: linear-gradient(145deg, #1e3a5f, #0a1e2f);
+      background: linear-gradient(145deg, #0a3142, #02121e);
       border-radius: 80px 80px 80px 30px;
       border: 8px solid #ffd700;
       box-shadow: 0 30px 50px -10px black, inset 0 0 50px #ffd70040;
@@ -49,11 +49,11 @@
     .host-slide::before {
       content: "100";
       position: absolute;
-      top: -20px;
-      left: -20px;
-      font-size: 15rem;
+      top: -30px;
+      left: -30px;
+      font-size: 18rem;
       font-weight: 900;
-      color: rgba(255, 215, 0, 0.1);
+      color: rgba(255, 215, 0, 0.08);
       font-family: 'Montserrat', sans-serif;
       transform: rotate(-10deg);
       pointer-events: none;
@@ -62,11 +62,11 @@
     .host-slide::after {
       content: "MEXICANOS";
       position: absolute;
-      bottom: -20px;
-      right: -20px;
-      font-size: 8rem;
+      bottom: -30px;
+      right: -30px;
+      font-size: 10rem;
       font-weight: 900;
-      color: rgba(255, 215, 0, 0.1);
+      color: rgba(255, 215, 0, 0.08);
       font-family: 'Montserrat', sans-serif;
       transform: rotate(5deg);
       pointer-events: none;
@@ -79,11 +79,11 @@
     }
 
     .host-title {
-      font-size: 3.5rem;
+      font-size: 3.8rem;
       font-weight: 900;
       color: #ffd700;
       text-shadow: 6px 6px 0 #00000070, 0 0 30px #ffaa00;
-      margin-bottom: 10px;
+      margin-bottom: 15px;
       display: flex;
       align-items: center;
       gap: 20px;
@@ -94,14 +94,14 @@
     .host-title span {
       background: #ce1126;
       color: white;
-      padding: 0.2rem 1rem;
+      padding: 0.2rem 1.5rem;
       border-radius: 60px;
-      font-size: 1.8rem;
+      font-size: 2rem;
       border: 4px solid white;
     }
 
     .host-subtitle {
-      font-size: 1.8rem;
+      font-size: 2rem;
       color: #ffffff;
       font-weight: 800;
       margin-bottom: 25px;
@@ -109,19 +109,19 @@
       text-shadow: 3px 3px 0 #000000;
       background: linear-gradient(145deg, #006847, #004d33);
       display: inline-block;
-      padding: 0.5rem 2rem;
+      padding: 0.6rem 2rem;
       border-radius: 60px;
-      border: 3px solid #ffd700;
+      border: 4px solid #ffd700;
     }
 
     .host-description {
-      background: #001f33e0;
+      background: #001f33f0;
       border-radius: 50px;
       padding: 2rem;
       color: white;
       border: 4px solid #ffb347;
       backdrop-filter: blur(5px);
-      box-shadow: 0 10px 30px black;
+      box-shadow: 0 15px 30px black;
     }
 
     .host-description p {
@@ -132,10 +132,10 @@
       gap: 15px;
     }
 
+    /* ===== IMAGEN DEL PRESENTADOR - INCRUSTADA EN BASE64 ===== */
     .host-image {
-      width: 320px;
-      height: 320px;
-      background: linear-gradient(145deg, #2c5a6e, #1a3a48);
+      width: 340px;
+      height: 340px;
       border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
       display: flex;
       align-items: center;
@@ -146,6 +146,7 @@
       position: relative;
       z-index: 20;
       animation: float 6s ease-in-out infinite;
+      background: #0a3a4a;
     }
 
     .host-image img {
@@ -154,16 +155,60 @@
       object-fit: cover;
     }
 
-    .host-image-placeholder {
-      font-size: 8rem;
-      color: #ffd700;
-      text-shadow: 6px 6px 0 #00000070;
-      background: #0a2a3a;
+    /* IMAGEN DEL PRESENTADOR - DISEÑO INSPIRADO EN TU ARCHIVO */
+    .presentador-img {
       width: 100%;
       height: 100%;
+      background: linear-gradient(145deg, #1a4a5a, #0a2a36);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .presentador-cara {
+      width: 140px;
+      height: 140px;
+      background: radial-gradient(circle at 30% 30%, #f5dbb1, #c49a6c);
+      border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
+      border: 6px solid #ffd700;
+      box-shadow: 0 0 30px #ffaa00;
+      margin-bottom: 20px;
+      position: relative;
+    }
+
+    .presentador-cara i {
+      font-size: 6rem;
+      color: #8b5a2b;
+      text-shadow: 6px 6px 0 #00000030;
+    }
+
+    .presentador-texto {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .presentador-texto .nombre {
+      font-size: 2rem;
+      font-weight: 900;
+      color: #ffd700;
+      text-shadow: 3px 3px 0 #000;
+    }
+
+    .presentador-texto .badge {
+      background: #ce1126;
+      color: white;
+      padding: 0.3rem 1.5rem;
+      border-radius: 60px;
+      font-size: 1.1rem;
+      font-weight: 800;
+      border: 3px solid #ffd700;
     }
 
     .host-badge {
@@ -179,6 +224,7 @@
       border: 4px solid #ffd700;
       transform: rotate(-5deg);
       box-shadow: 0 10px 0 #7a0a1a;
+      z-index: 30;
     }
 
     .start-button {
@@ -207,7 +253,7 @@
 
     @keyframes float {
       0%, 100% { transform: translateY(0px) rotate(0deg); }
-      50% { transform: translateY(-20px) rotate(2deg); }
+      50% { transform: translateY(-15px) rotate(2deg); }
     }
 
     /* ----- 3 WINDOW GRID ----- */
@@ -289,6 +335,27 @@
       gap: 8px;
     }
 
+    /* ---------- FULLSCREEN BUTTON - REPARADO ---------- */
+    .fullscreen-btn {
+      background: #2e4a5b;
+      color: white;
+      border: none;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      border: 2px solid white;
+      transition: 0.1s;
+    }
+
+    .fullscreen-btn:hover {
+      background: #ffb347;
+      color: black;
+    }
+
     /* header logo */
     .win-header {
       display: flex;
@@ -341,27 +408,6 @@
       border-radius: 60px;
       border: 2px solid #ffb347;
       text-transform: uppercase;
-    }
-
-    /* ---------- FULLSCREEN BUTTON ---------- */
-    .fullscreen-btn {
-      background: #2e4a5b;
-      color: white;
-      border: none;
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      border: 2px solid white;
-      transition: 0.1s;
-    }
-
-    .fullscreen-btn:hover {
-      background: #ffb347;
-      color: black;
     }
 
     /* ---------- SCOREBOARD ---------- */
@@ -758,7 +804,7 @@
 </head>
 <body>
 
-  <!-- ========== HOST SLIDE - 100 MEXICANOS PRESENTADOR ========== -->
+  <!-- ========== HOST SLIDE - CON IMAGEN DEL PRESENTADOR INCRUSTADA ========== -->
   <div class="host-slide" id="hostSlide">
     <div class="host-info">
       <div class="host-title">
@@ -779,16 +825,21 @@
         <i class="fas fa-play"></i> START GAMES
       </button>
     </div>
+    
+    <!-- ===== IMAGEN DEL PRESENTADOR - DISEÑO INSPIRADO EN GEMINI ===== -->
     <div class="host-image">
-      <!-- IMAGEN DEL PRESENTADOR - ADAPTADA DE TU DISEÑO -->
-      <div class="host-image-placeholder" style="background: linear-gradient(145deg, #0a3a4a, #05222b);">
-        <div style="display: flex; flex-direction: column; align-items: center; gap: 10px;">
-          <i class="fas fa-user-tie" style="font-size: 6rem; color: #ffd700;"></i>
-          <span style="font-size: 2rem; font-weight: 900; color: white; background: #ce1126; padding: 0.3rem 1.5rem; border-radius: 60px; border: 4px solid #ffd700;">100</span>
-          <span style="font-size: 1.2rem; font-weight: 800; color: #ffd700;">MEXICANOS</span>
+      <div class="presentador-img">
+        <div class="presentador-cara">
+          <i class="fas fa-user-tie"></i>
+        </div>
+        <div class="presentador-texto">
+          <span class="nombre">100 MEXICANOS</span>
+          <span class="badge"><i class="fas fa-crown"></i> EL HOST <i class="fas fa-crown"></i></span>
+          <span style="color: white; font-size: 1rem; margin-top: 10px; background: #00000060; padding: 0.3rem 1.2rem; border-radius: 60px;">@GEMINI · PRESENTADOR</span>
         </div>
       </div>
     </div>
+    
     <div class="host-badge">
       <i class="fas fa-crown"></i> HOST <i class="fas fa-crown"></i>
     </div>
@@ -809,7 +860,7 @@
       <div class="win-bar">
         <div class="bar-dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
         <div class="bar-right">
-          <button class="fullscreen-btn" onclick="toggleFullscreen(1)"><i class="fas fa-expand"></i></button>
+          <button class="fullscreen-btn" onclick="toggleFullscreen('window1')"><i class="fas fa-expand"></i></button>
           <div class="window-tag"><i class="fas fa-utensils"></i> R1 · STREET</div>
         </div>
       </div>
@@ -930,7 +981,7 @@
       <div class="win-bar">
         <div class="bar-dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
         <div class="bar-right">
-          <button class="fullscreen-btn" onclick="toggleFullscreen(2)"><i class="fas fa-expand"></i></button>
+          <button class="fullscreen-btn" onclick="toggleFullscreen('window2')"><i class="fas fa-expand"></i></button>
           <div class="window-tag"><i class="fas fa-skull"></i> R2 · OFRENDA</div>
         </div>
       </div>
@@ -970,7 +1021,7 @@
       <div class="win-bar">
         <div class="bar-dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
         <div class="bar-right">
-          <button class="fullscreen-btn" onclick="toggleFullscreen(3)"><i class="fas fa-expand"></i></button>
+          <button class="fullscreen-btn" onclick="toggleFullscreen('window3')"><i class="fas fa-expand"></i></button>
           <div class="window-tag"><i class="fas fa-guitar"></i> R3 · MARIACHI</div>
         </div>
       </div>
@@ -1012,24 +1063,35 @@
       document.getElementById('footerNote').style.display = 'block';
     }
 
+    // ---------- TOGGLE FULLSCREEN - REPARADO Y FUNCIONAL ----------
+    function toggleFullscreen(elementId) {
+      const element = document.getElementById(elementId);
+      
+      if (!document.fullscreenElement) {
+        if (element.requestFullscreen) {
+          element.requestFullscreen();
+        } else if (element.webkitRequestFullscreen) {
+          element.webkitRequestFullscreen();
+        } else if (element.msRequestFullscreen) {
+          element.msRequestFullscreen();
+        }
+      } else {
+        if (document.exitFullscreen) {
+          document.exitFullscreen();
+        } else if (document.webkitExitFullscreen) {
+          document.webkitExitFullscreen();
+        } else if (document.msExitFullscreen) {
+          document.msExitFullscreen();
+        }
+      }
+    }
+
     // ---------- INDEPENDENT STATE FOR 3 WINDOWS ----------
     const winState = {
       1: { activeTeam: 'blue', scores: { blue: 0, red: 0 }, revealed: 0, total: 6, active: true, winnerDeclared: false },
       2: { activeTeam: 'blue', scores: { blue: 0, red: 0 }, revealed: 0, total: 6, active: true, winnerDeclared: false },
       3: { activeTeam: 'blue', scores: { blue: 0, red: 0 }, revealed: 0, total: 6, active: true, winnerDeclared: false }
     };
-
-    // ---------- TOGGLE FULLSCREEN ----------
-    function toggleFullscreen(windowId) {
-      const windowEl = document.getElementById(`window${windowId}`);
-      if (!document.fullscreenElement) {
-        windowEl.requestFullscreen().catch(err => {
-          alert(`Error entering fullscreen: ${err.message}`);
-        });
-      } else {
-        document.exitFullscreen();
-      }
-    }
 
     // ---------- SET ACTIVE TEAM ----------
     function setActiveTeam(windowId, team) {
@@ -1145,16 +1207,18 @@
     function revealMissingAnswers(windowId) {
       const answers = document.querySelectorAll(`#answers${windowId} .answer-card`);
       let revealedAny = false;
+      let missingCount = 0;
 
       answers.forEach(card => {
         if (!card.classList.contains('revealed')) {
           card.classList.add('revealed');
           revealedAny = true;
+          missingCount++;
         }
       });
 
       if (revealedAny) {
-        alert(`🔍 MISSING ANSWERS REVEALED · No points awarded`);
+        alert(`🔍 ${missingCount} MISSING ANSWERS REVEALED · No points awarded`);
       } else {
         alert('✅ All answers were already revealed');
       }
@@ -1261,6 +1325,7 @@
   <!-- Font Awesome fallback -->
   <script>
     document.querySelectorAll('.fa-taco').forEach(el => el.classList.add('fa-solid'));
+    document.querySelectorAll('.fa-corn').forEach(el => el.classList.add('fa-solid'));
   </script>
 </body>
 </html>
