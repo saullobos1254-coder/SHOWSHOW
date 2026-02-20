@@ -1,583 +1,328 @@
-¡Tienes razón! Parece que el código no se mostró correctamente. Aquí está el código HTML completo para tu examen interactivo de gramática inglesa:
-
-```html
-<!DOCTYPE html>
-<html lang="es">
+}<!DOCTYPE html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>📚 ENGLISH GRAMMAR CHALLENGE · by Saúl Vic</title>
+    <title>English Grammar Challenge by Saúl</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', 'Poppins', 'Courier New', monospace;
-        }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap');
 
         body {
-            background: linear-gradient(145deg, #1e2b3a 0%, #0f1a24 100%);
-            min-height: 100vh;
-            padding: 2rem 1rem;
+            font-family: 'Inter', sans-serif;
+            background-color: #f4f7f6;
+            color: #333;
+            margin: 0;
+            padding: 20px;
             display: flex;
-            flex-direction: column;
-            align-items: center;
+            justify-content: center;
         }
 
-        /* ESTILO PIZARRÓN ACADÉMICO */
-        .board-container {
-            max-width: 1100px;
+        .container {
+            max-width: 800px;
             width: 100%;
-            background: #1d2b3a;
-            background-image: radial-gradient(circle at 30% 40%, rgba(255, 255, 240, 0.03) 1px, transparent 1px);
-            background-size: 30px 30px;
-            border: 12px solid #6b4f3c;
-            border-radius: 40px 40px 20px 20px;
-            box-shadow: 0 20px 30px rgba(0,0,0,0.7), inset 0 0 20px #3a2e25;
-            padding: 2rem 1.8rem;
-            position: relative;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
         }
 
-        /* cinta adhesiva (efecto) */
-        .board-container::before {
-            content: '';
-            position: absolute;
-            top: -8px;
-            left: 20%;
-            width: 60%;
-            height: 20px;
-            background: rgba(255,255,240,0.2);
-            border-radius: 30px;
-            filter: blur(4px);
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #eee;
         }
 
         h1 {
-            font-size: 3rem;
-            font-weight: 800;
-            letter-spacing: 2px;
-            text-align: center;
-            color: #fde9c9;
-            text-shadow: 4px 4px 0 #7a5a3a, 6px 6px 0 #00000050;
-            margin-bottom: 0.5rem;
-            font-family: 'Courier New', 'Impact', monospace;
-            word-break: break-word;
+            color: #2c3e50;
+            margin-bottom: 5px;
         }
 
-        .subhead {
-            text-align: center;
-            font-size: 1.4rem;
-            color: #e3cba8;
-            background: #2f3e4e;
-            display: inline-block;
-            padding: 0.5rem 2rem;
-            margin: 0 auto 2rem auto;
-            border-radius: 60px;
-            border: 2px solid #bba87f;
-            box-shadow: inset 0 2px 5px #0a0f14;
+        .subtitle {
+            color: #7f8c8d;
             font-style: italic;
+            font-size: 1.1em;
         }
 
-        /* capítulos tipo tiza */
-        .chapter {
-            background: #253544;
-            border-left: 14px solid #cd9f6e;
-            border-radius: 0 30px 30px 0;
-            margin: 2.5rem 0;
-            padding: 1.5rem 1.2rem;
-            box-shadow: -2px 5px 0 #121b22, 0 8px 0 #0b1217;
-            transition: transform 0.1s ease;
+        .question-block {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #e1e8ed;
+            border-radius: 8px;
+            background-color: #fafbfc;
         }
 
-        .chapter:hover {
-            transform: translateX(4px);
-        }
-
-        .chapter h2 {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-size: 2.2rem;
-            color: #ffebcd;
-            margin-bottom: 1.5rem;
-            padding-bottom: 0.5rem;
-            border-bottom: 3px dashed #b ca 87;
-            font-family: 'Courier New', monospace;
-            font-weight: 700;
-        }
-
-        .chapter h2 span {
-            background: #ab8b5a;
-            color: #09161e;
-            font-size: 1.8rem;
-            padding: 0.2rem 1rem;
-            border-radius: 60px;
-            box-shadow: inset 0 -3px 0 #4f3f2c;
-        }
-
-        /* tarjetas de preguntas */
-        .question-card {
-            background: #eef3e0;
-            background: linear-gradient(165deg, #f8f2df 0%, #e7ddc7 100%);
-            border-radius: 30px 10px 30px 10px;
-            padding: 1rem 1.5rem;
-            margin-bottom: 1.2rem;
-            border: 2px solid #b29262;
-            box-shadow: 5px 5px 0 #5d4a34, 8px 8px 0 #1e2a2f;
+        .question-text {
             font-weight: 600;
-            transition: all 0.2s;
+            font-size: 1.1em;
+            margin-bottom: 15px;
         }
 
-        .question-card p {
-            font-size: 1.2rem;
-            color: #1e2d3a;
-            margin-bottom: 0.7rem;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        .question-number {
-            background: #3f301f;
-            color: #ffeac2;
-            border-radius: 50%;
-            width: 30px;
-            height: 30px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            margin-right: 12px;
-            box-shadow: inset 0 -2px 0 #00000070;
-        }
-
-        /* opciones */
-        .options {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 1.2rem 2rem;
-            align-items: center;
-            margin: 0.5rem 0 0.2rem;
+        .options-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
         }
 
         .option-item {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            background: #d9c7a6;
-            padding: 0.2rem 1rem 0.2rem 0.8rem;
-            border-radius: 50px;
-            border: 1px solid #ad8f66;
-            cursor: pointer;
-            transition: background 0.1s;
-            font-size: 1.1rem;
+            margin-bottom: 10px;
         }
 
-        .option-item:hover {
-            background: #cbb286;
-            box-shadow: 0 0 0 2px #b49257;
+        .option-label {
+            display: block;
+            padding: 12px;
+            background: white;
+            border: 2px solid #e1e8ed;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .option-label:hover {
+            border-color: #3498db;
+            background-color: #f0f8ff;
         }
 
         input[type="radio"] {
-            appearance: none;
-            width: 20px;
-            height: 20px;
-            border: 2px solid #5f4e38;
-            border-radius: 50%;
-            background: #f3e8d3;
-            margin: 0;
-            cursor: pointer;
-            transition: 0.1s;
+            margin-right: 10px;
         }
 
-        input[type="radio"]:checked {
-            background: #3d6b3d;
-            border-color: #1c3b1c;
-            box-shadow: 0 0 0 2px #a3c0a3;
-        }
-
-        /* feedback y botones */
         .feedback {
-            margin-top: 10px;
-            padding: 10px 15px;
-            border-radius: 14px;
-            font-weight: 500;
-            background: #faf5e9;
-            border-left: 8px solid #c5a156;
-            color: #1d2c39;
-            font-size: 1rem;
-            box-shadow: inset 0 1px 4px #0000001a;
+            display: none;
+            margin-top: 15px;
+            padding: 12px;
+            border-radius: 6px;
+            font-size: 0.95em;
         }
 
-        .correct-fb {
-            border-left-color: #2f7d4f;
-            background: #e5f5e5;
+        .feedback.correct {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
         }
 
-        .incorrect-fb {
-            border-left-color: #b34b4b;
-            background: #ffe1e1;
+        .feedback.incorrect {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
         }
 
-        .btn-action {
-            background: #cea76f;
-            color: #0d1c24;
+        .correct-label {
+            border-color: #28a745 !important;
+            background-color: #d4edda !important;
+        }
+
+        .incorrect-label {
+            border-color: #dc3545 !important;
+            background-color: #f8d7da !important;
+        }
+
+        button {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            font-size: 1.1em;
+            font-weight: 600;
+            color: white;
+            background-color: #3498db;
             border: none;
-            padding: 1rem 2.2rem;
-            font-size: 1.5rem;
-            font-weight: 800;
-            border-radius: 60px;
-            margin: 1rem 0.5rem 0 0;
+            border-radius: 8px;
             cursor: pointer;
-            box-shadow: 0 7px 0 #6f4f2f, 0 10px 10px black;
-            transition: 0.08s linear;
-            border: 1px solid #e6c394;
-            font-family: 'Courier New', monospace;
+            transition: background-color 0.3s;
+            margin-top: 20px;
         }
 
-        .btn-action:active {
-            transform: translateY(6px);
-            box-shadow: 0 2px 0 #6f4f2f, 0 7px 12px black;
+        button:hover {
+            background-color: #2980b9;
         }
 
-        .result-area {
-            background: #1f2d38;
-            border-radius: 60px;
-            padding: 1rem 2rem;
-            margin-top: 2rem;
-            color: #faeacb;
-            font-size: 2rem;
-            font-weight: bold;
+        #retake-btn {
+            background-color: #2ecc71;
+            display: none;
+        }
+
+        #retake-btn:hover {
+            background-color: #27ae60;
+        }
+
+        #results-area {
             text-align: center;
-            border: 3px solid #b49460;
-            box-shadow: inset 0 -4px 0 #0b1a24;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 20px;
-        }
-
-        .score-badge {
-            background: #477a4c;
-            padding: 0.5rem 1.8rem;
-            border-radius: 40px;
-            font-size: 2.2rem;
-            box-shadow: inset 0 -4px 0 #1b4d1b;
-        }
-
-        .reset-btn {
-            background: #493e2c;
-            border: none;
-            color: #fbe5b9;
-            font-size: 1.3rem;
-            padding: 0.5rem 2rem;
-            border-radius: 40px;
+            font-size: 1.5em;
             font-weight: bold;
-            cursor: pointer;
-            box-shadow: 0 5px 0 #282217;
-            transition: 0.08s;
-        }
-
-        .reset-btn:active {
-            transform: translateY(5px);
-            box-shadow: none;
-        }
-
-        footer {
-            color: #ab9f8b;
-            margin-top: 30px;
-            font-size: 1.2rem;
-        }
-
-        hr {
-            border: 1px dashed #7b6b50;
-            margin: 10px 0;
+            margin-top: 20px;
+            display: none;
         }
     </style>
 </head>
 <body>
-<div class="board-container">
-    <h1>🏆 GRAMMAR BRAIN CHALLENGE 🏆</h1>
-    <div class="subhead">✧ by Saúl Vic · for compañeros tiranos ✧</div>
 
-    <!-- CAPÍTULO 1 - Present Tenses & Habits -->
-    <section class="chapter">
-        <h2><span>CHAPTER 1</span> ⏳ PRESENT TENSES & HABITS</h2>
-        <div id="chap1"></div>
-    </section>
+<div class="container">
+    <header>
+        <h1>🏆 The Ultimate Grammar Challenge</h1>
+        <div class="subtitle">Creado por Saúl para sus amigos 🚀</div>
+    </header>
 
-    <!-- CAPÍTULO 2 - Past Tenses & Time Clauses -->
-    <section class="chapter">
-        <h2><span>CHAPTER 2</span> ⏪ PAST & TIME CLAUSES</h2>
-        <div id="chap2"></div>
-    </section>
+    <div id="quiz-container">
+        </div>
 
-    <!-- CAPÍTULO 3 - Future Forms (trampas) -->
-    <section class="chapter">
-        <h2><span>CHAPTER 3</span> 🔮 FUTURE (trampas ☠️)</h2>
-        <div id="chap3"></div>
-    </section>
-
-    <!-- CAPÍTULO 4 - Perfect Tenses (boss level) -->
-    <section class="chapter">
-        <h2><span>CHAPTER 4</span> 🧠 PERFECT TENSES (BOSS)</h2>
-        <div id="chap4"></div>
-    </section>
-
-    <!-- CAPÍTULO 5 - EXTRA: Mixed conditionals, modals, etc -->
-    <section class="chapter">
-        <h2><span>CHAPTER 5</span> ⚡ EXTRA · MIXED CHALLENGE</h2>
-        <div id="chap5"></div>
-    </section>
-
-    <!-- CONTROLES Y RESULTADO -->
-    <div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;">
-        <button class="btn-action" id="checkBtn">✔️ CORREGIR TODO</button>
-        <button class="btn-action" id="revealBtn">🔍 REVELAR RESPUESTAS</button>
-    </div>
-
-    <div class="result-area" id="resultBox">
-        <span>📊 PUNTUACIÓN</span>
-        <span class="score-badge" id="scoreDisplay">0 / 50</span>
-        <button class="reset-btn" id="resetBtn">↺ REINICIAR</button>
-    </div>
-    <footer>🧑‍💻 código: Saúl Vic · haz sudar a tus amigos · 50 preguntas · feedback inmediato</footer>
+    <div id="results-area"></div>
+    
+    <button id="submit-btn" onclick="checkAnswers()">Evaluar mis respuestas</button>
+    <button id="retake-btn" onclick="resetQuiz()">¡Volver a intentarlo!</button>
 </div>
 
 <script>
-    (function() {
-        // --------------------------------------------------------------
-        // BASE DE DATOS DE PREGUNTAS (50 en total)
-        // --------------------------------------------------------------
-        const questions = [
-            // CAPÍTULO 1 (índices 0-9)
-            { chapter:1, text:"I usually make espresso with my De'Longhi machine, but right now I ________ tea.", 
-              options:["a) drink","b) am drinking","c) drinks"], correct:1 },
-            { chapter:1, text:"As a web developer, he ________ code every single day.", 
-              options:["a) is writing","b) writes","c) write"], correct:1 },
-            { chapter:1, text:"The server ________ perfectly at this exact moment. Don't touch it!", 
-              options:["a) is running","b) runs","c) run"], correct:0 },
-            { chapter:1, text:"We ________ deploy updates on Fridays. It's a rule.", 
-              options:["a) always","b) never","c) sometimes"], correct:0 },
-            { chapter:1, text:"Look! That curly-haired dog ________ its own tail!", 
-              options:["a) chases","b) is chasing","c) chase"], correct:1 },
-            { chapter:1, text:"I ________ on front-end development these days.", 
-              options:["a) am working","b) work","c) works"], correct:0 },
-            { chapter:1, text:"Water ________ at 100 degrees Celsius.", 
-              options:["a) is boiling","b) boils","c) boil"], correct:1 },
-            { chapter:1, text:"She ________ debugging old code; she prefers creating new features.", 
-              options:["a) doesn't like","b) isn't liking","c) don't like"], correct:0 },
-            { chapter:1, text:"My manager ________ checks her email before 8:00 AM.", 
-              options:["a) usually","b) right now","c) at the moment"], correct:0 },
-            { chapter:1, text:"Shhh! The baby ________.", 
-              options:["a) sleeps","b) is sleeping","c) sleep"], correct:1 },
+    // Base de datos de preguntas
+    const questions = [
+        {
+            q: "1. I usually __________ to work, but yesterday it was raining heavily, so I __________ the bus.",
+            options: [
+                { text: "walk / took", correct: true, feedback: "¡Correcto! Primero tienes un hábito general (Simple Present) y luego un evento que ya terminó ayer (Simple Past)." },
+                { text: "am walking / take", correct: false, feedback: "Incorrecto. 'Usually' es para hábitos, no lleva progresivo (-ing). Además, tomar el autobús fue ayer (pasado)." },
+                { text: "walk / was taking", correct: false, feedback: "Incorrecto. Tomar el autobús fue una acción rápida que finalizó, no un proceso continuo en el pasado." }
+            ]
+        },
+        {
+            q: "2. Look at the traffic! We __________ our flight for sure. I __________ the airline right now.",
+            options: [
+                { text: "will miss / am going to call", correct: false, feedback: "Incorrecto. Invertiste las reglas. Tienes evidencia visual frente a ti para la primera, y la segunda es espontánea." },
+                { text: "are going to miss / will call", correct: true, feedback: "¡Perfecto! 'Going to' se usa cuando hay evidencia obvia (el tráfico), y 'will' para decisiones que tomas en ese instante." },
+                { text: "are missing / will call", correct: false, feedback: "Incorrecto. El presente progresivo como futuro requiere que sea un plan agendado y seguro, no aplica para perder un vuelo por accidente." }
+            ]
+        },
+        {
+            q: "3. Hurry up and take your seat! The lights are dimming and the play __________.",
+            options: [
+                { text: "will start", correct: false, feedback: "Incorrecto. 'Will' se siente muy lejano. La acción está pasando casi en tus narices." },
+                { text: "is starting", correct: false, feedback: "Casi, pero hay una expresión específica para algo que va a pasar en los próximos segundos." },
+                { text: "is about to start", correct: true, feedback: "¡Exacto! 'Be about to' expresa inminencia, algo que va a ocurrir en cuestión de segundos o minutos." }
+            ]
+        },
+        {
+            q: "4. I am completely out of breath because I __________ for the last 45 minutes.",
+            options: [
+                { text: "had run", correct: false, feedback: "Incorrecto. El 'Past Perfect' se usaría si la persona dijera que *estaba* (was) sin aliento en el pasado." },
+                { text: "have been running", correct: true, feedback: "¡Muy bien! Present Perfect Progressive: una acción continua en el pasado que te deja un resultado físico visible justo AHORA ('I am out of breath')." },
+                { text: "was running", correct: false, feedback: "Incorrecto. Aunque fue continua, el progresivo pasado no conecta la acción con el resultado físico en tu presente actual." }
+            ]
+        },
+        {
+            q: "5. Yesterday, Jane was furious because her friend __________ up at the restaurant.",
+            options: [
+                { text: "didn't show", correct: false, feedback: "Incorrecto. Aunque se entiende, hay un tiempo verbal mejor para mostrar qué evento pasó PRIMERO en el pasado." },
+                { text: "hasn't shown", correct: false, feedback: "Incorrecto. El Present Perfect no encaja porque toda la historia ocurrió ayer." },
+                { text: "hadn't shown", correct: true, feedback: "¡Correcto! Past Perfect ('el pasado del pasado'). Primero su amigo no llegó, y por eso, después ella se puso furiosa." }
+            ]
+        }
+    ];
 
-            // CAPÍTULO 2 (10 preguntas) índices 10-19
-            { chapter:2, text:"I ________ at Wiwynn for a while, but I recently quit.", 
-              options:["a) was working","b) worked","c) work"], correct:1 },
-            { chapter:2, text:"While I ________ to a Zoé song, the power suddenly went out.", 
-              options:["a) listened","b) was listening","c) listen"], correct:1 },
-            { chapter:2, text:"I ________ play video games all night, but now I prefer to sleep early.", 
-              options:["a) used to","b) was used to","c) use to"], correct:0 },
-            { chapter:2, text:"When the client called, I ________ a critical bug in the system.", 
-              options:["a) fixed","b) was fixing","c) fix"], correct:1 },
-            { chapter:2, text:"We ________ to an amazing concert last night.", 
-              options:["a) goed","b) went","c) were going"], correct:1 },
-            { chapter:2, text:"While my dog Gino ________, I was trying to read my book.", 
-              options:["a) was barking","b) barked","c) barks"], correct:0 },
-            { chapter:2, text:"She ________ a beautiful letter for her mom yesterday.", 
-              options:["a) writed","b) wrote","c) was writing"], correct:1 },
-            { chapter:2, text:"I ________ late, but now I am an early bird.", 
-              options:["a) used to waking up","b) used to wake up","c) wake up"], correct:1 },
-            { chapter:2, text:"As soon as the CEO arrived, the meeting ________.", 
-              options:["a) started","b) was starting","c) starts"], correct:0 },
-            { chapter:2, text:"What ________ at 8:00 PM last night? I tried to call you!", 
-              options:["a) did you do","b) were you doing","c) you did"], correct:1 },
+    const quizContainer = document.getElementById('quiz-container');
 
-            // CAPÍTULO 3 (10 preguntas) índices 20-29
-            { chapter:3, text:"We ________ to Ruidoso, New Mexico next month. I already requested the travel permit!", 
-              options:["a) travel","b) will travel","c) are traveling"], correct:2 },
-            { chapter:3, text:"I ________ a new project with Procofa soon. We signed the contract yesterday.", 
-              options:["a) am going to start","b) will start","c) start"], correct:0 },
-            { chapter:3, text:"Look at those heavy black clouds! It ________.", 
-              options:["a) will rain","b) is going to rain","c) rains"], correct:1 },
-            { chapter:3, text:"A: 'Oh no, I spilled my coffee!' / B: 'Don't worry, I ________ it up.'", 
-              options:["a) am going to clean","b) am cleaning","c) will clean"], correct:2 },
-            { chapter:3, text:"The train to Chihuahua ________ at 8:00 AM tomorrow.", 
-              options:["a) leaves","b) is leaving","c) will leave"], correct:0 },
-            { chapter:3, text:"Hurry up and sit down! The presentation ________.", 
-              options:["a) is about to start","b) will start","c) is starting"], correct:0 },
-            { chapter:3, text:"As soon as I finish this database code, I ________ it to you.", 
-              options:["a) send","b) will send","c) am going to send"], correct:1 },
-            { chapter:3, text:"I promise I ________ tell anyone your secret.", 
-              options:["a) won't","b) am not going to","c) don't"], correct:0 },
-            { chapter:3, text:"We are at the gate and the crew is ready. The plane ________.", 
-              options:["a) will board","b) is about to board","c) boards"], correct:1 },
-            { chapter:3, text:"I don't think humans ________ live on Mars in the next 10 years.", 
-              options:["a) are going to","b) will","c) are about to"], correct:1 },
-
-            // CAPÍTULO 4 (10 preguntas) índices 30-39
-            { chapter:4, text:"I am completely exhausted because I ________ this new website all morning. (¡Ojo!)", 
-              options:["a) had programmed","b) have been programming","c) programmed"], correct:1 },
-            { chapter:4, text:"Yesterday I was stressed because I ________ my wallet before paying.", 
-              options:["a) have lost","b) had lost","c) lost"], correct:1 },
-            { chapter:4, text:"I ________ to José José's music since I was a kid.", 
-              options:["a) have listened","b) had listened","c) listen"], correct:0 },
-            { chapter:4, text:"By the time we arrived at the cabin, it ________ to snow.", 
-              options:["a) has started","b) started","c) had started"], correct:2 },
-            { chapter:4, text:"He ________ in JavaScript for 5 years, and he is still learning new things every day.", 
-              options:["a) has been programming","b) had programmed","c) programs"], correct:0 },
-            { chapter:4, text:"I couldn't enter the house yesterday because I ________ my keys inside.", 
-              options:["a) have left","b) had left","c) leave"], correct:1 },
-            { chapter:4, text:"My dog is panting heavily because he ________ around the park for an hour.", 
-              options:["a) had run","b) has been running","c) was running"], correct:1 },
-            { chapter:4, text:"She didn't want to watch the movie because she ________ the book already.", 
-              options:["a) has read","b) had read","c) reads"], correct:1 },
-            { chapter:4, text:"Have you ever ________ sushi?", 
-              options:["a) ate","b) eaten","c) eat"], correct:1 },
-            { chapter:4, text:"My eyes hurt right now! I ________ at the computer screen for 8 hours straight.", 
-              options:["a) had looked","b) have been looking","c) looked"], correct:1 },
-
-            // CAPÍTULO 5 (10 preguntas) mezcla extra índices 40-49
-            { chapter:5, text:"If I ________ you, I would learn more grammar.", 
-              options:["a) was","b) were","c) am"], correct:1 },
-            { chapter:5, text:"She ________ be at home now; the lights are off.", 
-              options:["a) must not","b) can't","c) might not"], correct:1 },
-            { chapter:5, text:"By next year, we ________ this building for 20 years.", 
-              options:["a) will have owned","b) will own","c) have owned"], correct:0 },
-            { chapter:5, text:"He recommended that she ________ the early train.", 
-              options:["a) takes","b) take","c) will take"], correct:1 },
-            { chapter:5, text:"It's high time we ________ a break.", 
-              options:["a) take","b) took","c) have taken"], correct:1 },
-            { chapter:5, text:"Not until the boss arrives ________ start the meeting.", 
-              options:["a) we will","b) will we","c) we do"], correct:1 },
-            { chapter:5, text:"She wishes she ________ more attention in class.", 
-              options:["a) had paid","b) paid","c) would pay"], correct:0 },
-            { chapter:5, text:"This time next month, I ________ on a beach in Cancún.", 
-              options:["a) will lie","b) will be lying","c) will have lain"], correct:1 },
-            { chapter:5, text:"The movie was really boring, ________? ", 
-              options:["a) wasn't it","b) isn't it","c) wasn't"], correct:0 },
-            { chapter:5, text:"Never ________ such a delicious burger before!", 
-              options:["a) I have eaten","b) have I eaten","c) I ate"], correct:1 }
-        ];
-
-        // ---------- FUNCIONES DE RENDER ----------
-        function renderAll() {
-            const chap1Div = document.getElementById('chap1');
-            const chap2Div = document.getElementById('chap2');
-            const chap3Div = document.getElementById('chap3');
-            const chap4Div = document.getElementById('chap4');
-            const chap5Div = document.getElementById('chap5');
+    function renderQuiz() {
+        quizContainer.innerHTML = '';
+        questions.forEach((qObj, qIndex) => {
+            const questionDiv = document.createElement('div');
+            questionDiv.className = 'question-block';
             
-            let html1 = '', html2 = '', html3 = '', html4 = '', html5 = '';
-
-            questions.forEach((q, idx) => {
-                const card = `
-                    <div class="question-card" id="q-${idx}">
-                        <p><span class="question-number">${idx+1}</span> ${q.text}</p>
-                        <div class="options">
-                            ${q.options.map((opt, optIdx) => `
-                                <label class="option-item">
-                                    <input type="radio" name="q${idx}" value="${optIdx}">
-                                    ${opt}
-                                </label>
-                            `).join('')}
-                        </div>
-                        <div class="feedback" id="fb-${idx}"></div>
-                    </div>
+            // Render question
+            let html = `<div class="question-text">${qObj.q}</div>`;
+            html += `<ul class="options-list">`;
+            
+            // Render options
+            qObj.options.forEach((opt, oIndex) => {
+                const inputId = `q${qIndex}_o${oIndex}`;
+                html += `
+                    <li class="option-item">
+                        <label class="option-label" id="label_${inputId}" for="${inputId}">
+                            <input type="radio" name="q${qIndex}" id="${inputId}" value="${oIndex}">
+                            ${opt.text}
+                        </label>
+                    </li>
                 `;
+            });
+            html += `</ul>`;
+            
+            // Render feedback area
+            html += `<div class="feedback" id="feedback_${qIndex}"></div>`;
+            
+            questionDiv.innerHTML = html;
+            quizContainer.appendChild(questionDiv);
+        });
+    }
 
-                if (q.chapter === 1) html1 += card;
-                else if (q.chapter === 2) html2 += card;
-                else if (q.chapter === 3) html3 += card;
-                else if (q.chapter === 4) html4 += card;
-                else if (q.chapter === 5) html5 += card;
+    function checkAnswers() {
+        let score = 0;
+        let allAnswered = true;
+
+        questions.forEach((qObj, qIndex) => {
+            const selected = document.querySelector(`input[name="q${qIndex}"]:checked`);
+            const feedbackDiv = document.getElementById(`feedback_${qIndex}`);
+            
+            // Limpiar estilos previos
+            qObj.options.forEach((_, oIndex) => {
+                document.getElementById(`label_q${qIndex}_o${oIndex}`).classList.remove('correct-label', 'incorrect-label');
             });
 
-            chap1Div.innerHTML = html1;
-            chap2Div.innerHTML = html2;
-            chap3Div.innerHTML = html3;
-            chap4Div.innerHTML = html4;
-            chap5Div.innerHTML = html5;
-        }
+            if (!selected) {
+                allAnswered = false;
+                return;
+            }
 
-        // ---------- CORREGIR Y MOSTRAR FEEDBACK ----------
-        function checkAll() {
-            let correctCount = 0;
+            const selectedValue = parseInt(selected.value);
+            const isCorrect = qObj.options[selectedValue].correct;
+            const selectedLabel = document.getElementById(`label_${selected.id}`);
 
-            questions.forEach((q, idx) => {
-                const radios = document.getElementsByName(`q${idx}`);
-                let selectedVal = null;
-                for (let r of radios) {
-                    if (r.checked) {
-                        selectedVal = r.value;
-                        break;
+            feedbackDiv.style.display = 'block';
+            feedbackDiv.innerHTML = qObj.options[selectedValue].feedback;
+
+            if (isCorrect) {
+                score++;
+                selectedLabel.classList.add('correct-label');
+                feedbackDiv.className = 'feedback correct';
+            } else {
+                selectedLabel.classList.add('incorrect-label');
+                feedbackDiv.className = 'feedback incorrect';
+                
+                // Resaltar también la respuesta correcta para que aprendan
+                qObj.options.forEach((opt, oIndex) => {
+                    if (opt.correct) {
+                        document.getElementById(`label_q${qIndex}_o${oIndex}`).classList.add('correct-label');
                     }
-                }
+                });
+            }
+        });
 
-                const fbDiv = document.getElementById(`fb-${idx}`);
-                if (!fbDiv) return;
-
-                if (selectedVal === null) {
-                    fbDiv.textContent = '❌ Sin responder';
-                    fbDiv.className = 'feedback incorrect-fb';
-                    return;
-                }
-
-                const selectedNum = parseInt(selectedVal);
-                if (selectedNum === q.correct) {
-                    fbDiv.innerHTML = '✅ ¡Correcto!';
-                    fbDiv.className = 'feedback correct-fb';
-                    correctCount++;
-                } else {
-                    const correctLetter = String.fromCharCode(97 + q.correct); // a,b,c...
-                    fbDiv.innerHTML = `❌ Incorrecto. La respuesta correcta es ${correctLetter}) ${q.options[q.correct]}`;
-                    fbDiv.className = 'feedback incorrect-fb';
-                }
-            });
-
-            document.getElementById('scoreDisplay').innerText = `${correctCount} / 50`;
+        if (!allAnswered) {
+            alert("¡Eh! Te faltan preguntas por responder.");
+            return;
         }
 
-        // REVELAR RESPUESTAS (rellena automático)
-        function revealAnswers() {
-            questions.forEach((q, idx) => {
-                const radios = document.getElementsByName(`q${idx}`);
-                if (radios && radios.length > q.correct) {
-                    radios[q.correct].checked = true;
-                }
-            });
-            checkAll(); // muestra feedback con las correctas
-        }
+        // Mostrar resultados
+        const resultsArea = document.getElementById('results-area');
+        resultsArea.style.display = 'block';
+        resultsArea.innerHTML = `Tu puntuación: ${score} / ${questions.length}`;
+        
+        // Cambiar botones
+        document.getElementById('submit-btn').style.display = 'none';
+        document.getElementById('retake-btn').style.display = 'block';
+        
+        // Bloquear inputs para que no los cambien
+        document.querySelectorAll('input[type="radio"]').forEach(radio => radio.disabled = true);
+        
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
 
-        // RESETEAR
-        function resetExam() {
-            questions.forEach((_, idx) => {
-                const radios = document.getElementsByName(`q${idx}`);
-                if (radios) {
-                    radios.forEach(r => r.checked = false);
-                }
-                const fbDiv = document.getElementById(`fb-${idx}`);
-                if (fbDiv) {
-                    fbDiv.innerHTML = '';
-                    fbDiv.className = 'feedback';
-                }
-            });
-            document.getElementById('scoreDisplay').innerText = '0 / 50';
-        }
+    function resetQuiz() {
+        renderQuiz();
+        document.getElementById('results-area').style.display = 'none';
+        document.getElementById('submit-btn').style.display = 'block';
+        document.getElementById('retake-btn').style.display = 'none';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
 
-        // BIND EVENTOS
-        window.onload = function() {
-            renderAll();
-
-            document.getElementById('checkBtn').addEventListener('click', checkAll);
-            document.getElementById('revealBtn').addEventListener('click', revealAnswers);
-            document.getElementById('resetBtn').addEventListener('click', resetExam);
-
-            // opcional: click en label, ya funciona por el for/input, pero añadimos para que al hacer clic en cualquier parte de .option-item marque radio (el label ya lo hace si está vinculado, pero por si acaso)
-        };
-    })();
+    // Inicializar el quiz al cargar
+    renderQuiz();
 </script>
+
 </body>
 </html>
