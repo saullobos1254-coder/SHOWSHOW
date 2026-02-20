@@ -1,1334 +1,328 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>🇲🇽 100 MEXICANS SAID · EL GRAN PRESENTADOR</title>
-  <!-- Confetti & Icons -->
-  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-  <!-- Fonts -->
-  <img src="Gemini_Generated_Image_l5e7q1l5e7q1l5e7.png">
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    body {
-      background: radial-gradient(circle at 20% 30%, #1a2837, #0a1118);
-      font-family: 'Inter', sans-serif;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      min-height: 100vh;
-      padding: 2rem 1.8rem;
-    }
-
-    /* ========== HOST SLIDE - CON IMAGEN REAL ========== */
-    .host-slide {
-      width: 100%;
-      max-width: 1400px;
-      background: linear-gradient(145deg, #0a3142, #02121e);
-      border-radius: 80px 80px 80px 30px;
-      border: 8px solid #ffd700;
-      box-shadow: 0 30px 50px -10px black, inset 0 0 50px #ffd70040;
-      padding: 2.5rem 3rem;
-      margin-bottom: 40px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 40px;
-      flex-wrap: wrap;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .host-slide::before {
-      content: "100";
-      position: absolute;
-      top: -30px;
-      left: -30px;
-      font-size: 18rem;
-      font-weight: 900;
-      color: rgba(255, 215, 0, 0.08);
-      font-family: 'Montserrat', sans-serif;
-      transform: rotate(-10deg);
-      pointer-events: none;
-    }
-
-    .host-slide::after {
-      content: "MEXICANOS";
-      position: absolute;
-      bottom: -30px;
-      right: -30px;
-      font-size: 10rem;
-      font-weight: 900;
-      color: rgba(255, 215, 0, 0.08);
-      font-family: 'Montserrat', sans-serif;
-      transform: rotate(5deg);
-      pointer-events: none;
-    }
-
-    .host-info {
-      flex: 1;
-      min-width: 320px;
-      z-index: 10;
-    }
-
-    .host-title {
-      font-size: 3.8rem;
-      font-weight: 900;
-      color: #ffd700;
-      text-shadow: 6px 6px 0 #00000070, 0 0 30px #ffaa00;
-      margin-bottom: 15px;
-      display: flex;
-      align-items: center;
-      gap: 20px;
-      font-family: 'Montserrat', sans-serif;
-      text-transform: uppercase;
-    }
-
-    .host-title span {
-      background: #ce1126;
-      color: white;
-      padding: 0.2rem 1.5rem;
-      border-radius: 60px;
-      font-size: 2rem;
-      border: 4px solid white;
-    }
-
-    .host-subtitle {
-      font-size: 2rem;
-      color: #ffffff;
-      font-weight: 800;
-      margin-bottom: 25px;
-      font-style: italic;
-      text-shadow: 3px 3px 0 #000000;
-      background: linear-gradient(145deg, #006847, #004d33);
-      display: inline-block;
-      padding: 0.6rem 2rem;
-      border-radius: 60px;
-      border: 4px solid #ffd700;
-    }
-
-    .host-description {
-      background: #001f33f0;
-      border-radius: 50px;
-      padding: 2rem;
-      color: white;
-      border: 4px solid #ffb347;
-      backdrop-filter: blur(5px);
-      box-shadow: 0 15px 30px black;
-    }
-
-    .host-description p {
-      margin-bottom: 15px;
-      font-size: 1.2rem;
-      display: flex;
-      align-items: center;
-      gap: 15px;
-    }
-
-    /* ===== IMAGEN DEL PRESENTADOR - INCRUSTADA EN BASE64 ===== */
-    <img src="Gemini_Generated_Image_l5e7q1l5e7q1l5e7.png" alt="El Gran Presentador" style="width:100%; height:100%; object-fit:cover;">
-      width: 340px;
-      height: 340px;
-      border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border: 10px solid #ffd700;
-      box-shadow: 0 0 0 10px #00000050, 0 20px 50px black;
-      overflow: hidden;
-      position: relative;
-      z-index: 20;
-      animation: float 6s ease-in-out infinite;
-      background: #0a3a4a;
-    }
-
-    .host-image img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-
-    /* IMAGEN DEL PRESENTADOR - DISEÑO INSPIRADO EN TU ARCHIVO */
-    .presentador-img {
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(145deg, #1a4a5a, #0a2a36);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      position: relative;
-    }
-
-    .presentador-cara {
-      width: 140px;
-      height: 140px;
-      background: radial-gradient(circle at 30% 30%, #f5dbb1, #c49a6c);
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border: 6px solid #ffd700;
-      box-shadow: 0 0 30px #ffaa00;
-      margin-bottom: 20px;
-      position: relative;
-    }
-
-    .presentador-cara i {
-      font-size: 6rem;
-      color: #8b5a2b;
-      text-shadow: 6px 6px 0 #00000030;
-    }
-
-    .presentador-texto {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .presentador-texto .nombre {
-      font-size: 2rem;
-      font-weight: 900;
-      color: #ffd700;
-      text-shadow: 3px 3px 0 #000;
-    }
-
-    .presentador-texto .badge {
-      background: #ce1126;
-      color: white;
-      padding: 0.3rem 1.5rem;
-      border-radius: 60px;
-      font-size: 1.1rem;
-      font-weight: 800;
-      border: 3px solid #ffd700;
-    }
-
-    .host-badge {
-      position: absolute;
-      bottom: 30px;
-      right: 30px;
-      background: #ce1126;
-      color: white;
-      padding: 0.8rem 2rem;
-      border-radius: 60px;
-      font-weight: 900;
-      font-size: 1.3rem;
-      border: 4px solid #ffd700;
-      transform: rotate(-5deg);
-      box-shadow: 0 10px 0 #7a0a1a;
-      z-index: 30;
-    }
-
-    .start-button {
-      background: #ff9f1a;
-      border: none;
-      padding: 1.3rem 3.5rem;
-      border-radius: 80px;
-      font-size: 1.8rem;
-      font-weight: 900;
-      color: white;
-      border: 6px solid white;
-      box-shadow: 0 15px 0 #b85e00, 0 20px 40px black;
-      cursor: pointer;
-      margin-top: 30px;
-      display: inline-flex;
-      align-items: center;
-      gap: 20px;
-      transition: 0.08s;
-      text-transform: uppercase;
-    }
-
-    .start-button:active {
-      transform: translateY(15px);
-      box-shadow: 0 5px 0 #b85e00, 0 20px 40px black;
-    }
-
-    @keyframes float {
-      0%, 100% { transform: translateY(0px) rotate(0deg); }
-      50% { transform: translateY(-15px) rotate(2deg); }
-    }
-
-    /* ----- 3 WINDOW GRID ----- */
-    .windows-grid {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      align-items: stretch;
-      gap: 2.2rem;
-      max-width: 1600px;
-      width: 100%;
-      margin-top: 20px;
-    }
-
-    /* ---------- WINDOW – INDEPENDENT, LUXURY ---------- */
-    .window {
-      flex: 1 1 350px;
-      min-width: 340px;
-      max-width: 500px;
-      background: rgba(253, 247, 236, 0.97);
-      backdrop-filter: blur(8px);
-      border-radius: 60px 60px 60px 28px;
-      border: 4px solid #ffcf5c;
-      box-shadow: 0 30px 50px -15px black, inset 0 0 30px #ffe68f80;
-      padding: 1.8rem 1.6rem;
-      display: flex;
-      flex-direction: column;
-      position: relative;
-      transition: all 0.25s;
-    }
-
-    .window:hover {
-      border-color: #ffb82e;
-      transform: translateY(-6px);
-    }
-
-    /* window bar */
-    .win-bar {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 1rem;
-      padding-bottom: 0.8rem;
-      border-bottom: 2px solid #ffd966c0;
-    }
-
-    .bar-dots {
-      display: flex;
-      gap: 8px;
-    }
-
-    .dot {
-      width: 16px;
-      height: 16px;
-      border-radius: 50%;
-      background: #ff5f56;
-      border: 1px solid #ffb3aa;
-    }
-
-    .dot:nth-child(2) { background: #ffbd2e; }
-    .dot:nth-child(3) { background: #27c93f; }
-
-    .window-tag {
-      background: #1f3a4b;
-      color: #ffeaa5;
-      font-size: 0.8rem;
-      font-weight: 800;
-      padding: 0.3rem 1.5rem;
-      border-radius: 40px;
-      border: 1px solid #ffb86b;
-      margin-left: auto;
-      letter-spacing: 1.5px;
-      text-transform: uppercase;
-    }
-
-    .bar-right {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    /* ---------- FULLSCREEN BUTTON - REPARADO ---------- */
-    .fullscreen-btn {
-      background: #2e4a5b;
-      color: white;
-      border: none;
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      border: 2px solid white;
-      transition: 0.1s;
-    }
-
-    .fullscreen-btn:hover {
-      background: #ffb347;
-      color: black;
-    }
-
-    /* header logo */
-    .win-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 1.2rem;
-    }
-
-    .logo {
-      font-family: 'Montserrat', sans-serif;
-      font-weight: 900;
-      font-size: 1.6rem;
-      background: linear-gradient(145deg, #002856, #001e32);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .flag-mini {
-      display: inline-flex;
-      gap: 4px;
-    }
-
-    .flag-mini span {
-      width: 11px;
-      height: 24px;
-      background: #006847;
-      border-radius: 3px 0 0 3px;
-    }
-
-    .flag-mini span:nth-child(2) {
-      background: white;
-      border-left: 1px solid #aaa;
-      border-right: 1px solid #aaa;
-    }
-
-    .flag-mini span:nth-child(3) {
-      background: #ce1126;
-      border-radius: 0 3px 3px 0;
-    }
-
-    .round-badge {
-      background: #2e4a5b;
-      color: #ffe99b;
-      font-weight: 800;
-      font-size: 0.8rem;
-      padding: 0.4rem 1.3rem;
-      border-radius: 60px;
-      border: 2px solid #ffb347;
-      text-transform: uppercase;
-    }
-
-    /* ---------- SCOREBOARD ---------- */
-    .score-panel {
-      background: #0c1e28;
-      border-radius: 80px;
-      padding: 0.9rem 1.2rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 1.2rem;
-      border: 2px solid #ffcc66;
-      box-shadow: inset 0 0 0 2px #1f3f4d;
-    }
-
-    .team {
-      display: flex;
-      align-items: center;
-      gap: 0.8rem;
-      font-weight: 800;
-    }
-
-    .team-blue {
-      background: #004c7e;
-      color: white;
-      padding: 0.3rem 1.3rem;
-      border-radius: 60px;
-      border: 2px solid #7ac8ff;
-      font-size: 1rem;
-    }
-
-    .team-red {
-      background: #b13b4b;
-      color: white;
-      padding: 0.3rem 1.3rem;
-      border-radius: 60px;
-      border: 2px solid #ffa6a6;
-      font-size: 1rem;
-    }
-
-    .score-num {
-      background: #ffd966;
-      color: #002137;
-      padding: 0.1rem 1.1rem;
-      border-radius: 60px;
-      font-size: 1.9rem;
-      font-weight: 900;
-      min-width: 75px;
-      text-align: center;
-      border: 2px solid white;
-    }
-
-    /* ---------- TEAM SELECTOR ---------- */
-    .team-selector {
-      display: flex;
-      justify-content: center;
-      gap: 15px;
-      margin-bottom: 1.5rem;
-    }
-
-    .selector-btn {
-      flex: 1;
-      background: #2e4a5b;
-      color: white;
-      border: none;
-      padding: 0.7rem 0;
-      border-radius: 60px;
-      font-weight: 900;
-      font-size: 1.1rem;
-      border: 3px solid white;
-      cursor: pointer;
-      transition: 0.08s;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-    }
-
-    .selector-btn.active {
-      background: #004c7e;
-      box-shadow: 0 0 0 3px #7ac8ff;
-    }
-
-    .selector-btn.red.active {
-      background: #b13b4b;
-      box-shadow: 0 0 0 3px #ffa6a6;
-    }
-
-    /* ---------- QUESTION ---------- */
-    .question-card {
-      background: linear-gradient(145deg, #003862, #00223b);
-      border-radius: 40px 40px 40px 14px;
-      padding: 1.1rem 1.4rem;
-      margin-bottom: 1.3rem;
-      border-left: 12px solid #ffc107;
-    }
-
-    .question-text {
-      color: white;
-      font-size: 1.45rem;
-      font-weight: 800;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .question-icon {
-      background: #ffc107;
-      color: #002b44;
-      padding: 0 14px;
-      border-radius: 60px;
-      font-size: 1.45rem;
-    }
-
-    /* ---------- ANSWERS HIDDEN ---------- */
-    .answers-grid {
-      display: flex;
-      flex-direction: column;
-      gap: 0.9rem;
-      margin: 0.8rem 0 1.2rem;
-    }
-
-    .answer-card {
-      background: linear-gradient(145deg, #4a3a2a, #3a2e22);
-      border-radius: 30px;
-      border: 3px solid #b68b40;
-      box-shadow: 7px 7px 0 #0000003d;
-      padding: 1rem 1.5rem;
-      display: flex;
-      align-items: center;
-      gap: 15px;
-      transition: 0.15s;
-    }
-
-    .answer-card.revealed {
-      background: linear-gradient(145deg, #1e6a53, #124d3d);
-      border-color: #ffdb7c;
-      box-shadow: 0 0 0 4px #fffde7, 7px 7px 0 #0000004d;
-    }
-
-    .card-front {
-      display: flex;
-      align-items: center;
-      gap: 15px;
-      width: 100%;
-    }
-
-    .card-back {
-      display: none;
-    }
-
-    .answer-card.revealed .card-front {
-      display: none;
-    }
-
-    .answer-card.revealed .card-back {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      width: 100%;
-    }
-
-    .grepe-icon-small {
-      font-size: 1.8rem;
-      color: #ffd966;
-    }
-
-    .grepe-text-small {
-      font-size: 1.2rem;
-      font-weight: 800;
-      color: #ffd966;
-      text-transform: uppercase;
-      letter-spacing: 3px;
-    }
-
-    .answer-name {
-      font-size: 1.5rem;
-      font-weight: 800;
-      color: white;
-      text-shadow: 3px 3px 0 #00000070;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .points-badge {
-      background: #ffd700;
-      color: #001f33;
-      font-weight: 900;
-      padding: 0.3rem 1.6rem;
-      border-radius: 60px;
-      font-size: 1.1rem;
-      border: 2px solid white;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    /* ---------- INPUT FIELD ---------- */
-    .guess-area {
-      display: flex;
-      gap: 10px;
-      margin-top: 5px;
-      margin-bottom: 15px;
-    }
-
-    .guess-input {
-      flex: 1;
-      padding: 0.9rem 1.2rem;
-      border-radius: 60px;
-      border: 4px solid #ffd966;
-      background: #1e2e3a;
-      color: white;
-      font-size: 1.1rem;
-      font-weight: 600;
-      outline: none;
-    }
-
-    .guess-input::placeholder {
-      color: #ffd966c0;
-      font-style: italic;
-    }
-
-    .guess-btn {
-      background: #ff9f1a;
-      border: none;
-      border-radius: 60px;
-      padding: 0 1.8rem;
-      color: white;
-      font-weight: 900;
-      font-size: 1.1rem;
-      border: 3px solid white;
-      box-shadow: 0 6px 0 #b85e00;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      transition: 0.08s;
-    }
-
-    .guess-btn:active {
-      transform: translateY(6px);
-      box-shadow: 0 2px 0 #b85e00;
-    }
-
-    /* ----- REVEAL ALL BUTTON ----- */
-    .reveal-all-btn {
-      background: #7a4a2e;
-      border: none;
-      border-radius: 60px;
-      padding: 0.7rem 1.2rem;
-      color: white;
-      font-weight: 900;
-      font-size: 0.9rem;
-      border: 3px solid white;
-      box-shadow: 0 6px 0 #4e2e1e;
-      cursor: pointer;
-      margin-top: 5px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      transition: 0.08s;
-    }
-
-    .reveal-all-btn:active {
-      transform: translateY(6px);
-      box-shadow: 0 2px 0 #4e2e1e;
-    }
-
-    /* ----- REVEAL MISSING BUTTON (AFTER WINNER) ----- */
-    .reveal-missing-btn {
-      background: #5a3e2b;
-      border: none;
-      border-radius: 60px;
-      padding: 0.7rem 1.2rem;
-      color: white;
-      font-weight: 900;
-      font-size: 0.9rem;
-      border: 3px solid #ffd966;
-      box-shadow: 0 6px 0 #3a2a1e;
-      cursor: pointer;
-      margin-top: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      transition: 0.08s;
-    }
-
-    .reveal-missing-btn:active {
-      transform: translateY(6px);
-      box-shadow: 0 2px 0 #3a2a1e;
-    }
-
-    .remaining-badge {
-      margin-top: 12px;
-      text-align: right;
-      color: #8b7a4b;
-      font-weight: 700;
-      font-size: 0.9rem;
-    }
-
-    /* ----- WINNER OVERLAY ----- */
-    .winner-overlay {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0,0,0,0.85);
-      backdrop-filter: blur(6px);
-      border-radius: 60px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      z-index: 100;
-      opacity: 0;
-      pointer-events: none;
-      transition: 0.3s;
-      border: 8px solid #ffd966;
-      box-shadow: 0 0 50px gold;
-    }
-
-    .winner-overlay.show {
-      opacity: 1;
-      pointer-events: all;
-    }
-
-    .crown {
-      font-size: 5rem;
-      animation: bounce 1s infinite;
-    }
-
-    .winner-title {
-      font-size: 2.8rem;
-      font-weight: 900;
-      background: linear-gradient(45deg, #fff3bf, #ffd966);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-
-    .winner-team {
-      background: #001f33;
-      padding: 0.6rem 2.5rem;
-      border-radius: 80px;
-      font-size: 1.8rem;
-      font-weight: 900;
-      color: #ffe17a;
-      border: 4px solid white;
-      margin-top: 20px;
-    }
-
-    .reset-button {
-      margin-top: 30px;
-      background: #ffc107;
-      border: none;
-      padding: 0.8rem 2.5rem;
-      border-radius: 70px;
-      font-weight: 900;
-      font-size: 1.2rem;
-      color: #001f33;
-      border: 4px solid white;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      box-shadow: 0 6px 0 #b38f00;
-    }
-
-    .reset-button:active {
-      transform: translateY(6px);
-      box-shadow: 0 2px 0 #b38f00;
-    }
-
-    @keyframes bounce {
-      0%,100% { transform: translateY(0); }
-      50% { transform: translateY(-15px); }
-    }
-
-    .footer-note {
-      margin-top: 45px;
-      color: #ffdb9f;
-      text-align: center;
-      font-weight: 600;
-      letter-spacing: 2px;
-    }
-
-    .hidden {
-      display: none !important;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>English Grammar Challenge by Saúl</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap');
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f4f7f6;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            max-width: 800px;
+            width: 100%;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #eee;
+        }
+
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+
+        .subtitle {
+            color: #7f8c8d;
+            font-style: italic;
+            font-size: 1.1em;
+        }
+
+        .question-block {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #e1e8ed;
+            border-radius: 8px;
+            background-color: #fafbfc;
+        }
+
+        .question-text {
+            font-weight: 600;
+            font-size: 1.1em;
+            margin-bottom: 15px;
+        }
+
+        .options-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .option-item {
+            margin-bottom: 10px;
+        }
+
+        .option-label {
+            display: block;
+            padding: 12px;
+            background: white;
+            border: 2px solid #e1e8ed;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .option-label:hover {
+            border-color: #3498db;
+            background-color: #f0f8ff;
+        }
+
+        input[type="radio"] {
+            margin-right: 10px;
+        }
+
+        .feedback {
+            display: none;
+            margin-top: 15px;
+            padding: 12px;
+            border-radius: 6px;
+            font-size: 0.95em;
+        }
+
+        .feedback.correct {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .feedback.incorrect {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .correct-label {
+            border-color: #28a745 !important;
+            background-color: #d4edda !important;
+        }
+
+        .incorrect-label {
+            border-color: #dc3545 !important;
+            background-color: #f8d7da !important;
+        }
+
+        button {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            font-size: 1.1em;
+            font-weight: 600;
+            color: white;
+            background-color: #3498db;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-top: 20px;
+        }
+
+        button:hover {
+            background-color: #2980b9;
+        }
+
+        #retake-btn {
+            background-color: #2ecc71;
+            display: none;
+        }
+
+        #retake-btn:hover {
+            background-color: #27ae60;
+        }
+
+        #results-area {
+            text-align: center;
+            font-size: 1.5em;
+            font-weight: bold;
+            margin-top: 20px;
+            display: none;
+        }
+    </style>
 </head>
 <body>
 
-  <!-- ========== HOST SLIDE - CON IMAGEN DEL PRESENTADOR INCRUSTADA ========== -->
-  <div class="host-slide" id="hostSlide">
-    <div class="host-info">
-      <div class="host-title">
-        100 <span>MEXICANS</span>
-      </div>
-      <div class="host-subtitle">
-        <i class="fas fa-microphone-alt"></i> EL GRAN PRESENTADOR
-      </div>
-      <div class="host-description">
-        <p><i class="fas fa-check-circle" style="color:#ffd700;"></i> <strong>100 MEXICANS SAID</strong> - FAMILY FEUD STYLE</p>
-        <p><i class="fas fa-check-circle" style="color:#ffd700;"></i> 3 independent games: Street Food · Day of Dead · Mariachi</p>
-        <p><i class="fas fa-check-circle" style="color:#ffd700;"></i> <strong>WRITE the answer</strong> · If correct, card FLIPS and ADDS points</p>
-        <p><i class="fas fa-check-circle" style="color:#ffd700;"></i> <strong>YOU choose</strong> BLUE or RED team</p>
-        <p><i class="fas fa-check-circle" style="color:#ffd700;"></i> <strong>REVEAL MISSING</strong> appears AFTER winner - shows all answers you missed</p>
-        <p><i class="fas fa-check-circle" style="color:#ffd700;"></i> Fullscreen button · Most points WINS</p>
-      </div>
-      <button class="start-button" onclick="startGame()">
-        <i class="fas fa-play"></i> START GAMES
-      </button>
-    </div>
+<div class="container">
+    <header>
+        <h1>🏆 The Ultimate Grammar Challenge</h1>
+        <div class="subtitle">Creado por Saúl para sus amigos 🚀</div>
+    </header>
+
+    <div id="quiz-container">
+        </div>
+
+    <div id="results-area"></div>
     
-    <!-- ===== IMAGEN DEL PRESENTADOR - DISEÑO INSPIRADO EN GEMINI ===== -->
-    <div class="host-image">
-      <div class="presentador-img">
-        <div class="presentador-cara">
-          <i class="fas fa-user-tie"></i>
-        </div>
-        <div class="presentador-texto">
-          <span class="nombre">100 MEXICANOS</span>
-          <span class="badge"><i class="fas fa-crown"></i> EL HOST <i class="fas fa-crown"></i></span>
-          <span style="color: white; font-size: 1rem; margin-top: 10px; background: #00000060; padding: 0.3rem 1.2rem; border-radius: 60px;">@GEMINI · PRESENTADOR</span>
-        </div>
-      </div>
-    </div>
-    
-    <div class="host-badge">
-      <i class="fas fa-crown"></i> HOST <i class="fas fa-crown"></i>
-    </div>
-  </div>
+    <button id="submit-btn" onclick="checkAnswers()">Evaluar mis respuestas</button>
+    <button id="retake-btn" onclick="resetQuiz()">¡Volver a intentarlo!</button>
+</div>
 
-  <!-- 3 INDEPENDENT WINDOWS (hidden initially) -->
-  <div class="windows-grid" id="windowsGrid" style="display: none;">
-
-    <!-- ========== WINDOW 1 – STREET FOOD ========== -->
-    <div class="window" id="window1">
-      <div class="winner-overlay" id="winnerOverlay1">
-        <div class="crown">👑🏆👑</div>
-        <div class="winner-title">WINNER</div>
-        <div class="winner-team" id="winnerTeam1">BLUE</div>
-        <button class="reset-button" onclick="resetWindow(1)"><i class="fas fa-rotate-right"></i> PLAY AGAIN</button>
-      </div>
-
-      <div class="win-bar">
-        <div class="bar-dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
-        <div class="bar-right">
-          <button class="fullscreen-btn" onclick="toggleFullscreen('window1')"><i class="fas fa-expand"></i></button>
-          <div class="window-tag"><i class="fas fa-utensils"></i> R1 · STREET</div>
-        </div>
-      </div>
-
-      <div class="win-header">
-        <div class="logo"><i class="fas fa-flag"></i> 100MS <span class="flag-mini"><span></span><span></span><span></span></span></div>
-        <div class="round-badge"><i class="fas fa-taco"></i> ANTOJITOS</div>
-      </div>
-
-      <!-- SCOREBOARD -->
-      <div class="score-panel">
-        <div class="team"><span class="team-blue"><i class="fas fa-shield"></i> BLUE</span><span id="blueScore1" class="score-num">0</span></div>
-        <div class="team"><span class="team-red"><i class="fas fa-shield"></i> RED</span><span id="redScore1" class="score-num">0</span></div>
-      </div>
-
-      <!-- TEAM SELECTOR -->
-      <div class="team-selector" id="selector1">
-        <button id="blueBtn1" class="selector-btn active" onclick="setActiveTeam(1, 'blue')"><i class="fas fa-shield"></i> BLUE</button>
-        <button id="redBtn1" class="selector-btn red" onclick="setActiveTeam(1, 'red')"><i class="fas fa-shield"></i> RED</button>
-      </div>
-
-      <!-- QUESTION -->
-      <div class="question-card">
-        <div class="question-text"><span class="question-icon">🌮</span> Name a Mexican street food?</div>
-      </div>
-
-      <!-- ANSWERS HIDDEN -->
-      <div class="answers-grid" id="answers1">
-        <div class="answer-card" data-points="84" data-name="TACOS" data-clean="tacos">
-          <div class="card-front">
-            <i class="fas fa-question-circle grepe-icon-small"></i>
-            <span class="grepe-text-small">?????</span>
-          </div>
-          <div class="card-back">
-            <span class="answer-name"><i class="fas fa-taco"></i> 🌮 TACOS</span>
-            <span class="points-badge"><i class="fas fa-trophy"></i> 84 pts</span>
-          </div>
-        </div>
-        <div class="answer-card" data-points="63" data-name="ELOTE" data-clean="elote">
-          <div class="card-front">
-            <i class="fas fa-question-circle grepe-icon-small"></i>
-            <span class="grepe-text-small">?????</span>
-          </div>
-          <div class="card-back">
-            <span class="answer-name"><i class="fas fa-corn"></i> 🌽 ELOTE</span>
-            <span class="points-badge"><i class="fas fa-trophy"></i> 63 pts</span>
-          </div>
-        </div>
-        <div class="answer-card" data-points="51" data-name="TAMALES" data-clean="tamales">
-          <div class="card-front">
-            <i class="fas fa-question-circle grepe-icon-small"></i>
-            <span class="grepe-text-small">?????</span>
-          </div>
-          <div class="card-back">
-            <span class="answer-name"><i class="fas fa-leaf"></i> 🫔 TAMALES</span>
-            <span class="points-badge"><i class="fas fa-trophy"></i> 51 pts</span>
-          </div>
-        </div>
-        <div class="answer-card" data-points="38" data-name="POZOLE" data-clean="pozole">
-          <div class="card-front">
-            <i class="fas fa-question-circle grepe-icon-small"></i>
-            <span class="grepe-text-small">?????</span>
-          </div>
-          <div class="card-back">
-            <span class="answer-name"><i class="fas fa-utensil-spoon"></i> 🥣 POZOLE</span>
-            <span class="points-badge"><i class="fas fa-trophy"></i> 38 pts</span>
-          </div>
-        </div>
-        <div class="answer-card" data-points="31" data-name="QUESADILLAS" data-clean="quesadillas">
-          <div class="card-front">
-            <i class="fas fa-question-circle grepe-icon-small"></i>
-            <span class="grepe-text-small">?????</span>
-          </div>
-          <div class="card-back">
-            <span class="answer-name"><i class="fas fa-cheese"></i> 🧀 QUESADILLAS</span>
-            <span class="points-badge"><i class="fas fa-trophy"></i> 31 pts</span>
-          </div>
-        </div>
-        <div class="answer-card" data-points="22" data-name="CHURROS" data-clean="churros">
-          <div class="card-front">
-            <i class="fas fa-question-circle grepe-icon-small"></i>
-            <span class="grepe-text-small">?????</span>
-          </div>
-          <div class="card-back">
-            <span class="answer-name"><i class="fas fa-donut"></i> 🍩 CHURROS</span>
-            <span class="points-badge"><i class="fas fa-trophy"></i> 22 pts</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- INPUT FIELD -->
-      <div class="guess-area">
-        <input type="text" id="guessInput1" class="guess-input" placeholder="Write an answer...">
-        <button class="guess-btn" onclick="checkAnswer(1)"><i class="fas fa-paper-plane"></i> GUESS</button>
-      </div>
-
-      <!-- REVEAL ALL BUTTON -->
-      <button class="reveal-all-btn" id="revealAllBtn1" onclick="revealAllAnswers(1)">
-        <i class="fas fa-eye"></i> REVEAL ALL ANSWERS
-      </button>
-
-      <!-- REVEAL MISSING BUTTON (hidden initially) -->
-      <button class="reveal-missing-btn hidden" id="revealMissingBtn1" onclick="revealMissingAnswers(1)">
-        <i class="fas fa-question-circle"></i> REVEAL MISSING ANSWERS
-      </button>
-
-      <div class="remaining-badge" id="remaining1"><i class="fas fa-hourglass-half"></i> 6 answers left</div>
-    </div>
-
-    <!-- ========== WINDOW 2 – DAY OF THE DEAD ========== -->
-    <div class="window" id="window2">
-      <div class="winner-overlay" id="winnerOverlay2">
-        <div class="crown">👑🏆👑</div>
-        <div class="winner-title">WINNER</div>
-        <div class="winner-team" id="winnerTeam2">BLUE</div>
-        <button class="reset-button" onclick="resetWindow(2)"><i class="fas fa-rotate-right"></i> PLAY AGAIN</button>
-      </div>
-      <div class="win-bar">
-        <div class="bar-dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
-        <div class="bar-right">
-          <button class="fullscreen-btn" onclick="toggleFullscreen('window2')"><i class="fas fa-expand"></i></button>
-          <div class="window-tag"><i class="fas fa-skull"></i> R2 · OFRENDA</div>
-        </div>
-      </div>
-      <div class="win-header"><div class="logo"><i class="fas fa-flag"></i> 100MS <span class="flag-mini"><span></span><span></span><span></span></span></div><div class="round-badge"><i class="fas fa-candle-holder"></i> DAY OF DEAD</div></div>
-      <div class="score-panel"><div class="team"><span class="team-blue">🔵 BLUE</span><span id="blueScore2" class="score-num">0</span></div><div class="team"><span class="team-red">🔴 RED</span><span id="redScore2" class="score-num">0</span></div></div>
-      
-      <div class="team-selector" id="selector2">
-        <button id="blueBtn2" class="selector-btn active" onclick="setActiveTeam(2, 'blue')"><i class="fas fa-shield"></i> BLUE</button>
-        <button id="redBtn2" class="selector-btn red" onclick="setActiveTeam(2, 'red')"><i class="fas fa-shield"></i> RED</button>
-      </div>
-
-      <div class="question-card"><div class="question-text"><span class="question-icon">🕯️</span> Essential for Day of the Dead altar?</div></div>
-      
-      <div class="answers-grid" id="answers2">
-        <div class="answer-card" data-points="82" data-name="CEMPASUCHIL" data-clean="cempasuchil"><div class="card-front"><i class="fas fa-question-circle grepe-icon-small"></i><span class="grepe-text-small">?????</span></div><div class="card-back"><span class="answer-name">🌼 CEMPASUCHIL</span><span class="points-badge"><i class="fas fa-trophy"></i> 82 pts</span></div></div>
-        <div class="answer-card" data-points="69" data-name="PAN DE MUERTO" data-clean="pan de muerto"><div class="card-front"><i class="fas fa-question-circle grepe-icon-small"></i><span class="grepe-text-small">?????</span></div><div class="card-back"><span class="answer-name">🍞 PAN DE MUERTO</span><span class="points-badge"><i class="fas fa-trophy"></i> 69 pts</span></div></div>
-        <div class="answer-card" data-points="57" data-name="PHOTOS" data-clean="photos"><div class="card-front"><i class="fas fa-question-circle grepe-icon-small"></i><span class="grepe-text-small">?????</span></div><div class="card-back"><span class="answer-name">🖼️ PHOTOS</span><span class="points-badge"><i class="fas fa-trophy"></i> 57 pts</span></div></div>
-        <div class="answer-card" data-points="48" data-name="CANDLES" data-clean="candles"><div class="card-front"><i class="fas fa-question-circle grepe-icon-small"></i><span class="grepe-text-small">?????</span></div><div class="card-back"><span class="answer-name">🕯️ CANDLES</span><span class="points-badge"><i class="fas fa-trophy"></i> 48 pts</span></div></div>
-        <div class="answer-card" data-points="36" data-name="SUGAR SKULLS" data-clean="sugar skulls"><div class="card-front"><i class="fas fa-question-circle grepe-icon-small"></i><span class="grepe-text-small">?????</span></div><div class="card-back"><span class="answer-name">💀 SUGAR SKULLS</span><span class="points-badge"><i class="fas fa-trophy"></i> 36 pts</span></div></div>
-        <div class="answer-card" data-points="23" data-name="COPAL" data-clean="copal"><div class="card-front"><i class="fas fa-question-circle grepe-icon-small"></i><span class="grepe-text-small">?????</span></div><div class="card-back"><span class="answer-name">🪔 COPAL</span><span class="points-badge"><i class="fas fa-trophy"></i> 23 pts</span></div></div>
-      </div>
-
-      <div class="guess-area"><input type="text" id="guessInput2" class="guess-input" placeholder="Write an answer..."><button class="guess-btn" onclick="checkAnswer(2)"><i class="fas fa-paper-plane"></i> GUESS</button></div>
-      <button class="reveal-all-btn" id="revealAllBtn2" onclick="revealAllAnswers(2)"><i class="fas fa-eye"></i> REVEAL ALL ANSWERS</button>
-      <button class="reveal-missing-btn hidden" id="revealMissingBtn2" onclick="revealMissingAnswers(2)"><i class="fas fa-question-circle"></i> REVEAL MISSING ANSWERS</button>
-      <div class="remaining-badge" id="remaining2"><i class="fas fa-hourglass-half"></i> 6 answers left</div>
-    </div>
-
-    <!-- ========== WINDOW 3 – MARIACHI ========== -->
-    <div class="window" id="window3">
-      <div class="winner-overlay" id="winnerOverlay3">
-        <div class="crown">👑🏆👑</div>
-        <div class="winner-title">WINNER</div>
-        <div class="winner-team" id="winnerTeam3">BLUE</div>
-        <button class="reset-button" onclick="resetWindow(3)"><i class="fas fa-rotate-right"></i> PLAY AGAIN</button>
-      </div>
-      <div class="win-bar">
-        <div class="bar-dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
-        <div class="bar-right">
-          <button class="fullscreen-btn" onclick="toggleFullscreen('window3')"><i class="fas fa-expand"></i></button>
-          <div class="window-tag"><i class="fas fa-guitar"></i> R3 · MARIACHI</div>
-        </div>
-      </div>
-      <div class="win-header"><div class="logo"><i class="fas fa-flag"></i> 100MS <span class="flag-mini"><span></span><span></span><span></span></span></div><div class="round-badge"><i class="fas fa-music"></i> MARIACHI</div></div>
-      <div class="score-panel"><div class="team"><span class="team-blue">🔵 BLUE</span><span id="blueScore3" class="score-num">0</span></div><div class="team"><span class="team-red">🔴 RED</span><span id="redScore3" class="score-num">0</span></div></div>
-      
-      <div class="team-selector" id="selector3">
-        <button id="blueBtn3" class="selector-btn active" onclick="setActiveTeam(3, 'blue')"><i class="fas fa-shield"></i> BLUE</button>
-        <button id="redBtn3" class="selector-btn red" onclick="setActiveTeam(3, 'red')"><i class="fas fa-shield"></i> RED</button>
-      </div>
-
-      <div class="question-card"><div class="question-text"><span class="question-icon">🎶</span> Classic Mariachi song?</div></div>
-      
-      <div class="answers-grid" id="answers3">
-        <div class="answer-card" data-points="78" data-name="CIELITO LINDO" data-clean="cielito lindo"><div class="card-front"><i class="fas fa-question-circle grepe-icon-small"></i><span class="grepe-text-small">?????</span></div><div class="card-back"><span class="answer-name">🎵 CIELITO LINDO</span><span class="points-badge"><i class="fas fa-trophy"></i> 78 pts</span></div></div>
-        <div class="answer-card" data-points="64" data-name="EL REY" data-clean="el rey"><div class="card-front"><i class="fas fa-question-circle grepe-icon-small"></i><span class="grepe-text-small">?????</span></div><div class="card-back"><span class="answer-name">👑 EL REY</span><span class="points-badge"><i class="fas fa-trophy"></i> 64 pts</span></div></div>
-        <div class="answer-card" data-points="52" data-name="MEXICO LINDO" data-clean="mexico lindo"><div class="card-front"><i class="fas fa-question-circle grepe-icon-small"></i><span class="grepe-text-small">?????</span></div><div class="card-back"><span class="answer-name">🌮 MEXICO LINDO</span><span class="points-badge"><i class="fas fa-trophy"></i> 52 pts</span></div></div>
-        <div class="answer-card" data-points="41" data-name="GUADALAJARA" data-clean="guadalajara"><div class="card-front"><i class="fas fa-question-circle grepe-icon-small"></i><span class="grepe-text-small">?????</span></div><div class="card-back"><span class="answer-name">🇲🇽 GUADALAJARA</span><span class="points-badge"><i class="fas fa-trophy"></i> 41 pts</span></div></div>
-        <div class="answer-card" data-points="33" data-name="VOLVER VOLVER" data-clean="volver volver"><div class="card-front"><i class="fas fa-question-circle grepe-icon-small"></i><span class="grepe-text-small">?????</span></div><div class="card-back"><span class="answer-name">↩️ VOLVER VOLVER</span><span class="points-badge"><i class="fas fa-trophy"></i> 33 pts</span></div></div>
-        <div class="answer-card" data-points="21" data-name="LA BAMBA" data-clean="la bamba"><div class="card-front"><i class="fas fa-question-circle grepe-icon-small"></i><span class="grepe-text-small">?????</span></div><div class="card-back"><span class="answer-name">🎸 LA BAMBA</span><span class="points-badge"><i class="fas fa-trophy"></i> 21 pts</span></div></div>
-      </div>
-
-      <div class="guess-area"><input type="text" id="guessInput3" class="guess-input" placeholder="Write an answer..."><button class="guess-btn" onclick="checkAnswer(3)"><i class="fas fa-paper-plane"></i> GUESS</button></div>
-      <button class="reveal-all-btn" id="revealAllBtn3" onclick="revealAllAnswers(3)"><i class="fas fa-eye"></i> REVEAL ALL ANSWERS</button>
-      <button class="reveal-missing-btn hidden" id="revealMissingBtn3" onclick="revealMissingAnswers(3)"><i class="fas fa-question-circle"></i> REVEAL MISSING ANSWERS</button>
-      <div class="remaining-badge" id="remaining3"><i class="fas fa-hourglass-half"></i> 6 answers left</div>
-    </div>
-  </div>
-
-  <div class="footer-note" id="footerNote" style="display: none;">
-    <i class="fas fa-pencil-alt"></i> WRITE THE ANSWER · IF CORRECT, IT FLIPS AND ADDS POINTS · YOU CHOOSE THE TEAM · REVEAL MISSING AFTER WINNER <i class="fas fa-pencil-alt"></i>
-  </div>
-
-  <script>
-    // ---------- START GAME (hide host slide, show games) ----------
-    function startGame() {
-      document.getElementById('hostSlide').style.display = 'none';
-      document.getElementById('windowsGrid').style.display = 'flex';
-      document.getElementById('footerNote').style.display = 'block';
-    }
-
-    // ---------- TOGGLE FULLSCREEN - REPARADO Y FUNCIONAL ----------
-    function toggleFullscreen(elementId) {
-      const element = document.getElementById(elementId);
-      
-      if (!document.fullscreenElement) {
-        if (element.requestFullscreen) {
-          element.requestFullscreen();
-        } else if (element.webkitRequestFullscreen) {
-          element.webkitRequestFullscreen();
-        } else if (element.msRequestFullscreen) {
-          element.msRequestFullscreen();
+<script>
+    // Base de datos de preguntas
+    const questions = [
+        {
+            q: "1. I usually __________ to work, but yesterday it was raining heavily, so I __________ the bus.",
+            options: [
+                { text: "walk / took", correct: true, feedback: "¡Correcto! Primero tienes un hábito general (Simple Present) y luego un evento que ya terminó ayer (Simple Past)." },
+                { text: "am walking / take", correct: false, feedback: "Incorrecto. 'Usually' es para hábitos, no lleva progresivo (-ing). Además, tomar el autobús fue ayer (pasado)." },
+                { text: "walk / was taking", correct: false, feedback: "Incorrecto. Tomar el autobús fue una acción rápida que finalizó, no un proceso continuo en el pasado." }
+            ]
+        },
+        {
+            q: "2. Look at the traffic! We __________ our flight for sure. I __________ the airline right now.",
+            options: [
+                { text: "will miss / am going to call", correct: false, feedback: "Incorrecto. Invertiste las reglas. Tienes evidencia visual frente a ti para la primera, y la segunda es espontánea." },
+                { text: "are going to miss / will call", correct: true, feedback: "¡Perfecto! 'Going to' se usa cuando hay evidencia obvia (el tráfico), y 'will' para decisiones que tomas en ese instante." },
+                { text: "are missing / will call", correct: false, feedback: "Incorrecto. El presente progresivo como futuro requiere que sea un plan agendado y seguro, no aplica para perder un vuelo por accidente." }
+            ]
+        },
+        {
+            q: "3. Hurry up and take your seat! The lights are dimming and the play __________.",
+            options: [
+                { text: "will start", correct: false, feedback: "Incorrecto. 'Will' se siente muy lejano. La acción está pasando casi en tus narices." },
+                { text: "is starting", correct: false, feedback: "Casi, pero hay una expresión específica para algo que va a pasar en los próximos segundos." },
+                { text: "is about to start", correct: true, feedback: "¡Exacto! 'Be about to' expresa inminencia, algo que va a ocurrir en cuestión de segundos o minutos." }
+            ]
+        },
+        {
+            q: "4. I am completely out of breath because I __________ for the last 45 minutes.",
+            options: [
+                { text: "had run", correct: false, feedback: "Incorrecto. El 'Past Perfect' se usaría si la persona dijera que *estaba* (was) sin aliento en el pasado." },
+                { text: "have been running", correct: true, feedback: "¡Muy bien! Present Perfect Progressive: una acción continua en el pasado que te deja un resultado físico visible justo AHORA ('I am out of breath')." },
+                { text: "was running", correct: false, feedback: "Incorrecto. Aunque fue continua, el progresivo pasado no conecta la acción con el resultado físico en tu presente actual." }
+            ]
+        },
+        {
+            q: "5. Yesterday, Jane was furious because her friend __________ up at the restaurant.",
+            options: [
+                { text: "didn't show", correct: false, feedback: "Incorrecto. Aunque se entiende, hay un tiempo verbal mejor para mostrar qué evento pasó PRIMERO en el pasado." },
+                { text: "hasn't shown", correct: false, feedback: "Incorrecto. El Present Perfect no encaja porque toda la historia ocurrió ayer." },
+                { text: "hadn't shown", correct: true, feedback: "¡Correcto! Past Perfect ('el pasado del pasado'). Primero su amigo no llegó, y por eso, después ella se puso furiosa." }
+            ]
         }
-      } else {
-        if (document.exitFullscreen) {
-          document.exitFullscreen();
-        } else if (document.webkitExitFullscreen) {
-          document.webkitExitFullscreen();
-        } else if (document.msExitFullscreen) {
-          document.msExitFullscreen();
-        }
-      }
+    ];
+
+    const quizContainer = document.getElementById('quiz-container');
+
+    function renderQuiz() {
+        quizContainer.innerHTML = '';
+        questions.forEach((qObj, qIndex) => {
+            const questionDiv = document.createElement('div');
+            questionDiv.className = 'question-block';
+            
+            // Render question
+            let html = `<div class="question-text">${qObj.q}</div>`;
+            html += `<ul class="options-list">`;
+            
+            // Render options
+            qObj.options.forEach((opt, oIndex) => {
+                const inputId = `q${qIndex}_o${oIndex}`;
+                html += `
+                    <li class="option-item">
+                        <label class="option-label" id="label_${inputId}" for="${inputId}">
+                            <input type="radio" name="q${qIndex}" id="${inputId}" value="${oIndex}">
+                            ${opt.text}
+                        </label>
+                    </li>
+                `;
+            });
+            html += `</ul>`;
+            
+            // Render feedback area
+            html += `<div class="feedback" id="feedback_${qIndex}"></div>`;
+            
+            questionDiv.innerHTML = html;
+            quizContainer.appendChild(questionDiv);
+        });
     }
 
-    // ---------- INDEPENDENT STATE FOR 3 WINDOWS ----------
-    const winState = {
-      1: { activeTeam: 'blue', scores: { blue: 0, red: 0 }, revealed: 0, total: 6, active: true, winnerDeclared: false },
-      2: { activeTeam: 'blue', scores: { blue: 0, red: 0 }, revealed: 0, total: 6, active: true, winnerDeclared: false },
-      3: { activeTeam: 'blue', scores: { blue: 0, red: 0 }, revealed: 0, total: 6, active: true, winnerDeclared: false }
-    };
+    function checkAnswers() {
+        let score = 0;
+        let allAnswered = true;
 
-    // ---------- SET ACTIVE TEAM ----------
-    function setActiveTeam(windowId, team) {
-      if (!winState[windowId].active) {
-        alert('Game finished, press PLAY AGAIN');
-        return;
-      }
-      
-      winState[windowId].activeTeam = team;
-      
-      const blueBtn = document.getElementById(`blueBtn${windowId}`);
-      const redBtn = document.getElementById(`redBtn${windowId}`);
-      
-      if (team === 'blue') {
-        blueBtn.classList.add('active');
-        redBtn.classList.remove('active');
-      } else {
-        redBtn.classList.add('active');
-        blueBtn.classList.remove('active');
-      }
-    }
+        questions.forEach((qObj, qIndex) => {
+            const selected = document.querySelector(`input[name="q${qIndex}"]:checked`);
+            const feedbackDiv = document.getElementById(`feedback_${qIndex}`);
+            
+            // Limpiar estilos previos
+            qObj.options.forEach((_, oIndex) => {
+                document.getElementById(`label_q${qIndex}_o${oIndex}`).classList.remove('correct-label', 'incorrect-label');
+            });
 
-    // ---------- CHECK ANSWER (WRITE & FLIP) ----------
-    function checkAnswer(windowId) {
-      if (!winState[windowId].active) {
-        alert('🏆 Game is over! Press PLAY AGAIN');
-        return;
-      }
-
-      const input = document.getElementById(`guessInput${windowId}`);
-      const guess = input.value.trim().toLowerCase();
-      
-      if (guess === '') {
-        alert('✏️ Write an answer');
-        return;
-      }
-
-      const answers = document.querySelectorAll(`#answers${windowId} .answer-card`);
-      let found = false;
-      let answerCard = null;
-      let points = 0;
-      let answerName = '';
-
-      answers.forEach(card => {
-        if (!card.classList.contains('revealed')) {
-          const cleanName = card.dataset.clean.toLowerCase();
-          if (guess === cleanName || guess.includes(cleanName) || cleanName.includes(guess)) {
-            found = true;
-            answerCard = card;
-            points = parseInt(card.dataset.points);
-            answerName = card.dataset.name;
-          }
-        }
-      });
-
-      if (!found) {
-        alert('❌ That answer is not in the list or already revealed');
-        input.value = '';
-        return;
-      }
-
-      const team = winState[windowId].activeTeam;
-      winState[windowId].scores[team] += points;
-      
-      document.getElementById(`blueScore${windowId}`).innerText = winState[windowId].scores.blue;
-      document.getElementById(`redScore${windowId}`).innerText = winState[windowId].scores.red;
-
-      answerCard.classList.add('revealed');
-      
-      winState[windowId].revealed++;
-      updateRemainingUI(windowId);
-
-      alert(`🎯 CORRECT! TEAM ${team.toUpperCase()} · ${answerName}\n🏆 +${points} pts`);
-
-      input.value = '';
-
-      if (winState[windowId].revealed === winState[windowId].total) {
-        declareWinner(windowId);
-      }
-    }
-
-    // ---------- REVEAL ALL ANSWERS (no points) ----------
-    function revealAllAnswers(windowId) {
-      if (!winState[windowId].active) {
-        alert('Game finished, press PLAY AGAIN');
-        return;
-      }
-
-      const answers = document.querySelectorAll(`#answers${windowId} .answer-card`);
-      let revealedAny = false;
-
-      answers.forEach(card => {
-        if (!card.classList.contains('revealed')) {
-          card.classList.add('revealed');
-          revealedAny = true;
-          winState[windowId].revealed++;
-        }
-      });
-
-      if (revealedAny) {
-        updateRemainingUI(windowId);
-        alert(`⚠️ ALL ANSWERS REVEALED (no points awarded)`);
-        
-        if (winState[windowId].revealed === winState[windowId].total) {
-          declareWinner(windowId);
-        }
-      } else {
-        alert('✅ All answers already revealed');
-      }
-    }
-
-    // ---------- REVEAL MISSING ANSWERS (after winner) ----------
-    function revealMissingAnswers(windowId) {
-      const answers = document.querySelectorAll(`#answers${windowId} .answer-card`);
-      let revealedAny = false;
-      let missingCount = 0;
-
-      answers.forEach(card => {
-        if (!card.classList.contains('revealed')) {
-          card.classList.add('revealed');
-          revealedAny = true;
-          missingCount++;
-        }
-      });
-
-      if (revealedAny) {
-        alert(`🔍 ${missingCount} MISSING ANSWERS REVEALED · No points awarded`);
-      } else {
-        alert('✅ All answers were already revealed');
-      }
-    }
-
-    // ---------- DECLARE WINNER ----------
-    function declareWinner(windowId) {
-      winState[windowId].active = false;
-      winState[windowId].winnerDeclared = true;
-      
-      const blue = winState[windowId].scores.blue;
-      const red = winState[windowId].scores.red;
-      
-      let winner = '';
-      if (blue > red) winner = 'BLUE';
-      else if (red > blue) winner = 'RED';
-      else winner = 'TIE';
-
-      const winnerTeamEl = document.getElementById(`winnerTeam${windowId}`);
-      if (winner === 'TIE') winnerTeamEl.innerText = '🤝 TIE GAME';
-      else winnerTeamEl.innerText = `🏆 TEAM ${winner}`;
-
-      document.getElementById(`winnerOverlay${windowId}`).classList.add('show');
-
-      // ----- MOSTRAR BOTÓN REVEAL MISSING -----
-      const revealMissingBtn = document.getElementById(`revealMissingBtn${windowId}`);
-      if (revealMissingBtn) {
-        revealMissingBtn.classList.remove('hidden');
-      }
-
-      if (winner !== 'TIE') {
-        confetti({ particleCount: 180, spread: 75, origin: { x: 0.5, y: 0.5 } });
-        confetti({ particleCount: 120, spread: 45, origin: { x: 0.3, y: 0.6 } });
-        confetti({ particleCount: 120, spread: 45, origin: { x: 0.7, y: 0.6 } });
-      }
-
-      alert(`🏁 GAME OVER · WINDOW ${windowId}\n🔵 BLUE: ${blue}  🔴 RED: ${red}\n🥇 WINNER: ${winner}`);
-    }
-
-    // ---------- UPDATE REMAINING ANSWERS ----------
-    function updateRemainingUI(windowId) {
-      const left = winState[windowId].total - winState[windowId].revealed;
-      const remEl = document.getElementById(`remaining${windowId}`);
-      remEl.innerHTML = `<i class="fas fa-hourglass-half"></i> ${left} answers left`;
-    }
-
-    // ---------- RESET WINDOW ----------
-    function resetWindow(windowId) {
-      winState[windowId] = {
-        activeTeam: 'blue',
-        scores: { blue: 0, red: 0 },
-        revealed: 0,
-        total: 6,
-        active: true,
-        winnerDeclared: false
-      };
-
-      document.getElementById(`blueScore${windowId}`).innerText = '0';
-      document.getElementById(`redScore${windowId}`).innerText = '0';
-
-      const blueBtn = document.getElementById(`blueBtn${windowId}`);
-      const redBtn = document.getElementById(`redBtn${windowId}`);
-      blueBtn.classList.add('active');
-      redBtn.classList.remove('active');
-
-      document.getElementById(`winnerOverlay${windowId}`).classList.remove('show');
-
-      // ----- OCULTAR BOTÓN REVEAL MISSING -----
-      const revealMissingBtn = document.getElementById(`revealMissingBtn${windowId}`);
-      if (revealMissingBtn) {
-        revealMissingBtn.classList.add('hidden');
-      }
-
-      const answers = document.querySelectorAll(`#answers${windowId} .answer-card`);
-      answers.forEach(card => {
-        card.classList.remove('revealed');
-      });
-
-      const input = document.getElementById(`guessInput${windowId}`);
-      if (input) input.value = '';
-
-      updateRemainingUI(windowId);
-    }
-
-    // ---------- INIT ----------
-    window.onload = function() {
-      for (let i = 1; i <= 3; i++) {
-        updateRemainingUI(i);
-      }
-      
-      for (let i = 1; i <= 3; i++) {
-        const input = document.getElementById(`guessInput${i}`);
-        if (input) {
-          input.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-              checkAnswer(i);
+            if (!selected) {
+                allAnswered = false;
+                return;
             }
-          });
-        }
-      }
-    };
-  </script>
 
-  <!-- Font Awesome fallback -->
-  <script>
-    document.querySelectorAll('.fa-taco').forEach(el => el.classList.add('fa-solid'));
-    document.querySelectorAll('.fa-corn').forEach(el => el.classList.add('fa-solid'));
-  </script>
+            const selectedValue = parseInt(selected.value);
+            const isCorrect = qObj.options[selectedValue].correct;
+            const selectedLabel = document.getElementById(`label_${selected.id}`);
+
+            feedbackDiv.style.display = 'block';
+            feedbackDiv.innerHTML = qObj.options[selectedValue].feedback;
+
+            if (isCorrect) {
+                score++;
+                selectedLabel.classList.add('correct-label');
+                feedbackDiv.className = 'feedback correct';
+            } else {
+                selectedLabel.classList.add('incorrect-label');
+                feedbackDiv.className = 'feedback incorrect';
+                
+                // Resaltar también la respuesta correcta para que aprendan
+                qObj.options.forEach((opt, oIndex) => {
+                    if (opt.correct) {
+                        document.getElementById(`label_q${qIndex}_o${oIndex}`).classList.add('correct-label');
+                    }
+                });
+            }
+        });
+
+        if (!allAnswered) {
+            alert("¡Eh! Te faltan preguntas por responder.");
+            return;
+        }
+
+        // Mostrar resultados
+        const resultsArea = document.getElementById('results-area');
+        resultsArea.style.display = 'block';
+        resultsArea.innerHTML = `Tu puntuación: ${score} / ${questions.length}`;
+        
+        // Cambiar botones
+        document.getElementById('submit-btn').style.display = 'none';
+        document.getElementById('retake-btn').style.display = 'block';
+        
+        // Bloquear inputs para que no los cambien
+        document.querySelectorAll('input[type="radio"]').forEach(radio => radio.disabled = true);
+        
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function resetQuiz() {
+        renderQuiz();
+        document.getElementById('results-area').style.display = 'none';
+        document.getElementById('submit-btn').style.display = 'block';
+        document.getElementById('retake-btn').style.display = 'none';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // Inicializar el quiz al cargar
+    renderQuiz();
+</script>
+
 </body>
 </html>
-
-
-
