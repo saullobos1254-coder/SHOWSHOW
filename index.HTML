@@ -3,353 +3,307 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>App de Guion | Saúl & Yade</title>
+    <title>Saúl & Yade | Script App</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            -webkit-tap-highlight-color: transparent;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
         }
 
         :root {
-            --bg-primary: #0A0F1E;
-            --bg-secondary: #151F2E;
-            --bg-card: #1E2A3A;
+            --bg: #0A0C10;
+            --surface: #14181F;
+            --surface-light: #1E2530;
+            --border: #2A323F;
+            --text: #FFFFFF;
+            --text-secondary: #9AA8B9;
+            --text-muted: #6B7A8F;
             --saul: #3B82F6;
-            --saul-light: rgba(59, 130, 246, 0.15);
-            --saul-glow: rgba(59, 130, 246, 0.5);
-            --yade: #A855F7;
-            --yade-light: rgba(168, 85, 247, 0.15);
-            --yade-glow: rgba(168, 85, 247, 0.5);
-            --text-primary: #F1F5F9;
-            --text-secondary: #94A3B8;
-            --text-muted: #64748B;
-            --border: #2D3A4E;
-            --success: #10B981;
-            --keyword: #F59E0B;
+            --saul-light: rgba(59, 130, 246, 0.1);
+            --yade: #8B5CF6;
+            --yade-light: rgba(139, 92, 246, 0.1);
+            --accent: #10B981;
         }
 
         body {
-            background: var(--bg-primary);
-            color: var(--text-primary);
+            background-color: var(--bg);
+            color: var(--text);
             height: 100dvh;
             overflow: hidden;
-            position: relative;
+            line-height: 1.5;
         }
 
-        /* Header Mejorado */
+        /* Header minimalista */
         header {
-            background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-card) 100%);
-            padding: 20px 16px;
-            border-bottom: 2px solid var(--border);
-            position: relative;
-            z-index: 50;
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--border);
             display: flex;
             justify-content: space-between;
             align-items: center;
-            backdrop-filter: blur(10px);
+            background: var(--surface);
         }
 
-        .header-title {
-            display: flex;
-            align-items: center;
-            gap: 8px;
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 600;
+            letter-spacing: -0.02em;
         }
 
-        .header-icon {
-            font-size: 28px;
-        }
-
-        .title-saul {
+        .logo-saul {
             color: var(--saul);
-            font-weight: 800;
-            font-size: 1.5rem;
-            text-shadow: 0 0 15px var(--saul-glow);
         }
 
-        .title-yade {
+        .logo-yade {
             color: var(--yade);
-            font-weight: 800;
-            font-size: 1.5rem;
-            text-shadow: 0 0 15px var(--yade-glow);
         }
 
-        .title-amp {
-            color: var(--text-primary);
-            font-size: 1.5rem;
+        .logo-ampersand {
+            color: var(--text-secondary);
             margin: 0 2px;
         }
 
-        .header-badge {
-            background: rgba(255,255,255,0.1);
+        .badge {
+            background: var(--surface-light);
             padding: 6px 12px;
-            border-radius: 30px;
+            border-radius: 100px;
             font-size: 0.8rem;
             color: var(--text-secondary);
             border: 1px solid var(--border);
         }
 
-        /* Main Content Area */
-        .content-area {
-            height: calc(100dvh - 140px);
+        /* Contenedor principal */
+        .container {
+            height: calc(100dvh - 130px);
             overflow-y: auto;
-            overflow-x: hidden;
-            padding: 20px 16px;
-            padding-bottom: 20px;
-            scroll-behavior: smooth;
+            padding: 20px 24px;
+            padding-bottom: 100px;
         }
 
         /* Vistas */
         .view {
             display: none;
-            animation: slideIn 0.3s ease;
+            animation: fade 0.2s ease;
         }
 
         .view.active {
             display: block;
         }
 
-        .view.chat-view.active {
+        .view.script-view.active {
             display: flex;
             flex-direction: column;
             gap: 16px;
         }
 
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateX(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
+        @keyframes fade {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
 
-        /* Tarjetas de edición mejoradas */
-        .edit-card {
-            background: var(--bg-card);
-            border-radius: 24px;
-            padding: 20px;
-            margin-bottom: 20px;
+        /* Formulario de edición - estilo clean */
+        .editor-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .editor-card {
+            background: var(--surface);
             border: 1px solid var(--border);
-            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.5);
-            transition: all 0.3s;
+            border-radius: 20px;
+            padding: 24px;
         }
 
-        .edit-card.saul {
-            border-left: 5px solid var(--saul);
-            background: linear-gradient(145deg, var(--bg-card) 0%, #1A2638 100%);
-        }
-
-        .edit-card.yade {
-            border-left: 5px solid var(--yade);
-            background: linear-gradient(145deg, var(--bg-card) 0%, #1E1A2E 100%);
-        }
-
-        .edit-header {
+        .editor-header {
             display: flex;
             align-items: center;
             gap: 12px;
-            margin-bottom: 20px;
+            margin-bottom: 24px;
         }
 
-        .edit-avatar {
+        .editor-avatar {
             width: 48px;
             height: 48px;
-            border-radius: 24px;
+            border-radius: 16px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 24px;
-            font-weight: bold;
+            font-weight: 600;
+            font-size: 1.2rem;
         }
 
-        .saul .edit-avatar {
+        .saul .editor-avatar {
             background: var(--saul-light);
             color: var(--saul);
-            border: 2px solid var(--saul);
+            border: 1px solid var(--saul);
         }
 
-        .yade .edit-avatar {
+        .yade .editor-avatar {
             background: var(--yade-light);
             color: var(--yade);
-            border: 2px solid var(--yade);
+            border: 1px solid var(--yade);
         }
 
-        .edit-title h3 {
-            font-size: 1.3rem;
+        .editor-title h3 {
+            font-size: 1.2rem;
+            font-weight: 600;
             margin-bottom: 4px;
         }
 
-        .edit-title p {
-            color: var(--text-secondary);
-            font-size: 0.85rem;
-        }
-
-        /* Inputs Mejorados */
-        .input-group {
-            margin-bottom: 16px;
-        }
-
-        .input-group label {
-            display: flex;
-            align-items: center;
-            gap: 6px;
+        .editor-title p {
             color: var(--text-secondary);
             font-size: 0.9rem;
-            margin-bottom: 6px;
+        }
+
+        .input-row {
+            margin-bottom: 20px;
+        }
+
+        .input-row:last-child {
+            margin-bottom: 0;
+        }
+
+        .input-row label {
+            display: block;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
             font-weight: 500;
         }
 
-        .input-icon {
-            font-size: 1.1rem;
-        }
-
-        .input-group input {
+        .input-row input {
             width: 100%;
-            background: var(--bg-primary);
-            border: 2px solid var(--border);
-            color: var(--text-primary);
+            background: var(--bg);
+            border: 1px solid var(--border);
+            color: var(--text);
             padding: 14px 16px;
-            border-radius: 16px;
-            font-size: 16px;
+            border-radius: 14px;
+            font-size: 1rem;
             transition: all 0.2s;
         }
 
-        .input-group input:focus {
+        .input-row input:focus {
             outline: none;
             border-color: var(--saul);
-            box-shadow: 0 0 0 3px var(--saul-light);
         }
 
-        .yade .input-group input:focus {
+        .yade .input-row input:focus {
             border-color: var(--yade);
-            box-shadow: 0 0 0 3px var(--yade-light);
         }
 
-        /* Elementos del guion mejorados */
-        .scene-marker {
-            background: linear-gradient(90deg, var(--bg-card) 0%, transparent 100%);
-            padding: 14px 18px;
-            border-radius: 50px;
+        /* Elementos del script - estilo limpio */
+        .scene-heading {
             color: var(--text-secondary);
-            font-style: italic;
-            font-size: 0.9rem;
-            border-left: 4px solid var(--text-muted);
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border);
             margin: 8px 0;
-            backdrop-filter: blur(5px);
         }
 
-        .chat-bubble {
-            max-width: 90%;
-            padding: 16px 18px;
-            border-radius: 24px;
-            font-size: 1.05rem;
-            line-height: 1.5;
-            animation: popIn 0.3s ease;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        .line {
+            max-width: 85%;
+            margin: 8px 0;
         }
 
-        @keyframes popIn {
-            from {
-                opacity: 0;
-                transform: scale(0.95);
-            }
-            to {
-                opacity: 1;
-                transform: scale(1);
-            }
+        .line.saul {
+            align-self: flex-start;
         }
 
-        .chat-bubble .speaker {
+        .line.yade {
+            align-self: flex-end;
+        }
+
+        .line-content {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 16px 20px;
+        }
+
+        .line.saul .line-content {
+            border-bottom-left-radius: 6px;
+        }
+
+        .line.yade .line-content {
+            border-bottom-right-radius: 6px;
+            background: var(--surface-light);
+        }
+
+        .character {
             display: flex;
             align-items: center;
             gap: 8px;
             margin-bottom: 6px;
         }
 
-        .speaker-name {
-            font-weight: 800;
+        .character-name {
+            font-weight: 600;
             font-size: 0.9rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
         }
 
-        .speaker-icon {
-            font-size: 1rem;
+        .character.saul .character-name {
+            color: var(--saul);
         }
 
-        .chat-bubble .action {
+        .character.yade .character-name {
+            color: var(--yade);
+        }
+
+        .action {
             color: var(--text-secondary);
             font-style: italic;
             font-size: 0.9rem;
             display: block;
-            margin-bottom: 8px;
-            padding-left: 4px;
-            border-left: 2px solid currentColor;
+            margin-bottom: 6px;
         }
 
-        .bubble-saul {
-            align-self: flex-start;
-            background: var(--saul-light);
-            border: 1px solid var(--saul);
-            border-bottom-left-radius: 8px;
+        .dialogue {
+            font-size: 1rem;
+            line-height: 1.5;
         }
 
-        .bubble-saul .speaker-name { color: var(--saul); }
-
-        .bubble-yade {
-            align-self: flex-end;
-            background: var(--yade-light);
-            border: 1px solid var(--yade);
-            border-bottom-right-radius: 8px;
+        .var {
+            font-weight: 600;
+            padding: 2px 4px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 6px;
         }
 
-        .bubble-yade .speaker-name { color: var(--yade); }
-
-        /* Variables en el texto */
-        .var-highlight {
-            font-weight: 700;
-            padding: 2px 6px;
-            border-radius: 12px;
-            background: rgba(0,0,0,0.3);
-            display: inline-block;
-        }
-
-        .var-saul {
+        .var.saul {
             color: var(--saul);
-            border-bottom: 2px dashed var(--saul);
+            border-bottom: 1px dashed var(--saul);
         }
 
-        .var-yade {
+        .var.yade {
             color: var(--yade);
-            border-bottom: 2px dashed var(--yade);
+            border-bottom: 1px dashed var(--yade);
         }
 
-        .keyword-highlight {
-            color: var(--keyword);
-            font-weight: 800;
-            background: rgba(245, 158, 11, 0.1);
+        .keyword {
+            color: var(--accent);
+            font-weight: 600;
+            background: rgba(16, 185, 129, 0.1);
             padding: 2px 8px;
-            border-radius: 20px;
+            border-radius: 30px;
             display: inline-block;
+            font-size: 0.9rem;
         }
 
-        /* Navegación inferior mejorada */
-        nav {
+        /* Navegación inferior */
+        .bottom-nav {
             position: fixed;
             bottom: 0;
             width: 100%;
-            background: linear-gradient(180deg, var(--bg-secondary) 0%, var(--bg-card) 100%);
-            border-top: 2px solid var(--border);
+            background: var(--surface);
+            border-top: 1px solid var(--border);
             display: flex;
-            padding: 8px 16px;
-            padding-bottom: calc(8px + env(safe-area-inset-bottom));
+            padding: 12px 24px;
             gap: 12px;
-            z-index: 100;
+            backdrop-filter: blur(10px);
         }
 
         .nav-btn {
@@ -358,403 +312,367 @@
             border: none;
             color: var(--text-secondary);
             padding: 12px 0;
-            border-radius: 30px;
-            font-weight: 600;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 4px;
-            cursor: pointer;
-            transition: all 0.3s;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .nav-btn::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: currentColor;
-            opacity: 0;
-            transition: opacity 0.3s;
-        }
-
-        .nav-btn.active {
-            color: white;
-            background: linear-gradient(135deg, var(--saul), var(--yade));
-            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
-        }
-
-        .nav-icon {
-            font-size: 1.6rem;
-            z-index: 1;
-        }
-
-        .nav-text {
-            font-size: 0.8rem;
-            z-index: 1;
-        }
-
-        /* Botón de copiar mejorado */
-        .action-buttons {
-            display: flex;
-            gap: 12px;
-            margin: 20px 0;
-            padding: 0 4px;
-        }
-
-        .btn-primary {
-            flex: 1;
-            background: linear-gradient(135deg, var(--saul), var(--yade));
-            border: none;
-            color: white;
-            padding: 16px 24px;
-            border-radius: 50px;
-            font-weight: 700;
-            font-size: 1rem;
+            border-radius: 14px;
+            font-weight: 500;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 10px;
-            box-shadow: 0 10px 20px -5px rgba(59, 130, 246, 0.5);
-            cursor: pointer;
-            transition: all 0.2s;
-            border: 1px solid rgba(255,255,255,0.1);
-        }
-
-        .btn-primary:active {
-            transform: scale(0.97);
-        }
-
-        .btn-secondary {
-            background: var(--bg-card);
-            border: 2px solid var(--border);
-            color: var(--text-primary);
-            padding: 16px 20px;
-            border-radius: 50px;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
             gap: 8px;
             cursor: pointer;
             transition: all 0.2s;
         }
 
-        .btn-secondary:active {
-            background: var(--border);
+        .nav-btn.active {
+            background: var(--surface-light);
+            color: var(--text);
         }
 
-        /* Toast de notificación */
+        .nav-icon {
+            font-size: 1.3rem;
+        }
+
+        /* Botón copiar */
+        .copy-btn {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            color: var(--text);
+            padding: 16px;
+            border-radius: 16px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            cursor: pointer;
+            margin-top: 24px;
+            transition: all 0.2s;
+        }
+
+        .copy-btn:hover {
+            background: var(--surface-light);
+        }
+
+        /* Scrollbar */
+        .container::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .container::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .container::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 2px;
+        }
+
+        /* Toast */
         .toast {
             position: fixed;
             bottom: 100px;
-            left: 20px;
-            right: 20px;
-            background: var(--success);
+            left: 24px;
+            right: 24px;
+            background: var(--accent);
             color: white;
-            padding: 16px 24px;
-            border-radius: 50px;
+            padding: 16px 20px;
+            border-radius: 16px;
             text-align: center;
-            font-weight: 600;
-            box-shadow: 0 10px 30px rgba(16, 185, 129, 0.4);
+            font-weight: 500;
             transform: translateY(200%);
             transition: transform 0.3s ease;
             z-index: 1000;
+            box-shadow: 0 10px 25px rgba(16, 185, 129, 0.3);
         }
 
         .toast.show {
             transform: translateY(0);
-        }
-
-        /* Scrollbar personalizada */
-        .content-area::-webkit-scrollbar {
-            width: 6px;
-        }
-
-        .content-area::-webkit-scrollbar-track {
-            background: var(--bg-secondary);
-        }
-
-        .content-area::-webkit-scrollbar-thumb {
-            background: var(--border);
-            border-radius: 3px;
-        }
-
-        .content-area::-webkit-scrollbar-thumb:hover {
-            background: var(--text-muted);
         }
     </style>
 </head>
 <body>
 
     <header>
-        <div class="header-title">
-            <span class="header-icon">🎭</span>
-            <span class="title-saul">Saúl</span>
-            <span class="title-amp">&</span>
-            <span class="title-yade">Yade</span>
+        <div class="logo">
+            <span class="logo-saul">Saúl</span>
+            <span class="logo-ampersand">&</span>
+            <span class="logo-yade">Yade</span>
         </div>
-        <div class="header-badge">
-            <span>⚡ En vivo</span>
-        </div>
+        <div class="badge">script · live</div>
     </header>
 
-    <div class="content-area">
+    <div class="container">
         
         <!-- Vista de edición -->
         <div id="view-edit" class="view">
-            <div style="margin-bottom: 20px; text-align: center;">
-                <span style="background: var(--bg-card); padding: 8px 16px; border-radius: 50px; color: var(--text-secondary); font-size: 0.9rem;">
-                    ✏️ Personaliza los datos y ve los cambios en tiempo real
-                </span>
-            </div>
+            <div class="editor-grid">
+                
+                <!-- Saúl Card -->
+                <div class="editor-card saul">
+                    <div class="editor-header">
+                        <div class="editor-avatar">S</div>
+                        <div class="editor-title">
+                            <h3 style="color: var(--saul);">Saúl</h3>
+                            <p>developer · creative</p>
+                        </div>
+                    </div>
 
-            <!-- Tarjeta Saúl -->
-            <div class="edit-card saul">
-                <div class="edit-header">
-                    <div class="edit-avatar">👨‍💻</div>
-                    <div class="edit-title">
-                        <h3 style="color: var(--saul);">Saúl</h3>
-                        <p>El desarrollador creativo</p>
+                    <div class="input-row">
+                        <label>What do you do?</label>
+                        <input type="text" id="in-saul-job" value="web development" oninput="updateScript()">
+                    </div>
+                    <div class="input-row">
+                        <label>Favorite sport</label>
+                        <input type="text" id="in-saul-sport" value="padel" oninput="updateScript()">
+                    </div>
+                    <div class="input-row">
+                        <label>Favorite hobby</label>
+                        <input type="text" id="in-saul-social" value="parties" oninput="updateScript()">
+                    </div>
+                    <div class="input-row">
+                        <label>Favorite food</label>
+                        <input type="text" id="in-saul-food" value="aguachiles" oninput="updateScript()">
                     </div>
                 </div>
 
-                <div class="input-group">
-                    <label><span class="input-icon">💼</span> ¿A qué te dedicas?</label>
-                    <input type="text" id="in-saul-job" value="web development" oninput="updateScript()" placeholder="Ej: programación web">
-                </div>
-                <div class="input-group">
-                    <label><span class="input-icon">🎾</span> Deporte favorito</label>
-                    <input type="text" id="in-saul-sport" value="padel" oninput="updateScript()" placeholder="Ej: pádel">
-                </div>
-                <div class="input-group">
-                    <label><span class="input-icon">🎉</span> Hobby / Plan favorito</label>
-                    <input type="text" id="in-saul-social" value="parties" oninput="updateScript()" placeholder="Ej: fiestas">
-                </div>
-                <div class="input-group">
-                    <label><span class="input-icon">🌮</span> Comida favorita</label>
-                    <input type="text" id="in-saul-food" value="aguachiles" oninput="updateScript()" placeholder="Ej: aguachiles">
-                </div>
-            </div>
+                <!-- Yade Card -->
+                <div class="editor-card yade">
+                    <div class="editor-header">
+                        <div class="editor-avatar">Y</div>
+                        <div class="editor-title">
+                            <h3 style="color: var(--yade);">Yadeneiro</h3>
+                            <p>consultant · strategist</p>
+                        </div>
+                    </div>
 
-            <!-- Tarjeta Yade -->
-            <div class="edit-card yade">
-                <div class="edit-header">
-                    <div class="edit-avatar">👔</div>
-                    <div class="edit-title">
-                        <h3 style="color: var(--yade);">Yadeneiro</h3>
-                        <p>El estratega financiero</p>
+                    <div class="input-row">
+                        <label>What do you do?</label>
+                        <input type="text" id="in-yade-job" value="tax consulting firm" oninput="updateScript()">
+                    </div>
+                    <div class="input-row">
+                        <label>Favorite sport</label>
+                        <input type="text" id="in-yade-sport" value="tennis" oninput="updateScript()">
+                    </div>
+                    <div class="input-row">
+                        <label>Favorite food</label>
+                        <input type="text" id="in-yade-food" value="tamales" oninput="updateScript()">
                     </div>
                 </div>
-
-                <div class="input-group">
-                    <label><span class="input-icon">📊</span> ¿A qué te dedicas?</label>
-                    <input type="text" id="in-yade-job" value="tax consulting firm" oninput="updateScript()" placeholder="Ej: consultoría fiscal">
-                </div>
-                <div class="input-group">
-                    <label><span class="input-icon">🎾</span> Deporte favorito</label>
-                    <input type="text" id="in-yade-sport" value="tennis" oninput="updateScript()" placeholder="Ej: tenis">
-                </div>
-                <div class="input-group">
-                    <label><span class="input-icon">🌯</span> Comida favorita</label>
-                    <input type="text" id="in-yade-food" value="tamales" oninput="updateScript()" placeholder="Ej: tamales">
-                </div>
-            </div>
-
-            <div style="background: var(--bg-card); border-radius: 16px; padding: 16px; margin-top: 20px; border: 1px solid var(--border);">
-                <p style="color: var(--text-secondary); display: flex; align-items: center; gap: 8px;">
-                    <span>💡</span> Los cambios se reflejan automáticamente en la vista del guion
-                </p>
             </div>
         </div>
 
-        <!-- Vista del guion -->
-        <div id="view-script" class="view chat-view active">
+        <!-- Vista del script -->
+        <div id="view-script" class="view script-view active">
             
-            <!-- Escena 1 -->
-            <div class="scene-marker">
-                ⏳ Escena 1 - Pasillo de la escuela
+            <div class="scene-heading">SCENE 1 · SCHOOL HALLWAY</div>
+
+            <!-- Yade -->
+            <div class="line yade">
+                <div class="line-content">
+                    <div class="character yade">
+                        <span class="character-name">YADE</span>
+                    </div>
+                    <span class="action">*[Da un paso atrás sorprendido, sonríe y señala]*</span>
+                    <div class="dialogue">
+                        Saúl! What a surprise! I barely recognized you!
+                    </div>
+                </div>
             </div>
 
-            <div class="chat-bubble bubble-yade">
-                <div class="speaker">
-                    <span class="speaker-icon">👤</span>
-                    <span class="speaker-name">YADE</span>
+            <!-- Saúl -->
+            <div class="line saul">
+                <div class="line-content">
+                    <div class="character saul">
+                        <span class="character-name">SAÚL</span>
+                    </div>
+                    <span class="action">*[Se ríe a carcajadas y le da un abrazo]*</span>
+                    <div class="dialogue">
+                        Yade?! Wow! It's been forever. Look at you! Last time we talked you were studying. How is everything going now?
+                    </div>
                 </div>
-                <span class="action">*[Da un paso atrás sorprendido, sonríe y señala con el dedo]*</span>
-                ¡Saúl! ¡Qué sorpresa! ¡Casi no te reconozco!
             </div>
 
-            <div class="chat-bubble bubble-saul">
-                <div class="speaker">
-                    <span class="speaker-icon">👨‍💻</span>
-                    <span class="speaker-name">SAÚL</span>
+            <!-- Yade -->
+            <div class="line yade">
+                <div class="line-content">
+                    <div class="character yade">
+                        <span class="character-name">YADE</span>
+                    </div>
+                    <span class="action">*[Sonríe confiado]*</span>
+                    <div class="dialogue">
+                        Oh, you know, surviving! Running my <span class="var yade out-yade-job"></span> is relentless, but <span class="keyword">here's the deal</span> — we just landed some major contracts, so all the hard work is finally paying off. How about you? Still coding?
+                    </div>
                 </div>
-                <span class="action">*[Se ríe a carcajadas y le da un abrazo fuerte]*</span>
-                ¡Yade! ¡¿Eres tú?! ¡Cuánto tiempo! Mírate, estás hecho un ejecutivo. La última vez que hablamos estabas estudiando, ¿cómo va todo ahora?
             </div>
 
-            <div class="chat-bubble bubble-yade">
-                <div class="speaker">
-                    <span class="speaker-icon">👤</span>
-                    <span class="speaker-name">YADE</span>
+            <!-- Saúl -->
+            <div class="line saul">
+                <div class="line-content">
+                    <div class="character saul">
+                        <span class="character-name">SAÚL</span>
+                    </div>
+                    <span class="action">*[Asiente y hace gesto de teclear]*</span>
+                    <div class="dialogue">
+                        Guilty! I'm still deep in the tech world. Specifically doing <span class="var saul out-saul-job"></span> and database automation. It's demanding but I love it.
+                    </div>
                 </div>
-                <span class="action">*[Sonríe confiado, postura firme]*</span>
-                Uff, ya sabes, ¡sobreviviendo! Llevar mi <span class="var-highlight var-yade out-yade-job"></span> es una locura, pero <span class="keyword-highlight">aquí está el chiste</span> — acabo de cerrar unos contratos enormes, así que todo el esfuerzo está dando resultados. ¿Y tú? ¿Sigues pegado al código?
             </div>
 
-            <div class="chat-bubble bubble-saul">
-                <div class="speaker">
-                    <span class="speaker-icon">👨‍💻</span>
-                    <span class="speaker-name">SAÚL</span>
+            <!-- Yade -->
+            <div class="line yade">
+                <div class="line-content">
+                    <div class="character yade">
+                        <span class="character-name">YADE</span>
+                    </div>
+                    <span class="action">*[Interesado]*</span>
+                    <div class="dialogue">
+                        That kind of engineering is a complete game-changer nowadays. But how do you even unwind with so much screen time?
+                    </div>
                 </div>
-                <span class="action">*[Asiente convencido mientras hace el gesto de teclear]*</span>
-                ¡Totalmente! Sigo metido de lleno en el mundo tech. Ahora estoy especializado en <span class="var-highlight var-saul out-saul-job"></span> y automatización de bases de datos. Es demandante, pero me encanta.
             </div>
 
-            <div class="chat-bubble bubble-yade">
-                <div class="speaker">
-                    <span class="speaker-icon">👤</span>
-                    <span class="speaker-name">YADE</span>
+            <!-- Saúl -->
+            <div class="line saul">
+                <div class="line-content">
+                    <div class="character saul">
+                        <span class="character-name">SAÚL</span>
+                    </div>
+                    <span class="action">*[Ríe y niega con la cabeza]*</span>
+                    <div class="dialogue">
+                        That's easy. I play <span class="var saul out-saul-sport"></span> to stay active. And honestly, I still love going out to <span class="var saul out-saul-social"></span> on the weekends, or hanging out with my girlfriend. I need that balance. <span class="keyword">How about you?</span> I know you can't be all business all the time.
+                    </div>
                 </div>
-                <span class="action">*[Interesado genuinamente]*</span>
-                Ese tipo de ingeniería es un game-changer total hoy en día. Pero con tantas horas frente a la pantalla, ¿cómo le haces para desconectar?
             </div>
 
-            <div class="chat-bubble bubble-saul">
-                <div class="speaker">
-                    <span class="speaker-icon">👨‍💻</span>
-                    <span class="speaker-name">SAÚL</span>
+            <!-- Yade -->
+            <div class="line yade">
+                <div class="line-content">
+                    <div class="character yade">
+                        <span class="character-name">YADE</span>
+                    </div>
+                    <span class="action">*[Sonríe, imita un saque]*</span>
+                    <div class="dialogue">
+                        Nope! I have a weekly date with a <span class="var yade out-yade-sport"></span> court. It's the only place where the stress of the <span class="var yade out-yade-job"></span> can't find me!
+                    </div>
                 </div>
-                <span class="action">*[Ríe y niega con la cabeza]*</span>
-                Fácil. Juego <span class="var-highlight var-saul out-saul-sport"></span> para mantenerme activo. Y los fines de semana, nada como salir a <span class="var-highlight var-saul out-saul-social"></span> con mi novia o los amigos. Necesito ese equilibrio. <span class="keyword-highlight">¿Y tú?</span> Sé que no puedes ser puro negocio todo el tiempo.
             </div>
 
-            <div class="chat-bubble bubble-yade">
-                <div class="speaker">
-                    <span class="speaker-icon">👤</span>
-                    <span class="speaker-name">YADE</span>
+            <!-- Saúl -->
+            <div class="line saul">
+                <div class="line-content">
+                    <div class="character saul">
+                        <span class="character-name">SAÚL</span>
+                    </div>
+                    <span class="action">*[Sorprendido]*</span>
+                    <div class="dialogue">
+                        Oh, nice! We should play a match sometime. Or, you know, just grab some food and catch up properly!
+                    </div>
                 </div>
-                <span class="action">*[Sonríe juguetón, imita un saque]*</span>
-                ¡Para nada! Tengo cita semanal con la cancha de <span class="var-highlight var-yade out-yade-sport"></span>. Es el único lugar donde el estrés de la <span class="var-highlight var-yade out-yade-job"></span> no me alcanza.
             </div>
 
-            <div class="chat-bubble bubble-saul">
-                <div class="speaker">
-                    <span class="speaker-icon">👨‍💻</span>
-                    <span class="speaker-name">SAÚL</span>
+            <!-- Yade -->
+            <div class="line yade">
+                <div class="line-content">
+                    <div class="character yade">
+                        <span class="character-name">YADE</span>
+                    </div>
+                    <span class="action">*[Se toca el estómago]*</span>
+                    <div class="dialogue">
+                        Actually, I'm starving right now. I've been craving some really good <span class="var yade out-yade-food"></span> all morning. Do you know any spots around here?
+                    </div>
                 </div>
-                <span class="action">*[Sorprendido]*</span>
-                ¡Qué bien! Deberíamos echar un partido algún día. O mejor, comer algo y ponernos al día como la gente normal.
             </div>
 
-            <div class="chat-bubble bubble-yade">
-                <div class="speaker">
-                    <span class="speaker-icon">👤</span>
-                    <span class="speaker-name">YADE</span>
+            <!-- Saúl -->
+            <div class="line saul">
+                <div class="line-content">
+                    <div class="character saul">
+                        <span class="character-name">SAÚL</span>
+                    </div>
+                    <span class="action">*[Piensa]*</span>
+                    <div class="dialogue">
+                        Those are great, but <span class="keyword">here's the deal</span> — I know this place near campus that has the absolute best <span class="var saul out-saul-food"></span>. It's super fresh, perfectly spicy... <span class="action">*[Chef's kiss 🤌]*</span> you have to try it.
+                    </div>
                 </div>
-                <span class="action">*[Se toca el estómago y sonríe]*</span>
-                La verdad, me muero de hambre. Toda la mañana con antojo de unos buenos <span class="var-highlight var-yade out-yade-food"></span>. ¿Conoces algún lugar bueno por aquí?
             </div>
 
-            <div class="chat-bubble bubble-saul">
-                <div class="speaker">
-                    <span class="speaker-icon">👨‍💻</span>
-                    <span class="speaker-name">SAÚL</span>
+            <!-- Yade -->
+            <div class="line yade">
+                <div class="line-content">
+                    <div class="character yade">
+                        <span class="character-name">YADE</span>
+                    </div>
+                    <span class="action">*[Se ríe y señala]*</span>
+                    <div class="dialogue">
+                        <span class="var saul out-saul-food"></span> vs. <span class="var yade out-yade-food"></span>... you always have to raise the stakes! Alright, I'm sold. Lead the way!
+                    </div>
                 </div>
-                <span class="action">*[Se toca la barbilla pensativo]*</span>
-                Están ricos, pero <span class="keyword-highlight">aquí está el detalle</span> — conozco un lugar cerca del campus que prepara los mejores <span class="var-highlight var-saul out-saul-food"></span>. Super frescos, el picante justo... <span class="action">*[Hace el gesto de chef's kiss 🤌]*</span> tienes que probarlos.
             </div>
 
-            <div class="chat-bubble bubble-yade">
-                <div class="speaker">
-                    <span class="speaker-icon">👤</span>
-                    <span class="speaker-name">YADE</span>
+            <!-- Saúl -->
+            <div class="line saul">
+                <div class="line-content">
+                    <div class="character saul">
+                        <span class="character-name">SAÚL</span>
+                    </div>
+                    <span class="action">*[Gesto amplio]*</span>
+                    <div class="dialogue">
+                        Perfect! Let's go. We have a lot more catching up to do!
+                    </div>
                 </div>
-                <span class="action">*[Se ríe y señala a Saúl]*</span>
-                <span class="var-highlight var-saul out-saul-food"></span> vs <span class="var-highlight var-yade out-yade-food"></span>... ¡siempre tienes que subir la apuesta! Está bien, me convenciste. ¡Llevame!
-            </div>
-
-            <div class="chat-bubble bubble-saul">
-                <div class="speaker">
-                    <span class="speaker-icon">👨‍💻</span>
-                    <span class="speaker-name">SAÚL</span>
-                </div>
-                <span class="action">*[Hace gesto amplio invitando a caminar]*</span>
-                ¡Perfecto! Vamos. Tenemos mucho más de qué ponernos al día.
             </div>
             
-            <div class="scene-marker">
-                🎬 FIN DE LA ESCENA - Caminan juntos mientras siguen charlando
-            </div>
+            <div class="scene-heading">END OF SCENE · THEY WALK OFF TOGETHER</div>
 
-            <!-- Botones de acción -->
-            <div class="action-buttons">
-                <button class="btn-primary" onclick="copyToClipboard()">
-                    <span>📋</span>
-                    Copiar Guion
-                </button>
-                <button class="btn-secondary" onclick="shareScript()">
-                    <span>📱</span>
-                    Compartir
-                </button>
-            </div>
+            <button class="copy-btn" onclick="copyScript()">
+                <span>📋</span>
+                Copy script to clipboard
+            </button>
 
         </div>
     </div>
 
     <!-- Navegación inferior -->
-    <nav>
+    <div class="bottom-nav">
         <button class="nav-btn" onclick="switchView('edit', this)">
             <span class="nav-icon">✏️</span>
-            <span class="nav-text">Editar</span>
+            Edit
         </button>
         <button class="nav-btn active" onclick="switchView('script', this)">
             <span class="nav-icon">💬</span>
-            <span class="nav-text">Leer Guion</span>
+            Script
         </button>
-    </nav>
+    </div>
 
-    <!-- Toast para notificaciones -->
-    <div id="toast" class="toast">✅ ¡Guion copiado al portapapeles!</div>
+    <!-- Toast -->
+    <div id="toast" class="toast">✓ Script copied to clipboard</div>
 
     <script>
-        // Variables
-        let currentView = 'script';
-
-        // Cambiar entre vistas
-        function switchView(viewName, btn) {
-            // Actualizar vistas
+        function switchView(view, btn) {
+            // Update views
             document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-            document.getElementById('view-' + viewName).classList.add('active');
+            document.getElementById('view-' + view).classList.add('active');
             
-            // Actualizar botones
+            // Update buttons
             document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
             
-            // Scroll al inicio
-            document.querySelector('.content-area').scrollTop = 0;
-            
-            currentView = viewName;
+            // Scroll to top
+            document.querySelector('.container').scrollTop = 0;
         }
 
-        // Actualizar script en tiempo real
         function updateScript() {
-            // Obtener valores de Saúl
-            const sJob = document.getElementById('in-saul-job').value.trim() || 'desarrollo web';
-            const sSport = document.getElementById('in-saul-sport').value.trim() || 'pádel';
-            const sSocial = document.getElementById('in-saul-social').value.trim() || 'fiestas';
-            const sFood = document.getElementById('in-saul-food').value.trim() || 'aguachiles';
+            // Get Saúl values
+            const sJob = document.getElementById('in-saul-job').value || 'web development';
+            const sSport = document.getElementById('in-saul-sport').value || 'padel';
+            const sSocial = document.getElementById('in-saul-social').value || 'parties';
+            const sFood = document.getElementById('in-saul-food').value || 'aguachiles';
             
-            // Obtener valores de Yade
-            const yJob = document.getElementById('in-yade-job').value.trim() || 'consultoría fiscal';
-            const ySport = document.getElementById('in-yade-sport').value.trim() || 'tenis';
-            const yFood = document.getElementById('in-yade-food').value.trim() || 'tamales';
+            // Get Yade values
+            const yJob = document.getElementById('in-yade-job').value || 'tax consulting firm';
+            const ySport = document.getElementById('in-yade-sport').value || 'tennis';
+            const yFood = document.getElementById('in-yade-food').value || 'tamales';
 
-            // Actualizar todos los elementos
+            // Update all instances
             document.querySelectorAll('.out-saul-job').forEach(el => el.textContent = sJob);
             document.querySelectorAll('.out-saul-sport').forEach(el => el.textContent = sSport);
             document.querySelectorAll('.out-saul-social').forEach(el => el.textContent = sSocial);
@@ -764,110 +682,30 @@
             document.querySelectorAll('.out-yade-food').forEach(el => el.textContent = yFood);
         }
 
-        // Mostrar toast
-        function showToast(message) {
+        function showToast() {
             const toast = document.getElementById('toast');
-            toast.textContent = message || '✅ ¡Guion copiado al portapapeles!';
             toast.classList.add('show');
-            
-            setTimeout(() => {
-                toast.classList.remove('show');
-            }, 2000);
+            setTimeout(() => toast.classList.remove('show'), 2000);
         }
 
-        // Copiar guion al portapapeles (formato mejorado)
-        function copyToClipboard() {
-            let textToCopy = "🎭 GUION: SAÚL & YADE 🎭\n";
-            textToCopy += "═══════════════════════════\n\n";
+        function copyScript() {
+            let text = "SAÚL & YADE · SCRIPT\n\n";
             
-            const scriptView = document.getElementById('view-script');
-            const elements = scriptView.querySelectorAll('.scene-marker, .chat-bubble');
-            
-            elements.forEach(el => {
-                if(el.classList.contains('scene-marker')) {
-                    textToCopy += el.textContent + "\n";
-                    textToCopy += "───────────────────────────\n";
-                } else {
-                    const speaker = el.querySelector('.speaker-name').textContent;
-                    const action = el.querySelector('.action')?.textContent || '';
-                    let content = '';
-                    
-                    // Extraer texto sin los spans de variables
-                    el.childNodes.forEach(node => {
-                        if(node.nodeType === Node.TEXT_NODE) {
-                            content += node.textContent;
-                        }
-                    });
-                    
-                    if(content.trim() === '') {
-                        // Si no hay texto directo, tomar el texto completo y limpiar
-                        content = el.innerText
-                            .replace(speaker, '')
-                            .replace(action, '')
-                            .trim();
-                    }
-                    
-                    textToCopy += `${speaker}: ${action}\n`;
-                    textToCopy += `${content}\n\n`;
+            document.querySelectorAll('#view-script .line').forEach(line => {
+                const char = line.querySelector('.character-name')?.textContent || '';
+                const action = line.querySelector('.action')?.textContent || '';
+                const dialogue = line.querySelector('.dialogue')?.innerText || '';
+                
+                if (char) {
+                    text += `${char}: ${action}\n${dialogue}\n\n`;
                 }
             });
             
-            textToCopy += "═══════════════════════════\n";
-            textToCopy += "✨ Guion generado en vivo ✨";
-            
-            navigator.clipboard.writeText(textToCopy).then(() => {
-                showToast("✅ ¡Guion copiado al portapapeles!");
-            }).catch(() => {
-                // Fallback para móviles
-                const textarea = document.createElement('textarea');
-                textarea.value = textToCopy;
-                document.body.appendChild(textarea);
-                textarea.select();
-                document.execCommand('copy');
-                document.body.removeChild(textarea);
-                showToast("✅ ¡Guion copiado al portapapeles!");
-            });
+            navigator.clipboard.writeText(text).then(showToast);
         }
 
-        // Compartir (Web Share API)
-        function shareScript() {
-            if (navigator.share) {
-                let textToCopy = "🎭 GUION: SAÚL & YADE 🎭\n\n";
-                
-                document.querySelectorAll('#view-script .chat-bubble').forEach(el => {
-                    const speaker = el.querySelector('.speaker-name').textContent;
-                    const action = el.querySelector('.action')?.textContent || '';
-                    const text = el.innerText.replace(speaker, '').replace(action, '').trim();
-                    textToCopy += `${speaker}: ${text}\n`;
-                });
-                
-                navigator.share({
-                    title: 'Guion Saúl & Yade',
-                    text: textToCopy,
-                }).catch(() => {
-                    copyToClipboard();
-                });
-            } else {
-                copyToClipboard();
-            }
-        }
-
-        // Inicializar
-        document.addEventListener('DOMContentLoaded', () => {
-            updateScript();
-            
-            // Agregar event listeners para inputs
-            document.querySelectorAll('input').forEach(input => {
-                input.addEventListener('input', updateScript);
-            });
-        });
-
-        // Evitar zoom en inputs en iOS
-        document.addEventListener('touchstart', (e) => {
-            if (e.target.nodeName === 'INPUT') {
-                e.target.style.fontSize = '16px';
-            }
-        });
+        // Initialize
+        document.addEventListener('DOMContentLoaded', updateScript);
     </script>
 </body>
 </html>
