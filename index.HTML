@@ -3,390 +3,296 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>English Grammar Pro Challenge</title>
+    <title>Interactive Script Generator | Saúl & Yade</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;700&display=swap');
+        :root {
+            --bg-color: #0f172a;
+            --panel-bg: #1e293b;
+            --saul-color: #0ea5e9; /* Teal/Blue */
+            --yade-color: #a855f7; /* Purple */
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --accent-green: #22c55e;
+            --accent-red: #ef4444;
+        }
 
         * {
             box-sizing: border-box;
-            font-family: 'Outfit', sans-serif;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
         }
 
         body {
-            margin: 0;
-            padding: 0;
-            min-height: 100vh;
-            background: radial-gradient(circle at top right, #1a2a6c, #112128, #16222a);
-            color: #ffffff;
+            background-color: var(--bg-color);
+            color: var(--text-main);
             display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .glass-container {
-            background: rgba(255, 255, 255, 0.03);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            border-radius: 24px;
-            padding: 40px;
-            max-width: 750px;
-            width: 90%;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
-            position: relative;
+            height: 100vh;
             overflow: hidden;
         }
 
-        h1 {
+        /* Layout */
+        .container {
+            display: flex;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Sidebar / Editor */
+        .editor-panel {
+            width: 350px;
+            background-color: var(--panel-bg);
+            padding: 2rem;
+            overflow-y: auto;
+            border-right: 1px solid #334155;
+            box-shadow: 5px 0 15px rgba(0,0,0,0.3);
+            z-index: 10;
+        }
+
+        .editor-panel h2 {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
             text-align: center;
-            font-size: 2.2em;
-            margin-bottom: 5px;
-            background: linear-gradient(to right, #00f2fe, #4facfe);
+            background: linear-gradient(90deg, var(--saul-color), var(--yade-color));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            font-weight: 700;
         }
 
-        .subtitle {
-            text-align: center;
-            color: #8fa3b0;
-            margin-bottom: 30px;
-            font-size: 1em;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-        }
-
-        .status-bar {
-            display: flex;
-            justify-content: space-between;
-            color: #4facfe;
-            font-weight: 500;
-            margin-bottom: 15px;
-            font-size: 0.9em;
-        }
-
-        #progress-bg {
-            height: 8px;
-            background: rgba(255,255,255,0.05);
+        .input-group {
+            margin-bottom: 1.2rem;
+            background: #0f172a;
+            padding: 15px;
             border-radius: 10px;
-            margin-bottom: 30px;
-            overflow: hidden;
-            box-shadow: inset 0 1px 3px rgba(0,0,0,0.3);
+            border-left: 4px solid #334155;
+            transition: all 0.3s ease;
         }
 
-        #progress-fill {
-            height: 100%;
-            width: 0%;
-            background: linear-gradient(90deg, #00f2fe, #4facfe);
-            transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-            border-radius: 10px;
-        }
+        .input-group.saul-group { border-left-color: var(--saul-color); }
+        .input-group.yade-group { border-left-color: var(--yade-color); }
 
-        .question-text {
-            font-size: 1.4em;
-            font-weight: 500;
-            margin-bottom: 25px;
-            line-height: 1.4;
-            color: #e2e8f0;
-        }
-
-        .options {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-
-        .option-btn {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            color: #cbd5e1;
-            padding: 18px 25px;
-            border-radius: 12px;
-            font-size: 1.05em;
-            text-align: left;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-
-        .option-btn:hover:not(:disabled) {
-            background: rgba(255, 255, 255, 0.1);
-            border-color: #4facfe;
-            transform: translateY(-2px);
-            color: #fff;
-        }
-
-        .option-btn.correct {
-            background: rgba(16, 185, 129, 0.2);
-            border-color: #10b981;
-            color: #fff;
-            box-shadow: 0 0 20px rgba(16, 185, 129, 0.2);
-        }
-
-        .option-btn.wrong {
-            background: rgba(239, 68, 68, 0.2);
-            border-color: #ef4444;
-            color: #fff;
-        }
-
-        .feedback-box {
-            display: none;
-            margin-top: 25px;
-            padding: 20px;
-            border-radius: 12px;
-            font-size: 1em;
-            line-height: 1.5;
-            animation: slideDown 0.4s ease forwards;
-        }
-
-        .feedback-box.success { background: rgba(16, 185, 129, 0.1); border-left: 5px solid #10b981; color: #a7f3d0; }
-        .feedback-box.error { background: rgba(239, 68, 68, 0.1); border-left: 5px solid #ef4444; color: #fecaca; }
-
-        .action-btn {
-            background: linear-gradient(135deg, #00f2fe, #4facfe);
-            border: none;
-            color: white;
-            padding: 16px 30px;
-            border-radius: 50px;
-            font-size: 1.1em;
-            font-weight: 700;
-            cursor: pointer;
-            margin-top: 30px;
-            width: 100%;
-            display: none;
-            transition: transform 0.2s, box-shadow 0.2s;
+        .input-group label {
+            display: block;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 5px;
             text-transform: uppercase;
             letter-spacing: 1px;
         }
 
-        .action-btn:hover { 
-            transform: translateY(-2px); 
-            box-shadow: 0 10px 20px rgba(79, 172, 254, 0.3);
+        .input-group input {
+            width: 100%;
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid #475569;
+            color: white;
+            font-size: 1rem;
+            padding: 5px 0;
+            outline: none;
+            transition: border-color 0.3s;
         }
 
-        #results-screen { display: none; text-align: center; }
+        .input-group input:focus { border-bottom-color: white; }
+
+        /* Script Display */
+        .script-panel {
+            flex: 1;
+            padding: 3rem;
+            overflow-y: auto;
+            background: radial-gradient(circle at center, #1e293b 0%, #0f172a 100%);
+        }
+
+        .script-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(30, 41, 59, 0.7);
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            backdrop-filter: blur(10px);
+            border: 1px solid #334155;
+        }
+
+        .script-title {
+            text-align: center;
+            font-size: 2rem;
+            margin-bottom: 2rem;
+            letter-spacing: 2px;
+            color: #e2e8f0;
+            border-bottom: 2px solid #334155;
+            padding-bottom: 1rem;
+        }
+
+        .dialogue-line {
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+            font-size: 1.1rem;
+        }
+
+        /* Character Styles */
+        .char-saul { font-weight: bold; color: var(--saul-color); }
+        .char-yade { font-weight: bold; color: var(--yade-color); }
         
-        .score-circle {
-            width: 180px; height: 180px;
-            border-radius: 50%;
-            background: rgba(255,255,255,0.02);
-            border: 6px solid #4facfe;
-            display: flex; flex-direction: column;
-            justify-content: center; align-items: center;
-            margin: 0 auto 30px;
-            font-size: 3.5em; font-weight: 700;
-            box-shadow: 0 0 30px rgba(79, 172, 254, 0.2);
+        /* Highlighted Variables */
+        .dynamic-var {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 0 5px;
+            border-radius: 4px;
+            border-bottom: 2px dashed #64748b;
+            font-style: italic;
+            transition: all 0.3s ease;
         }
 
-        @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
-        .fade-in { animation: slideDown 0.4s ease forwards; }
+        .dynamic-var.saul-var { color: #38bdf8; border-bottom-color: var(--saul-color); }
+        .dynamic-var.yade-var { color: #d8b4fe; border-bottom-color: var(--yade-color); }
 
+        .dynamic-var:hover {
+            background: rgba(255,255,255,0.2);
+            transform: scale(1.05);
+        }
+
+        /* Directions & Keywords */
+        .direction { color: var(--text-muted); font-style: italic; font-size: 0.95rem; }
+        .keyword-green { color: var(--accent-green); font-weight: bold; }
+        .keyword-red { color: var(--accent-red); font-weight: bold; }
+
+        /* Scrollbar styling */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg-color); }
+        ::-webkit-scrollbar-thumb { background: #475569; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #64748b; }
     </style>
 </head>
 <body>
 
-<div class="glass-container">
-    <header>
-        <h1>The Ultimate Grammar Simulator</h1>
-        <div class="subtitle">By Saúl | 10 Random Questions</div>
-    </header>
+    <div class="container">
+        <div class="editor-panel">
+            <h2>Live Variables Editor</h2>
+            
+            <h3 style="color: var(--saul-color); margin: 15px 0 10px; font-size: 1rem;">▶ Saúl's Data</h3>
+            <div class="input-group saul-group">
+                <label>Job / Profession</label>
+                <input type="text" id="in-saul-job" value="web development" oninput="updateScript()">
+            </div>
+            <div class="input-group saul-group">
+                <label>Sport / Hobby 1</label>
+                <input type="text" id="in-saul-sport" value="padel" oninput="updateScript()">
+            </div>
+            <div class="input-group saul-group">
+                <label>Social Hobby 2</label>
+                <input type="text" id="in-saul-social" value="parties" oninput="updateScript()">
+            </div>
+            <div class="input-group saul-group">
+                <label>Favorite Food</label>
+                <input type="text" id="in-saul-food" value="aguachiles" oninput="updateScript()">
+            </div>
 
-    <div id="quiz-screen">
-        <div class="status-bar">
-            <span id="question-counter">Question 1 of 10</span>
-            <span id="score-tracker">Score: 0</span>
+            <h3 style="color: var(--yade-color); margin: 25px 0 10px; font-size: 1rem;">▶ Yade's Data</h3>
+            <div class="input-group yade-group">
+                <label>Job / Title</label>
+                <input type="text" id="in-yade-job" value="tax consulting firm" oninput="updateScript()">
+            </div>
+            <div class="input-group yade-group">
+                <label>Sport / Hobby</label>
+                <input type="text" id="in-yade-sport" value="tennis" oninput="updateScript()">
+            </div>
+            <div class="input-group yade-group">
+                <label>Favorite Food</label>
+                <input type="text" id="in-yade-food" value="tamales" oninput="updateScript()">
+            </div>
         </div>
-        <div id="progress-bg"><div id="progress-fill"></div></div>
-        
-        <div id="question-container" class="fade-in">
-            <div class="question-text" id="q-text">Loading question...</div>
-            <div class="options" id="options-container"></div>
-            <div class="feedback-box" id="feedback"></div>
-            <button class="action-btn" id="next-btn" onclick="nextQuestion()">Next Question ➔</button>
+
+        <div class="script-panel">
+            <div class="script-container">
+                <h1 class="script-title">High-Level Reunion Dialogue</h1>
+                
+                <p class="dialogue-line">
+                    <span class="direction">*(The scene starts in the school hallway. Yade is walking fast, looking at a watch. Saúl is walking the opposite way. They almost bump into each other!)*</span>
+                </p>
+
+                <p class="dialogue-line">
+                    <span class="char-yade">YADE:</span> <span class="direction">*[Takes a step back surprised, smiles and points]*</span> Saúl! What a surprise! I barely recognized you!
+                </p>
+
+                <p class="dialogue-line">
+                    <span class="char-saul">SAÚL:</span> <span class="direction">*[Laughs out loud and goes for a hug]*</span> Yade?! Wow! It’s been forever. Look at you! Last time we talked you were studying. How is everything going now?
+                </p>
+
+                <p class="dialogue-line">
+                    <span class="char-yade">YADE:</span> <span class="direction">*[Smiles, confident posture]*</span> Oh, you know, surviving! Running my <span class="dynamic-var yade-var" id="out-yade-job1">tax consulting firm</span> is relentless, but <span class="keyword-green">here's the deal</span> — we just landed some major contracts, so all the hard work is finally paying off. How about you? Still coding?
+                </p>
+
+                <p class="dialogue-line">
+                    <span class="char-saul">SAÚL:</span> <span class="direction">*[Nods convinced and does a typing gesture]*</span> Guilty! I'm still deep in the tech world. Specifically doing <span class="dynamic-var saul-var" id="out-saul-job1">web development</span> and database automation. It's demanding but I love it.
+                </p>
+
+                <p class="dialogue-line">
+                    <span class="char-yade">YADE:</span> <span class="direction">*[Shows genuine interest]*</span> <span class="keyword-red">♦ Hmm, now that is interesting. ♦</span> That kind of engineering is a complete game-changer nowadays. But how do you even unwind with so much screen time? 
+                </p>
+
+                <p class="dialogue-line">
+                    <span class="char-saul">SAÚL:</span> <span class="direction">*[Laughs and shakes head]*</span> That’s easy. I play <span class="dynamic-var saul-var" id="out-saul-sport1">padel</span> to stay active. <span class="direction">*[Does a racket swing gesture]*</span> And honestly, I still love going out to <span class="dynamic-var saul-var" id="out-saul-social1">parties</span> on the weekends, or just hanging out with my girlfriend. I need that balance. <span class="keyword-green">How about you?</span> I know you can’t be all business all the time.
+                </p>
+
+                <p class="dialogue-line">
+                    <span class="char-yade">YADE:</span> <span class="direction">*[Smiles playfully, mimics a serve]*</span> Nope! I have a weekly date with a <span class="dynamic-var yade-var" id="out-yade-sport1">tennis</span> court. It's the only place where the stress of the <span class="dynamic-var yade-var" id="out-yade-job2">tax consulting firm</span> can't find me!
+                </p>
+
+                <p class="dialogue-line">
+                    <span class="char-saul">SAÚL:</span> <span class="direction">*[Surprised]*</span> Oh, nice! We should play a match sometime. Or, you know, just grab some food and catch up properly!
+                </p>
+
+                <p class="dialogue-line">
+                    <span class="char-yade">YADE:</span> <span class="direction">*[Rubs stomach or smiles brightly]*</span> Actually, I’m starving right now. I’ve been craving some really good <span class="dynamic-var yade-var" id="out-yade-food1">tamales</span> all morning. Do you know any spots around here?
+                </p>
+
+                <p class="dialogue-line">
+                    <span class="char-saul">SAÚL:</span> <span class="direction">*[Rubs chin thinking]*</span> Those are great, but <span class="keyword-green">here's the deal</span> — I know this place near campus that has the absolute best <span class="dynamic-var saul-var" id="out-saul-food1">aguachiles</span>. It’s super fresh, perfectly spicy... <span class="direction">*[Does a chef's kiss 🤌 gesture]*</span> you have to try it.
+                </p>
+
+                <p class="dialogue-line">
+                    <span class="char-yade">YADE:</span> <span class="direction">*[Laughs out loud, pointing a finger]*</span> <span class="dynamic-var saul-var" id="out-saul-food2">aguachiles</span> vs. <span class="dynamic-var yade-var" id="out-yade-food2">tamales</span>... you always have to raise the stakes! <span class="keyword-red">♦ *[Dramatic 1-second pause]* ♦</span> Alright, I’m sold. Lead the way!
+                </p>
+
+                <p class="dialogue-line">
+                    <span class="char-saul">SAÚL:</span> <span class="direction">*[Makes a wide gesture inviting to walk together]*</span> Perfect! Let's go. We have a lot more catching up to do!
+                </p>
+                <p class="dialogue-line" style="text-align: center; margin-top: 40px;">
+                    <span class="direction">*(They start walking together to the side and the scene ends).*</span>
+                </p>
+            </div>
         </div>
     </div>
 
-    <div id="results-screen" class="fade-in">
-        <h2>Exam Finished!</h2>
-        <div class="score-circle">
-            <span id="score-text">0</span>
-            <span style="font-size: 0.25em; font-weight: 500; color: #8fa3b0; letter-spacing: 2px;">OUT OF 10</span>
-        </div>
-        <p id="result-message" style="font-size: 1.3em; margin-bottom: 40px; color: #e2e8f0;"></p>
-        <button class="action-btn" style="display: block;" onclick="startQuiz()">Reintentar con nuevas preguntas ⟳</button>
-    </div>
-</div>
+    <script>
+        // Function to update the script based on inputs
+        function updateScript() {
+            // Get values from inputs
+            const saulJob = document.getElementById('in-saul-job').value || '[Job]';
+            const saulSport = document.getElementById('in-saul-sport').value || '[Sport]';
+            const saulSocial = document.getElementById('in-saul-social').value || '[Social Hobby]';
+            const saulFood = document.getElementById('in-saul-food').value || '[Food]';
+            
+            const yadeJob = document.getElementById('in-yade-job').value || '[Job]';
+            const yadeSport = document.getElementById('in-yade-sport').value || '[Sport]';
+            const yadeFood = document.getElementById('in-yade-food').value || '[Food]';
 
-<script>
-    // BASE DE DATOS DE 40 PREGUNTAS (Totalmente estructurada para rotar opciones)
-    const allQuestions = [
-        // CHAPTER 1 (Present Simple vs Progressive)
-        { q: "I usually __________ espresso with my De'Longhi machine, but today I __________ tea.", options: [ { t: "drink / am drinking", c: true, f: "¡Correcto! Hábito general (Simple Present) y acción temporal de hoy (Present Progresive)." }, { t: "am drinking / drink", c: false, f: "Error. 'Usually' no lleva progresivo (-ing)." }, { t: "drink / drink", c: false, f: "Error. 'Today' indica algo temporal en progreso." } ] },
-        { q: "As a web developer, he __________ code every single day.", options: [ { t: "writes", c: true, f: "¡Correcto! Una rutina diaria lleva Simple Present." }, { t: "is writing", c: false, f: "Error. Las rutinas no llevan progresivo." }, { t: "wrote", c: false, f: "Error. El contexto es presente, no pasado." } ] },
-        { q: "Look! That curly-haired dog __________ its own tail right now!", options: [ { t: "is chasing", c: true, f: "¡Bien! Pasa exactamente en este instante (Present Progressive)." }, { t: "chases", c: false, f: "Error. Pasa ahora mismo, se necesita progresivo." }, { t: "was chasing", c: false, f: "Error. 'Right now' indica presente." } ] },
-        { q: "I __________ on a new project for Procofa these days.", options: [ { t: "am working", c: true, f: "¡Correcto! Acciones temporales ('these days') llevan Present Progressive." }, { t: "work", c: false, f: "Error. 'Work' sería para verdades permanentes." }, { t: "worked", c: false, f: "Error. 'These days' es presente." } ] },
-        { q: "Shhh! The client __________ in the meeting room.", options: [ { t: "is sleeping", c: true, f: "¡Correcto! La acción está sucediendo en este preciso momento." }, { t: "sleeps", c: false, f: "Error. Es algo que ocurre justo ahora." }, { t: "slept", c: false, f: "Error. No es pasado." } ] },
-        { q: "Water __________ at 100 degrees Celsius. It's a fact.", options: [ { t: "boils", c: true, f: "¡Correcto! Verdades científicas siempre van en Presente Simple." }, { t: "is boiling", c: false, f: "Error. No solo hierve ahora, siempre lo hace." }, { t: "has boiled", c: false, f: "Error. Es un hecho general." } ] },
-        { q: "We __________ deploy updates on Fridays. It's a strict rule.", options: [ { t: "never", c: true, f: "¡Correcto! Una regla estricta negativa usa 'never'." }, { t: "always", c: false, f: "Error. En desarrollo, no se despliega en viernes por seguridad." }, { t: "sometimes", c: false, f: "Error. Una regla estricta no usa 'a veces'." } ] },
-        { q: "My manager __________ checks her email before 8:00 AM.", options: [ { t: "usually", c: true, f: "¡Bien! Adverbio de frecuencia correcto para el presente simple." }, { t: "right now", c: false, f: "Error. 'Right now' se usa con progresivo." }, { t: "at the moment", c: false, f: "Error. Igual que right now." } ] },
-        { q: "The server __________ perfectly at this exact moment. Don't touch it!", options: [ { t: "is running", c: true, f: "¡Bien! Está ocurriendo ahora mismo." }, { t: "runs", c: false, f: "Error. Simple present no describe el momento exacto." }, { t: "has run", c: false, f: "Error. Tiempo perfecto incorrecto aquí." } ] },
-        { q: "She __________ debugging old code; she prefers creating new features.", options: [ { t: "doesn't like", c: true, f: "¡Correcto! Verbos de gusto (like) no se usan en progresivo." }, { t: "isn't liking", c: false, f: "Error. 'Like' es un stative verb, no lleva -ing." }, { t: "hasn't liked", c: false, f: "Error. Contexto de rutina presente." } ] },
+            // Update text elements in the script
+            document.getElementById('out-saul-job1').innerText = saulJob;
+            document.getElementById('out-saul-sport1').innerText = saulSport;
+            document.getElementById('out-saul-social1').innerText = saulSocial;
+            document.getElementById('out-saul-food1').innerText = saulFood;
+            document.getElementById('out-saul-food2').innerText = saulFood;
 
-        // CHAPTER 2 (Past Simple vs Progressive)
-        { q: "While I __________ to a Zoé song, the power suddenly went out.", options: [ { t: "was listening", c: true, f: "¡Correcto! Acción larga (Past Progressive) interrumpida por una corta." }, { t: "listened", c: false, f: "Error. Escuchar es la acción larga, necesita progresivo." }, { t: "am listening", c: false, f: "Error. El evento fue en el pasado ('went out')." } ] },
-        { q: "I __________ play video games all night, but now I sleep early.", options: [ { t: "used to", c: true, f: "¡Bien! 'Used to' describe un hábito del pasado que ya no se hace." }, { t: "use to", c: false, f: "Error. Falta la 'd'." }, { t: "was used to", c: false, f: "Error. Estructura incorrecta." } ] },
-        { q: "When my boss called, I __________ a critical bug.", options: [ { t: "was fixing", c: true, f: "¡Correcto! Estabas en medio del proceso cuando llamó." }, { t: "fixed", c: false, f: "Error. Se interrumpió el proceso de arreglarlo." }, { t: "had fixed", c: false, f: "Error. Esto indicaría que ya lo habías arreglado antes." } ] },
-        { q: "I __________ at Wiwynn for a while, but I recently quit.", options: [ { t: "worked", c: true, f: "¡Correcto! Pasado simple para algo que ya terminó completamente." }, { t: "was working", c: false, f: "Error. Se usa simple past para acciones finalizadas en periodos cerrados." }, { t: "had worked", c: false, f: "Error. No hay otra acción en el pasado para justificarlo." } ] },
-        { q: "We __________ an amazing concert last night.", options: [ { t: "went to", c: true, f: "¡Correcto! Acción finalizada en un punto específico ('last night')." }, { t: "have gone to", c: false, f: "Error. Present perfect no lleva tiempo específico." }, { t: "go to", c: false, f: "Error. Es pasado." } ] },
-        { q: "What __________ at 8:00 PM last night? You didn't answer!", options: [ { t: "were you doing", c: true, f: "¡Correcto! Pregunta por una acción en progreso en un momento específico del pasado." }, { t: "did you do", c: false, f: "Error. Significa una acción completa, no en progreso." }, { t: "had you done", c: false, f: "Error. No hay otra acción después." } ] },
-        { q: "As soon as the CEO arrived, the meeting __________.", options: [ { t: "started", c: true, f: "¡Correcto! Secuencia de eventos rápidos en el pasado." }, { t: "was starting", c: false, f: "Error. La reunión empezó de golpe como reacción." }, { t: "starts", c: false, f: "Error. Es pasado." } ] },
-        { q: "While Gino __________, I was trying to focus on my code.", options: [ { t: "was barking", c: true, f: "¡Bien! Dos acciones largas ocurriendo al mismo tiempo en el pasado." }, { t: "barked", c: false, f: "Error. La acción larga de fondo va en Past Progressive." }, { t: "barks", c: false, f: "Error. Es una historia en pasado." } ] },
-        { q: "I usually walk to work, but yesterday I __________ the bus.", options: [ { t: "took", c: true, f: "¡Correcto! 'Yesterday' exige Simple Past para un evento finalizado." }, { t: "was taking", c: false, f: "Error. Tomar el autobús fue una acción completa." }, { t: "take", c: false, f: "Error. Es pasado." } ] },
-        { q: "She __________ a beautiful letter for her mom yesterday.", options: [ { t: "wrote", c: true, f: "¡Correcto! Verbo irregular en Simple Past." }, { t: "writed", c: false, f: "Error. 'Write' es irregular (wrote)." }, { t: "was writing", c: false, f: "Error. Se enfoca en el hecho finalizado, no en el proceso." } ] },
-
-        // CHAPTER 3 (Future Forms)
-        { q: "We __________ to Ruidoso next month. I already have the travel permit!", options: [ { t: "are traveling", c: true, f: "¡Correcto! Present Progressive como futuro: plan 100% confirmado." }, { t: "will travel", c: false, f: "Error. Ya tienes permiso, es muy seguro para usar 'will'." }, { t: "travel", c: false, f: "Error. Presente simple es para horarios de transporte." } ] },
-        { q: "Look at those heavy black clouds! It __________ a terrible storm.", options: [ { t: "is going to be", c: true, f: "¡Bien! Se usa 'going to' para predecir con evidencia física (nubes negras)." }, { t: "will be", c: false, f: "Error. 'Will' es para predicciones sin base." }, { t: "is being", c: false, f: "Error. Estructura incorrecta." } ] },
-        { q: "A: Oh no, I spilled my coffee! / B: Don't worry, I __________ it up.", options: [ { t: "will clean", c: true, f: "¡Correcto! 'Will' es perfecto para decisiones espontáneas." }, { t: "am going to clean", c: false, f: "Error. Esto indicaría que ya planeabas limpiarlo antes." }, { t: "am cleaning", c: false, f: "Error. Aún no empiezas." } ] },
-        { q: "The flight to Chihuahua __________ at 8:00 AM tomorrow.", options: [ { t: "leaves", c: true, f: "¡Bien! El presente simple se usa para horarios de transportes públicos." }, { t: "is leaving", c: false, f: "Error. Para horarios oficiales se prefiere presente simple." }, { t: "will leave", c: false, f: "Error. 'Will' no se usa para horarios fijos." } ] },
-        { q: "Hurry up and sit down! The presentation __________.", options: [ { t: "is about to start", c: true, f: "¡Correcto! 'Be about to' indica que pasará en cuestión de segundos." }, { t: "will start", c: false, f: "Error. Falta urgencia." }, { t: "is going to start", c: false, f: "Error. Es un plan, pero le falta la inminencia." } ] },
-        { q: "As soon as I finish the database code, I __________ it to you.", options: [ { t: "will send", c: true, f: "¡Bien! En Time Clauses de futuro, el resultado usa 'will'." }, { t: "send", c: false, f: "Error. Falta indicar el futuro." }, { t: "am sending", c: false, f: "Error. Se usa 'will' en la cláusula principal." } ] },
-        { q: "I promise I __________ tell anyone your secret.", options: [ { t: "won't", c: true, f: "¡Correcto! Las promesas siempre usan 'will' (o 'won't')." }, { t: "am not going to", c: false, f: "Error. 'Going to' es para planes, no promesas." }, { t: "don't", c: false, f: "Error. Promesa futura." } ] },
-        { q: "We are at the gate and the crew is ready. The plane __________.", options: [ { t: "is about to board", c: true, f: "¡Bien! Es inminente, pasará en segundos." }, { t: "will board", c: false, f: "Error. Falta urgencia." }, { t: "boards", c: false, f: "Error. Horario general." } ] },
-        { q: "I don't think humans __________ live on Mars in the next 10 years.", options: [ { t: "will", c: true, f: "¡Correcto! Predicción basada en opinión personal (con 'I think'), usa 'will'." }, { t: "are going to", c: false, f: "Error. No hay evidencia contundente hoy." }, { t: "are about to", c: false, f: "Error. No va a pasar en segundos." } ] },
-        { q: "I __________ a new project with Procofa soon. We signed the contract yesterday.", options: [ { t: "am going to start", c: true, f: "¡Correcto! Es un plan o intención ya decidido con antelación." }, { t: "will start", c: false, f: "Error. No es espontáneo, ya firmaron." }, { t: "start", c: false, f: "Error. Faltan fechas fijadas para usar presente." } ] },
-
-        // CHAPTER 4 (Perfect Tenses)
-        { q: "I am totally exhausted because I __________ this code all morning.", options: [ { t: "have been programming", c: true, f: "¡Muy bien! Acción continua que deja evidencia visible AHORA." }, { t: "had programmed", c: false, f: "Error. Diría 'was exhausted' en el pasado." }, { t: "programmed", c: false, f: "Error. No enfatiza el proceso prolongado." } ] },
-        { q: "Yesterday, Jane was furious because her friend __________ up at the restaurant.", options: [ { t: "hadn't shown", c: true, f: "¡Excelente! Past Perfect: Primero no llegó, luego ella se enojó." }, { t: "didn't show", c: false, f: "Error. Hay un tiempo más preciso para 'el pasado del pasado'." }, { t: "hasn't shown", c: false, f: "Error. No conecta con el presente." } ] },
-        { q: "By the time we arrived at the cabin, it __________ to snow.", options: [ { t: "had started", c: true, f: "¡Exacto! Primero empezó a nevar (Past Perfect), luego llegaron." }, { t: "started", c: false, f: "Error. El 'by the time' marca que una acción pasó primero." }, { t: "has started", c: false, f: "Error. La historia es en el pasado." } ] },
-        { q: "She didn't want to watch the movie because she __________ the book already.", options: [ { t: "had read", c: true, f: "¡Correcto! Past Perfect: Primero leyó el libro, después no quiso ir." }, { t: "has read", c: false, f: "Error. El presente perfecto no encaja en una historia del pasado." }, { t: "read", c: false, f: "Error. Falta el tiempo perfecto." } ] },
-        { q: "I couldn't enter the house yesterday because I __________ my keys inside.", options: [ { t: "had left", c: true, f: "¡Bien! Dejaste las llaves primero (Past Perfect), luego no pudiste entrar." }, { t: "left", c: false, f: "Error. Oculta la relación causal de tiempos." }, { t: "have left", c: false, f: "Error. Ayer requiere anclaje al pasado." } ] },
-        { q: "Have you ever __________ sushi?", options: [ { t: "eaten", c: true, f: "¡Correcto! Present Perfect usa la tercera columna (Past Participle)." }, { t: "ate", c: false, f: "Error. Pasado simple." }, { t: "eat", c: false, f: "Error. Presente simple." } ] },
-        { q: "My eyes hurt right now! I __________ at the screen for 8 hours.", options: [ { t: "have been looking", c: true, f: "¡Correcto! Una acción larga y continua que acaba de dejar tus ojos rojos AHORA." }, { t: "had looked", c: false, f: "Error. El dolor es 'right now' (presente)." }, { t: "looked", c: false, f: "Error. No enfatiza la duración ni el resultado." } ] },
-        { q: "He __________ in JavaScript for 5 years, and he still uses it every day.", options: [ { t: "has been programming", c: true, f: "¡Bien! Empezó hace 5 años y continúa hasta hoy ininterrumpidamente." }, { t: "had programmed", c: false, f: "Error. El uso de JS no ha terminado." }, { t: "programs", c: false, f: "Error. Falta indicar la duración desde el pasado." } ] },
-        { q: "I __________ to José José's music since I was a kid.", options: [ { t: "have listened", c: true, f: "¡Correcto! Empezó en el pasado y sigue siendo cierto hoy." }, { t: "had listened", c: false, f: "Error. Past perfect requiere otro evento en pasado." }, { t: "listened", c: false, f: "Error. Significaría que ya no lo escuchas." } ] },
-        { q: "By the time the fire department arrived, the neighbors __________ the fire.", options: [ { t: "had extinguished", c: true, f: "¡Exacto! Los vecinos lo apagaron PRIMERO (Past Perfect)." }, { t: "extinguished", c: false, f: "Error. Simple past para ambos no muestra orden." }, { t: "have extinguished", c: false, f: "Error. Mezcla pasado con presente perfecto." } ] }
-    ];
-
-    let sessionQuestions = [];
-    let currentQIndex = 0;
-    let score = 0;
-    let answered = false;
-
-    // Algoritmo Fisher-Yates perfecto para mezclar arrays
-    function shuffleArray(array) {
-        let newArr = [...array];
-        for (let i = newArr.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [newArr[i], newArr[j]] = [newArr[j], newArr[i]];
-        }
-        return newArr;
-    }
-
-    function startQuiz() {
-        score = 0;
-        currentQIndex = 0;
-        document.getElementById('results-screen').style.display = 'none';
-        document.getElementById('quiz-screen').style.display = 'block';
-        
-        // Mezclamos la base de datos de 40 preguntas y tomamos 10
-        sessionQuestions = shuffleArray(allQuestions).slice(0, 10);
-        
-        loadQuestion();
-    }
-
-    function loadQuestion() {
-        answered = false;
-        const qData = sessionQuestions[currentQIndex];
-        
-        document.getElementById('question-counter').innerText = `Question ${currentQIndex + 1} of 10`;
-        document.getElementById('score-tracker').innerText = `Score: ${score}`;
-        document.getElementById('q-text').innerText = qData.q;
-        
-        document.getElementById('progress-fill').style.width = `${(currentQIndex / 10) * 100}%`;
-        document.getElementById('next-btn').style.display = 'none';
-        
-        const feedbackBox = document.getElementById('feedback');
-        feedbackBox.style.display = 'none';
-        feedbackBox.className = 'feedback-box';
-
-        const optionsContainer = document.getElementById('options-container');
-        optionsContainer.innerHTML = '';
-
-        // Mezclar las 3 opciones de respuesta para que no sea predecible
-        const shuffledOptions = shuffleArray(qData.options);
-
-        shuffledOptions.forEach((opt) => {
-            const btn = document.createElement('button');
-            btn.className = 'option-btn';
-            btn.innerText = opt.t;
-            btn.onclick = () => selectOption(opt, btn, shuffledOptions);
-            optionsContainer.appendChild(btn);
-        });
-
-        const container = document.getElementById('question-container');
-        container.classList.remove('fade-in');
-        void container.offsetWidth; 
-        container.classList.add('fade-in');
-    }
-
-    function selectOption(selectedOpt, btnElement, allOptsContext) {
-        if (answered) return;
-        answered = true;
-
-        const allBtns = document.querySelectorAll('.option-btn');
-        const feedbackBox = document.getElementById('feedback');
-
-        allBtns.forEach((btn, idx) => {
-            btn.disabled = true;
-            if (allOptsContext[idx].c) {
-                btn.classList.add('correct');
-            } else if (btn === btnElement && !selectedOpt.c) {
-                btn.classList.add('wrong');
-            }
-        });
-
-        feedbackBox.style.display = 'block';
-        feedbackBox.innerText = selectedOpt.f;
-        
-        if (selectedOpt.c) {
-            score++;
-            document.getElementById('score-tracker').innerText = `Score: ${score}`;
-            feedbackBox.classList.add('success');
-        } else {
-            feedbackBox.classList.add('error');
+            document.getElementById('out-yade-job1').innerText = yadeJob;
+            document.getElementById('out-yade-job2').innerText = yadeJob;
+            document.getElementById('out-yade-sport1').innerText = yadeSport;
+            document.getElementById('out-yade-food1').innerText = yadeFood;
+            document.getElementById('out-yade-food2').innerText = yadeFood;
         }
 
-        document.getElementById('next-btn').style.display = 'block';
-    }
-
-    function nextQuestion() {
-        currentQIndex++;
-        if (currentQIndex < sessionQuestions.length) {
-            loadQuestion();
-        } else {
-            showResults();
-        }
-    }
-
-    function showResults() {
-        document.getElementById('quiz-screen').style.display = 'none';
-        document.getElementById('results-screen').style.display = 'block';
-        
-        document.getElementById('score-text').innerText = score;
-        const resultMessage = document.getElementById('result-message');
-        
-        if (score === 10) {
-            resultMessage.innerText = "¡Nivel Dios! Ni un solo error. Eres el maestro de la gramática. 🏆";
-        } else if (score >= 7) {
-            resultMessage.innerText = "¡Excelente nivel! Casi rozando la perfección. 🔥";
-        } else {
-            resultMessage.innerText = "Un buen intento, pero hay que repasar esos perfectos. ¡Tú puedes! 📖";
-        }
-    }
-
-    startQuiz();
-</script>
-
+        // Initialize script on first load
+        window.onload = updateScript;
+    </script>
 </body>
 </html>
