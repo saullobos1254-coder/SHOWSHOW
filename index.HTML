@@ -13,36 +13,1341 @@
             -moz-osx-font-smoothing: grayscale;
         }
 
-        /* ===== SISTEMA DE TEMAS ===== */
+        /* ===== VARIABLES DE TEMA ===== */
         :root {
-            /* TEMA NOCTURNO (DEFAULT) - Elegante y profundo */
-            --bg-primary: #0A0C10;
-            --bg-secondary: #121418;
-            --bg-tertiary: #1C1F26;
-            --bg-elevated: #252A33;
-            --surface: #1A1D24;
-            --surface-light: #2A2F3A;
-            --border-subtle: rgba(255, 255, 255, 0.05);
-            --border-medium: rgba(255, 255, 255, 0.08);
-            --border-bold: rgba(255, 255, 255, 0.12);
+            /* Tema Nocturno (default) */
+            --bg-primary: #0A0C12;
+            --bg-secondary: #12141C;
+            --bg-tertiary: #1A1E2A;
+            --surface: #1E2332;
+            --surface-hover: #2A3142;
+            --border-light: rgba(255, 255, 255, 0.06);
+            --border-medium: rgba(255, 255, 255, 0.1);
+            --border-bold: rgba(255, 255, 255, 0.15);
             --text-primary: #FFFFFF;
-            --text-secondary: rgba(255, 255, 255, 0.65);
-            --text-tertiary: rgba(255, 255, 255, 0.45);
-            --text-inverse: #0A0C10;
-            --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.5);
-            --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.6);
-            --shadow-lg: 0 20px 40px -8px rgba(0, 0, 0, 0.8);
-            --overlay: rgba(0, 0, 0, 0.5);
-            --theme-transition: all 0.4s cubic-bezier(0.2, 0.9, 0.4, 1);
+            --text-secondary: rgba(255, 255, 255, 0.7);
+            --text-tertiary: rgba(255, 255, 255, 0.4);
+            --saul: #3B82F6;
+            --saul-glow: rgba(59, 130, 246, 0.3);
+            --yade: #A78BFA;
+            --yade-glow: rgba(167, 139, 250, 0.3);
+            --success: #10B981;
+            --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.4);
+            --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.5);
+            --shadow-lg: 0 20px 40px -8px rgba(0, 0, 0, 0.6);
+            --overlay: rgba(0, 0, 0, 0.7);
+            --header-bg: rgba(10, 12, 18, 0.85);
         }
 
-        /* TEMA CLARO - Elegante y luminoso */
+        /* Tema Claro */
         [data-theme="light"] {
-            --bg-primary: #F5F7FA;
+            --bg-primary: #F8FAFE;
             --bg-secondary: #FFFFFF;
-            --bg-tertiary: #F0F2F5;
-            --bg-elevated: #E8ECF0;
+            --bg-tertiary: #F0F4FA;
             --surface: #FFFFFF;
-            --surface-light: #F8FAFD;
-            --border-subtle: rgba(0, 0, 0, 0.05);
-            --border-medium: rgba
+            --surface-hover: #F5F9FF;
+            --border-light: rgba(0, 0, 0, 0.04);
+            --border-medium: rgba(0, 0, 0, 0.08);
+            --border-bold: rgba(0, 0, 0, 0.12);
+            --text-primary: #0A0C12;
+            --text-secondary: rgba(0, 0, 0, 0.6);
+            --text-tertiary: rgba(0, 0, 0, 0.35);
+            --saul: #2563EB;
+            --saul-glow: rgba(37, 99, 235, 0.2);
+            --yade: #7C3AED;
+            --yade-glow: rgba(124, 58, 237, 0.2);
+            --success: #059669;
+            --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.08);
+            --shadow-lg: 0 20px 40px -8px rgba(0, 0, 0, 0.12);
+            --overlay: rgba(0, 0, 0, 0.2);
+            --header-bg: rgba(255, 255, 255, 0.85);
+        }
+
+        body {
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100dvh;
+            overflow: hidden;
+            position: relative;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, sans-serif;
+            transition: background-color 0.4s ease, color 0.3s ease;
+        }
+
+        /* Fondo con efecto dinámico */
+        .dynamic-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 20% 30%, var(--saul-glow) 0%, transparent 40%),
+                        radial-gradient(circle at 80% 70%, var(--yade-glow) 0%, transparent 40%);
+            opacity: 0.3;
+            transition: opacity 0.5s ease;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* Header con blur */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 80px;
+            background: var(--header-bg);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            border-bottom: 1px solid var(--border-medium);
+            padding: 0 24px;
+            padding-top: env(safe-area-inset-top);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            z-index: 100;
+            transition: background 0.4s ease, border-color 0.3s ease;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-icon {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, var(--saul), var(--yade));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 18px;
+            box-shadow: 0 4px 12px var(--saul-glow);
+        }
+
+        .logo-text {
+            font-size: 20px;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+        }
+
+        .logo-saul {
+            color: var(--saul);
+        }
+
+        .logo-yade {
+            color: var(--yade);
+        }
+
+        /* Botón de tema */
+        .theme-toggle {
+            width: 44px;
+            height: 44px;
+            border-radius: 22px;
+            background: var(--surface);
+            border: 1px solid var(--border-medium);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: var(--text-primary);
+        }
+
+        .theme-toggle:hover {
+            background: var(--surface-hover);
+            transform: scale(1.05);
+        }
+
+        .theme-toggle i {
+            font-size: 22px;
+            transition: transform 0.5s ease;
+        }
+
+        .theme-toggle .moon {
+            display: none;
+        }
+
+        [data-theme="light"] .theme-toggle .sun {
+            display: none;
+        }
+
+        [data-theme="light"] .theme-toggle .moon {
+            display: block;
+        }
+
+        /* Modal de bienvenida - Selector de personaje */
+        .welcome-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--overlay);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.4s ease, visibility 0.4s ease;
+        }
+
+        .welcome-modal.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            background: var(--surface);
+            border-radius: 48px;
+            padding: 40px 32px;
+            max-width: 380px;
+            width: 90%;
+            border: 1px solid var(--border-medium);
+            box-shadow: var(--shadow-lg);
+            transform: scale(0.9) translateY(20px);
+            transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .welcome-modal.show .modal-content {
+            transform: scale(1) translateY(0);
+        }
+
+        .modal-title {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .modal-title h2 {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            background: linear-gradient(135deg, var(--saul), var(--yade));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .modal-title p {
+            color: var(--text-secondary);
+            font-size: 15px;
+        }
+
+        .character-options {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .character-option {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            padding: 20px 24px;
+            background: var(--bg-tertiary);
+            border: 2px solid var(--border-medium);
+            border-radius: 32px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .character-option::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, var(--saul-glow), var(--yade-glow));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .character-option:hover {
+            transform: translateX(8px);
+            border-color: var(--saul);
+        }
+
+        .character-option.yade:hover {
+            border-color: var(--yade);
+        }
+
+        .option-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 30px;
+            background: var(--surface);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            font-weight: 600;
+            border: 2px solid;
+            transition: all 0.3s ease;
+            position: relative;
+            z-index: 1;
+        }
+
+        .character-option.saul .option-icon {
+            color: var(--saul);
+            border-color: var(--saul);
+        }
+
+        .character-option.yade .option-icon {
+            color: var(--yade);
+            border-color: var(--yade);
+        }
+
+        .option-info {
+            flex: 1;
+            position: relative;
+            z-index: 1;
+        }
+
+        .option-name {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .character-option.saul .option-name {
+            color: var(--saul);
+        }
+
+        .character-option.yade .option-name {
+            color: var(--yade);
+        }
+
+        .option-role {
+            color: var(--text-secondary);
+            font-size: 14px;
+            letter-spacing: 0.3px;
+        }
+
+        .option-badge {
+            background: var(--surface);
+            padding: 6px 12px;
+            border-radius: 30px;
+            font-size: 12px;
+            color: var(--text-secondary);
+            border: 1px solid var(--border-medium);
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Contenedor principal */
+        .main-container {
+            height: 100dvh;
+            padding-top: 80px;
+            padding-bottom: 0;
+            overflow: hidden;
+            position: relative;
+            z-index: 10;
+        }
+
+        .content-area {
+            height: 100%;
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding: 24px;
+            padding-bottom: 100px;
+            scroll-behavior: smooth;
+        }
+
+        /* Selector de personaje en el header secundario */
+        .character-tabs {
+            display: flex;
+            gap: 8px;
+            background: var(--surface);
+            padding: 4px;
+            border-radius: 40px;
+            border: 1px solid var(--border-medium);
+            margin-bottom: 28px;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            backdrop-filter: blur(10px);
+        }
+
+        .character-tab {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 16px;
+            border-radius: 32px;
+            border: none;
+            background: transparent;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .character-tab.active {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .character-tab.saul.active {
+            color: var(--saul);
+        }
+
+        .character-tab.yade.active {
+            color: var(--yade);
+        }
+
+        .tab-icon {
+            width: 28px;
+            height: 28px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--bg-primary);
+            border: 1px solid var(--border-medium);
+            font-size: 14px;
+        }
+
+        /* Tarjetas de perfil */
+        .profile-card {
+            background: var(--surface);
+            border-radius: 40px;
+            padding: 28px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border-medium);
+            box-shadow: var(--shadow-md);
+            transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+            animation: slideUp 0.5s ease;
+        }
+
+        .profile-card.saul {
+            border-left: 4px solid var(--saul);
+        }
+
+        .profile-card.yade {
+            border-left: 4px solid var(--yade);
+        }
+
+        .profile-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .profile-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .profile-avatar {
+            width: 64px;
+            height: 64px;
+            border-radius: 32px;
+            background: var(--bg-tertiary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            font-weight: 600;
+            border: 2px solid;
+            transition: all 0.3s ease;
+        }
+
+        .profile-card.saul .profile-avatar {
+            color: var(--saul);
+            border-color: var(--saul);
+        }
+
+        .profile-card.yade .profile-avatar {
+            color: var(--yade);
+            border-color: var(--yade);
+        }
+
+        .profile-info h3 {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .profile-info p {
+            color: var(--text-secondary);
+            font-size: 14px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        /* Campos de entrada */
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .input-row {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .input-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-secondary);
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .input-label i {
+            font-size: 14px;
+            opacity: 0.7;
+        }
+
+        .input-field {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-medium);
+            border-radius: 24px;
+            padding: 16px 20px;
+            color: var(--text-primary);
+            font-size: 16px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .input-field:focus {
+            outline: none;
+            border-color: var(--saul);
+            box-shadow: 0 0 0 4px var(--saul-glow);
+            transform: scale(1.02);
+        }
+
+        .profile-card.yade .input-field:focus {
+            border-color: var(--yade);
+            box-shadow: 0 0 0 4px var(--yade-glow);
+        }
+
+        /* Vista del script */
+        .script-view {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            padding-bottom: 20px;
+        }
+
+        .scene-divider {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin: 20px 0 10px;
+            color: var(--text-tertiary);
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .divider-line {
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(90deg, var(--border-medium), transparent);
+        }
+
+        .dialogue-entry {
+            display: flex;
+            animation: fadeIn 0.5s ease;
+            transform-origin: center;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.95) translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        .dialogue-entry.saul {
+            justify-content: flex-start;
+        }
+
+        .dialogue-entry.yade {
+            justify-content: flex-end;
+        }
+
+        .dialogue-bubble {
+            max-width: 85%;
+            background: var(--surface);
+            border: 1px solid var(--border-medium);
+            border-radius: 28px;
+            padding: 20px 24px;
+            box-shadow: var(--shadow-md);
+            transition: all 0.3s ease;
+            animation: bubblePop 0.4s ease;
+        }
+
+        @keyframes bubblePop {
+            0% { transform: scale(0.8); opacity: 0; }
+            50% { transform: scale(1.02); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .dialogue-entry.saul .dialogue-bubble {
+            border-bottom-left-radius: 8px;
+            border-left: 3px solid var(--saul);
+        }
+
+        .dialogue-entry.yade .dialogue-bubble {
+            border-bottom-right-radius: 8px;
+            border-right: 3px solid var(--yade);
+        }
+
+        .bubble-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .speaker-icon {
+            width: 30px;
+            height: 30px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--bg-tertiary);
+            border: 1px solid;
+            font-size: 14px;
+        }
+
+        .dialogue-entry.saul .speaker-icon {
+            color: var(--saul);
+            border-color: var(--saul);
+        }
+
+        .dialogue-entry.yade .speaker-icon {
+            color: var(--yade);
+            border-color: var(--yade);
+        }
+
+        .speaker-name {
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .action-text {
+            color: var(--text-tertiary);
+            font-style: italic;
+            font-size: 13px;
+            display: block;
+            margin-bottom: 8px;
+            padding-left: 10px;
+            border-left: 2px solid;
+            transition: color 0.3s ease;
+        }
+
+        .dialogue-entry.saul .action-text {
+            border-left-color: var(--saul);
+        }
+
+        .dialogue-entry.yade .action-text {
+            border-left-color: var(--yade);
+        }
+
+        .dialogue-text {
+            font-size: 15px;
+            line-height: 1.6;
+        }
+
+        .var-pill {
+            display: inline-block;
+            padding: 2px 10px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 13px;
+            margin: 0 2px;
+            border: 1px solid;
+            transition: all 0.3s ease;
+            animation: pillGlow 2s infinite;
+        }
+
+        @keyframes pillGlow {
+            0%, 100% { box-shadow: 0 0 0 0 transparent; }
+            50% { box-shadow: 0 0 0 4px var(--saul-glow); }
+        }
+
+        .var-pill.saul {
+            color: var(--saul);
+            border-color: var(--saul);
+            background: rgba(59, 130, 246, 0.1);
+        }
+
+        .var-pill.yade {
+            color: var(--yade);
+            border-color: var(--yade);
+            background: rgba(167, 139, 250, 0.1);
+        }
+
+        .keyword-pill {
+            display: inline-block;
+            padding: 2px 10px;
+            border-radius: 20px;
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid var(--success);
+            color: var(--success);
+            font-weight: 600;
+            font-size: 13px;
+        }
+
+        /* Botones de acción */
+        .action-buttons {
+            display: flex;
+            gap: 12px;
+            margin: 30px 0 20px;
+        }
+
+        .btn {
+            flex: 1;
+            height: 56px;
+            border-radius: 28px;
+            border: none;
+            font-weight: 600;
+            font-size: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: var(--surface);
+            border: 1px solid var(--border-medium);
+            color: var(--text-primary);
+        }
+
+        .btn.primary {
+            background: linear-gradient(135deg, var(--saul), var(--yade));
+            color: white;
+            border: none;
+            box-shadow: 0 4px 15px var(--saul-glow);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn:active {
+            transform: scale(0.97);
+        }
+
+        /* Navegación inferior */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 88px;
+            background: var(--header-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-top: 1px solid var(--border-medium);
+            padding: 0 20px;
+            padding-bottom: env(safe-area-inset-bottom);
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            z-index: 100;
+        }
+
+        .nav-item {
+            flex: 1;
+            height: 56px;
+            border-radius: 28px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: var(--text-tertiary);
+            border: none;
+            background: transparent;
+        }
+
+        .nav-item.active {
+            color: var(--text-primary);
+            background: var(--surface);
+        }
+
+        .nav-item i {
+            font-size: 22px;
+            transition: transform 0.3s ease;
+        }
+
+        .nav-item.active i {
+            transform: scale(1.1);
+            color: var(--saul);
+        }
+
+        .nav-item span {
+            font-size: 11px;
+            font-weight: 500;
+        }
+
+        /* Toast elegante */
+        .toast {
+            position: fixed;
+            bottom: 100px;
+            left: 20px;
+            right: 20px;
+            background: var(--surface);
+            border: 1px solid var(--border-medium);
+            border-radius: 60px;
+            padding: 16px 24px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            box-shadow: var(--shadow-lg);
+            transform: translateY(200%);
+            transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+            z-index: 1000;
+        }
+
+        .toast.show {
+            transform: translateY(0);
+        }
+
+        .toast-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 18px;
+            background: linear-gradient(135deg, var(--saul), var(--yade));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 18px;
+        }
+
+        .toast-content {
+            flex: 1;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        /* Utilidades */
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+<body data-theme="dark">
+    <div class="dynamic-bg"></div>
+
+    <!-- Modal de bienvenida - Selector de personaje -->
+    <div class="welcome-modal" id="welcomeModal">
+        <div class="modal-content">
+            <div class="modal-title">
+                <h2>Bienvenido</h2>
+                <p>¿Quién eres hoy?</p>
+            </div>
+            <div class="character-options">
+                <div class="character-option saul" onclick="selectUser('saul')">
+                    <div class="option-icon">⌘</div>
+                    <div class="option-info">
+                        <div class="option-name">Saúl</div>
+                        <div class="option-role">Developer</div>
+                    </div>
+                    <div class="option-badge">EDITAR</div>
+                </div>
+                <div class="character-option yade" onclick="selectUser('yade')">
+                    <div class="option-icon">⌥</div>
+                    <div class="option-info">
+                        <div class="option-name">Yadeneiro</div>
+                        <div class="option-role">Consultant</div>
+                    </div>
+                    <div class="option-badge">EDITAR</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Header principal -->
+    <header class="header">
+        <div class="logo">
+            <div class="logo-icon">⌘⌥</div>
+            <div class="logo-text">
+                <span class="logo-saul">Saúl</span>
+                <span style="color: var(--text-tertiary); margin: 0 2px;">&</span>
+                <span class="logo-yade">Yade</span>
+            </div>
+        </div>
+        <div class="theme-toggle" onclick="toggleTheme()">
+            <i class="sun">☀️</i>
+            <i class="moon">🌙</i>
+        </div>
+    </header>
+
+    <div class="main-container">
+        <div class="content-area" id="contentArea">
+            
+            <!-- Character tabs -->
+            <div class="character-tabs">
+                <button class="character-tab saul active" onclick="switchCharacter('saul')">
+                    <div class="tab-icon">⌘</div>
+                    <span>Saúl</span>
+                </button>
+                <button class="character-tab yade" onclick="switchCharacter('yade')">
+                    <div class="tab-icon">⌥</div>
+                    <span>Yadeneiro</span>
+                </button>
+            </div>
+
+            <!-- Vista de edición -->
+            <div id="view-edit">
+                <!-- Perfil Saúl -->
+                <div class="profile-card saul" id="saulCard">
+                    <div class="profile-header">
+                        <div class="profile-avatar">⌘</div>
+                        <div class="profile-info">
+                            <h3 style="color: var(--saul);">Saúl</h3>
+                            <p>DEVELOPER</p>
+                        </div>
+                    </div>
+                    
+                    <div class="input-group">
+                        <div class="input-row">
+                            <div class="input-label"><i>💼</i> OCUPACIÓN</div>
+                            <input class="input-field" type="text" id="in-saul-job" value="web development" oninput="updateScript()">
+                        </div>
+                        <div class="input-row">
+                            <div class="input-label"><i>🎾</i> DEPORTE</div>
+                            <input class="input-field" type="text" id="in-saul-sport" value="padel" oninput="updateScript()">
+                        </div>
+                        <div class="input-row">
+                            <div class="input-label"><i>🎉</i> HOBBY</div>
+                            <input class="input-field" type="text" id="in-saul-social" value="parties" oninput="updateScript()">
+                        </div>
+                        <div class="input-row">
+                            <div class="input-label"><i>🌮</i> COMIDA</div>
+                            <input class="input-field" type="text" id="in-saul-food" value="aguachiles" oninput="updateScript()">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Perfil Yade -->
+                <div class="profile-card yade" id="yadeCard">
+                    <div class="profile-header">
+                        <div class="profile-avatar">⌥</div>
+                        <div class="profile-info">
+                            <h3 style="color: var(--yade);">Yadeneiro</h3>
+                            <p>CONSULTANT</p>
+                        </div>
+                    </div>
+                    
+                    <div class="input-group">
+                        <div class="input-row">
+                            <div class="input-label"><i>💼</i> OCUPACIÓN</div>
+                            <input class="input-field" type="text" id="in-yade-job" value="tax consulting firm" oninput="updateScript()">
+                        </div>
+                        <div class="input-row">
+                            <div class="input-label"><i>🎾</i> DEPORTE</div>
+                            <input class="input-field" type="text" id="in-yade-sport" value="tennis" oninput="updateScript()">
+                        </div>
+                        <div class="input-row">
+                            <div class="input-label"><i>🌯</i> COMIDA</div>
+                            <input class="input-field" type="text" id="in-yade-food" value="tamales" oninput="updateScript()">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Vista del script -->
+            <div id="view-script" class="script-view hidden">
+                
+                <div class="scene-divider">
+                    <span>ESCENA I</span>
+                    <div class="divider-line"></div>
+                    <span>ENCUENTRO</span>
+                </div>
+
+                <!-- YADE -->
+                <div class="dialogue-entry yade">
+                    <div class="dialogue-bubble">
+                        <div class="bubble-header">
+                            <div class="speaker-icon">⌥</div>
+                            <span class="speaker-name" style="color: var(--yade);">YADENEIRO</span>
+                        </div>
+                        <span class="action-text">*[Da un paso atrás sorprendido, sonríe y señala]*</span>
+                        <div class="dialogue-text">
+                            Saúl! What a surprise! I barely recognized you!
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SAÚL -->
+                <div class="dialogue-entry saul">
+                    <div class="dialogue-bubble">
+                        <div class="bubble-header">
+                            <div class="speaker-icon">⌘</div>
+                            <span class="speaker-name" style="color: var(--saul);">SAÚL</span>
+                        </div>
+                        <span class="action-text">*[Se ríe a carcajadas y le da un abrazo]*</span>
+                        <div class="dialogue-text">
+                            Yade?! Wow! It's been forever. Look at you! Last time we talked you were studying. How is everything going now?
+                        </div>
+                    </div>
+                </div>
+
+                <!-- YADE -->
+                <div class="dialogue-entry yade">
+                    <div class="dialogue-bubble">
+                        <div class="bubble-header">
+                            <div class="speaker-icon">⌥</div>
+                            <span class="speaker-name" style="color: var(--yade);">YADENEIRO</span>
+                        </div>
+                        <span class="action-text">*[Sonríe confiado]*</span>
+                        <div class="dialogue-text">
+                            Oh, you know, surviving! Running my <span class="var-pill yade out-yade-job"></span> is relentless, but <span class="keyword-pill">here's the deal</span> — we just landed some major contracts, so all the hard work is finally paying off. How about you? Still coding?
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SAÚL -->
+                <div class="dialogue-entry saul">
+                    <div class="dialogue-bubble">
+                        <div class="bubble-header">
+                            <div class="speaker-icon">⌘</div>
+                            <span class="speaker-name" style="color: var(--saul);">SAÚL</span>
+                        </div>
+                        <span class="action-text">*[Asiente y hace gesto de teclear]*</span>
+                        <div class="dialogue-text">
+                            Guilty! I'm still deep in the tech world. Specifically doing <span class="var-pill saul out-saul-job"></span> and database automation. It's demanding but I love it.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- YADE -->
+                <div class="dialogue-entry yade">
+                    <div class="dialogue-bubble">
+                        <div class="bubble-header">
+                            <div class="speaker-icon">⌥</div>
+                            <span class="speaker-name" style="color: var(--yade);">YADENEIRO</span>
+                        </div>
+                        <span class="action-text">*[Interesado]*</span>
+                        <div class="dialogue-text">
+                            That kind of engineering is a complete game-changer nowadays. But how do you even unwind with so much screen time?
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SAÚL -->
+                <div class="dialogue-entry saul">
+                    <div class="dialogue-bubble">
+                        <div class="bubble-header">
+                            <div class="speaker-icon">⌘</div>
+                            <span class="speaker-name" style="color: var(--saul);">SAÚL</span>
+                        </div>
+                        <span class="action-text">*[Ríe y niega con la cabeza]*</span>
+                        <div class="dialogue-text">
+                            That's easy. I play <span class="var-pill saul out-saul-sport"></span> to stay active. And honestly, I still love going out to <span class="var-pill saul out-saul-social"></span> on the weekends, or hanging out with my girlfriend. I need that balance. <span class="keyword-pill">How about you?</span> I know you can't be all business all the time.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- YADE -->
+                <div class="dialogue-entry yade">
+                    <div class="dialogue-bubble">
+                        <div class="bubble-header">
+                            <div class="speaker-icon">⌥</div>
+                            <span class="speaker-name" style="color: var(--yade);">YADENEIRO</span>
+                        </div>
+                        <span class="action-text">*[Sonríe, imita un saque]*</span>
+                        <div class="dialogue-text">
+                            Nope! I have a weekly date with a <span class="var-pill yade out-yade-sport"></span> court. It's the only place where the stress of the <span class="var-pill yade out-yade-job"></span> can't find me!
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SAÚL -->
+                <div class="dialogue-entry saul">
+                    <div class="dialogue-bubble">
+                        <div class="bubble-header">
+                            <div class="speaker-icon">⌘</div>
+                            <span class="speaker-name" style="color: var(--saul);">SAÚL</span>
+                        </div>
+                        <span class="action-text">*[Sorprendido]*</span>
+                        <div class="dialogue-text">
+                            Oh, nice! We should play a match sometime. Or, you know, just grab some food and catch up properly!
+                        </div>
+                    </div>
+                </div>
+
+                <!-- YADE -->
+                <div class="dialogue-entry yade">
+                    <div class="dialogue-bubble">
+                        <div class="bubble-header">
+                            <div class="speaker-icon">⌥</div>
+                            <span class="speaker-name" style="color: var(--yade);">YADENEIRO</span>
+                        </div>
+                        <span class="action-text">*[Se toca el estómago]*</span>
+                        <div class="dialogue-text">
+                            Actually, I'm starving right now. I've been craving some really good <span class="var-pill yade out-yade-food"></span> all morning. Do you know any spots around here?
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SAÚL -->
+                <div class="dialogue-entry saul">
+                    <div class="dialogue-bubble">
+                        <div class="bubble-header">
+                            <div class="speaker-icon">⌘</div>
+                            <span class="speaker-name" style="color: var(--saul);">SAÚL</span>
+                        </div>
+                        <span class="action-text">*[Piensa]*</span>
+                        <div class="dialogue-text">
+                            Those are great, but <span class="keyword-pill">here's the deal</span> — I know this place near campus that has the absolute best <span class="var-pill saul out-saul-food"></span>. It's super fresh, perfectly spicy... <span class="action-text">*[Chef's kiss 🤌]*</span> you have to try it.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- YADE -->
+                <div class="dialogue-entry yade">
+                    <div class="dialogue-bubble">
+                        <div class="bubble-header">
+                            <div class="speaker-icon">⌥</div>
+                            <span class="speaker-name" style="color: var(--yade);">YADENEIRO</span>
+                        </div>
+                        <span class="action-text">*[Se ríe y señala]*</span>
+                        <div class="dialogue-text">
+                            <span class="var-pill saul out-saul-food"></span> vs. <span class="var-pill yade out-yade-food"></span>... you always have to raise the stakes! Alright, I'm sold. Lead the way!
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SAÚL -->
+                <div class="dialogue-entry saul">
+                    <div class="dialogue-bubble">
+                        <div class="bubble-header">
+                            <div class="speaker-icon">⌘</div>
+                            <span class="speaker-name" style="color: var(--saul);">SAÚL</span>
+                        </div>
+                        <span class="action-text">*[Gesto amplio]*</span>
+                        <div class="dialogue-text">
+                            Perfect! Let's go. We have a lot more catching up to do!
+                        </div>
+                    </div>
+                </div>
+
+                <div class="scene-divider">
+                    <span>FIN</span>
+                    <div class="divider-line"></div>
+                    <span>ESCENA</span>
+                </div>
+
+                <div class="action-buttons">
+                    <button class="btn" onclick="copyScript()">
+                        <i>📋</i>
+                        Copiar
+                    </button>
+                    <button class="btn primary" onclick="shareScript()">
+                        <i>⬆️</i>
+                        Compartir
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navegación inferior -->
+    <nav class="bottom-nav">
+        <button class="nav-item active" onclick="switchView('edit', this)">
+            <i>✎</i>
+            <span>Editar</span>
+        </button>
+        <button class="nav-item" onclick="switchView('script', this)">
+            <i>🎬</i>
+            <span>Guion</span>
+        </button>
+    </nav>
+
+    <!-- Toast -->
+    <div class="toast" id="toast">
+        <div class="toast-icon">✓</div>
+        <div class="toast-content">Listo</div>
+    </div>
+
+    <script>
+        let selectedUser = null;
+        let currentTheme = 'dark';
+
+        // Mostrar modal de bienvenida
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.getElementById('welcomeModal').classList.add('show');
+            }, 300);
+        });
+
+        // Seleccionar usuario
+        function selectUser(user) {
+            selectedUser = user;
+            document.getElementById('welcomeModal').classList.remove('show');
+            
+            // Resaltar el personaje seleccionado
+            if (user === 'saul') {
+                switchCharacter('saul');
+                document.getElementById('saulCard').scrollIntoView({ behavior: 'smooth', block: 'center' });
+            } else {
+                switchCharacter('yade');
+                document.getElementById('yadeCard').scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }
+
+        // Cambiar entre personajes
+        function switchCharacter(character) {
+            document.querySelectorAll('.character-tab').forEach(tab => tab.classList.remove('active'));
+            if (character === 'saul') {
+                document.querySelector('.character-tab.saul').classList.add('active');
+                document.getElementById('saulCard').style.transform = 'scale(1.02)';
+                document.getElementById('yadeCard').style.transform = 'scale(1)';
+            } else {
+                document.querySelector('.character-tab.yade').classList.add('active');
+                document.getElementById('yadeCard').style.transform = 'scale(1.02)';
+                document.getElementById('saulCard').style.transform = 'scale(1)';
+            }
+        }
+
+        // Cambiar tema
+        function toggleTheme() {
+            const body = document.body;
+            if (currentTheme === 'dark') {
+                body.setAttribute('data-theme', 'light');
+                currentTheme = 'light';
+            } else {
+                body.setAttribute('data-theme', 'dark');
+                currentTheme = 'dark';
+            }
+            
+            // Animación del botón
+            const btn = document.querySelector('.theme-toggle i');
+            btn.style.transform = 'rotate(360deg)';
+            setTimeout(() => {
+                btn.style.transform = 'rotate(0)';
+            }, 300);
+        }
+
+        // Cambiar vistas
+        function switchView(view, btn) {
+            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+            btn.classList.add('active');
+            
+            if (view === 'edit') {
+                document.getElementById('view-edit').classList.remove('hidden');
+                document.getElementById('view-script').classList.add('hidden');
+            } else {
+                document.getElementById('view-edit').classList.add('hidden');
+                document.getElementById('view-script').classList.remove('hidden');
+            }
+            
+            document.querySelector('.content-area').scrollTop = 0;
+        }
+
+        // Actualizar script
+        function updateScript() {
+            const sJob = document.getElementById('in-saul-job').value || 'web development';
+            const sSport = document.getElementById('in-saul-sport').value || 'padel';
+            const sSocial = document.getElementById('in-saul-social').value || 'parties';
+            const sFood = document.getElementById('in-saul-food').value || 'aguachiles';
+            
+            const yJob = document.getElementById('in-yade-job').value || 'tax consulting firm';
+            const ySport = document.getElementById('in-yade-sport').value || 'tennis';
+            const yFood = document.getElementById('in-yade-food').value || 'tamales';
+
+            document.querySelectorAll('.out-saul-job').forEach(el => el.textContent = sJob);
+            document.querySelectorAll('.out-saul-sport').forEach(el => el.textContent = sSport);
+            document.querySelectorAll('.out-saul-social').forEach(el => el.textContent = sSocial);
+            document.querySelectorAll('.out-saul-food').forEach(el => el.textContent = sFood);
+            document.querySelectorAll('.out-yade-job').forEach(el => el.textContent = yJob);
+            document.querySelectorAll('.out-yade-sport').forEach(el => el.textContent = ySport);
+            document.querySelectorAll('.out-yade-food').forEach(el => el.textContent = yFood);
+        }
+
+        // Mostrar toast
+        function showToast() {
+            const toast = document.getElementById('toast');
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 2000);
+        }
+
+        // Copiar script
+        function copyScript() {
+            let text = "SAÚL & YADE\n\n";
+            
+            document.querySelectorAll('#view-script .dialogue-entry').forEach(entry => {
+                const speaker = entry.querySelector('.speaker-name')?.textContent || '';
+                const action = entry.querySelector('.action-text')?.textContent || '';
+                const dialogue = entry.querySelector('.dialogue-text')?.innerText || '';
+                
+                if (speaker) {
+                    text += `${speaker}:\n${action}\n${dialogue}\n\n`;
+                }
+            });
+            
+            navigator.clipboard.writeText(text).then(showToast);
+        }
+
+        // Compartir
+        function shareScript() {
+            if (navigator.share) {
+                let text = "Saúl & Yade Script\n\n";
+                document.querySelectorAll('#view-script .dialogue-entry').forEach(entry => {
+                    const speaker = entry.querySelector('.speaker-name')?.textContent || '';
+                    const dialogue = entry.querySelector('.dialogue-text')?.innerText || '';
+                    if (speaker) text += `${speaker}: ${dialogue}\n`;
+                });
+                
+                navigator.share({
+                    title: 'Saúl & Yade Script',
+                    text: text,
+                }).catch(() => copyScript());
+            } else {
+                copyScript();
+            }
+        }
+
+        // Inicializar
+        document.addEventListener('DOMContentLoaded', updateScript);
+    </script>
+</body>
+</html>
