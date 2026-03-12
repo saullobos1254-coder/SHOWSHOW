@@ -1,73 +1,80 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Guion Interactivo | Saúl & Yade</title>
+    <title>App de Guion | Saúl & Yade</title>
     <style>
         :root {
             --bg-dark: #0f172a;
             --bg-card: #1e293b;
-            --saul-color: #0ea5e9;
-            --saul-bg: rgba(14, 165, 233, 0.1);
-            --yade-color: #a855f7;
-            --yade-bg: rgba(168, 85, 247, 0.1);
+            --saul-color: #38bdf8; /* Azul claro */
+            --saul-bg: rgba(56, 189, 248, 0.15);
+            --yade-color: #c084fc; /* Morado claro */
+            --yade-bg: rgba(192, 132, 252, 0.15);
             --text-main: #f8fafc;
             --text-muted: #94a3b8;
-            --accent: #22c55e;
         }
 
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             -webkit-tap-highlight-color: transparent;
         }
 
         body {
             background-color: var(--bg-dark);
             color: var(--text-main);
-            overflow: hidden; /* Prevent body scroll, use container scroll */
-            height: 100vh;
             display: flex;
             flex-direction: column;
+            height: 100dvh; /* Usa 100dvh para evitar problemas con la barra de Safari/Chrome */
+            overflow: hidden;
         }
 
-        /* Header */
-        .app-header {
-            background-color: var(--bg-card);
-            padding: 15px 20px;
+        /* HEADER */
+        header {
+            background-color: rgba(30, 41, 59, 0.9);
+            backdrop-filter: blur(10px);
+            padding: 15px;
             text-align: center;
-            font-weight: bold;
             font-size: 1.2rem;
+            font-weight: 700;
             border-bottom: 1px solid #334155;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            z-index: 10;
+            z-index: 50;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
         }
+        .title-saul { color: var(--saul-color); }
+        .title-yade { color: var(--yade-color); }
 
-        .gradient-text {
-            background: linear-gradient(90deg, var(--saul-color), var(--yade-color));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        /* Main Content Area */
-        .main-content {
+        /* CONTENEDOR PRINCIPAL */
+        .content-area {
             flex: 1;
             overflow-y: auto;
-            padding-bottom: 80px; /* Space for bottom nav */
-        }
-
-        /* Tab Containers */
-        .tab-content {
-            display: none;
+            overflow-x: hidden;
             padding: 20px;
-            animation: fadeIn 0.3s ease;
+            padding-bottom: 100px; /* Espacio para el menú inferior */
         }
 
-        .tab-content.active {
+        /* VISTAS (TABS) */
+        .view {
+            display: none;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+        .view.active {
             display: block;
+        }
+        .view.chat-view {
+            display: none;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .view.chat-view.active {
+            display: flex;
         }
 
         @keyframes fadeIn {
@@ -75,110 +82,132 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Form Elements (Edit Tab) */
-        .edit-section {
-            background: var(--bg-card);
-            border-radius: 12px;
+        /* DISEÑO EDITOR (FORMULARIO) */
+        .edit-card {
+            background-color: var(--bg-card);
+            border-radius: 16px;
             padding: 20px;
             margin-bottom: 20px;
-            border-left: 4px solid;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+            border: 1px solid #334155;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
         }
+        .edit-card.saul { border-top: 4px solid var(--saul-color); }
+        .edit-card.yade { border-top: 4px solid var(--yade-color); }
 
-        .saul-section { border-left-color: var(--saul-color); }
-        .yade-section { border-left-color: var(--yade-color); }
-
-        .section-title {
-            margin-bottom: 15px;
+        .edit-title {
             font-size: 1.1rem;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
-
-        .input-group { margin-bottom: 15px; }
         
+        .input-group {
+            margin-bottom: 15px;
+        }
         .input-group label {
             display: block;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             color: var(--text-muted);
-            margin-bottom: 5px;
+            margin-bottom: 6px;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            letter-spacing: 1px;
         }
-
         .input-group input {
             width: 100%;
-            background: var(--bg-dark);
-            border: 1px solid #334155;
+            background-color: #0f172a;
+            border: 1px solid #475569;
             color: white;
-            font-size: 16px; /* 16px prevents iOS zoom */
+            font-size: 16px; /* 16px evita que iOS haga zoom automático */
             padding: 12px;
             border-radius: 8px;
             outline: none;
-            transition: border-color 0.2s;
+            transition: all 0.2s;
         }
-
         .input-group input:focus {
-            border-color: var(--text-muted);
+            border-color: var(--text-main);
         }
 
-        /* Script Elements (Read Tab) */
-        .dialogue-card {
-            background: var(--bg-card);
-            border-radius: 12px;
-            padding: 15px;
-            margin-bottom: 15px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-            position: relative;
-            line-height: 1.5;
-            font-size: 1.05rem;
-        }
-
-        .card-saul { border-left: 4px solid var(--saul-color); background: linear-gradient(90deg, var(--saul-bg), transparent); }
-        .card-yade { border-right: 4px solid var(--yade-color); background: linear-gradient(270deg, var(--yade-bg), transparent); text-align: right; }
-        
-        .char-name {
-            font-weight: bold;
-            font-size: 0.85rem;
-            text-transform: uppercase;
-            margin-bottom: 5px;
-            display: block;
-        }
-
-        .card-saul .char-name { color: var(--saul-color); }
-        .card-yade .char-name { color: var(--yade-color); }
-
-        .direction {
+        /* DISEÑO CHAT (GUION) */
+        .stage-direction {
+            text-align: center;
             color: var(--text-muted);
+            font-size: 0.85rem;
             font-style: italic;
-            font-size: 0.9rem;
+            margin: 10px 0;
+            background: rgba(255,255,255,0.05);
+            padding: 10px;
+            border-radius: 8px;
+        }
+
+        .chat-bubble {
+            max-width: 90%;
+            padding: 12px 16px;
+            border-radius: 18px;
+            font-size: 1.05rem;
+            line-height: 1.4;
+            position: relative;
+        }
+        .chat-bubble .name {
+            font-size: 0.75rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            margin-bottom: 4px;
             display: block;
-            margin: 5px 0;
+        }
+        .chat-bubble .action {
+            font-size: 0.9rem;
+            color: rgba(255,255,255,0.7);
+            font-style: italic;
+            display: block;
+            margin-bottom: 5px;
         }
 
-        .keyword { color: var(--accent); font-weight: bold; }
-        
-        /* Dynamic Variables styling */
+        /* Burbuja Saúl (Izquierda) */
+        .bubble-saul {
+            align-self: flex-start;
+            background-color: var(--saul-bg);
+            border: 1px solid rgba(56, 189, 248, 0.3);
+            border-bottom-left-radius: 4px;
+        }
+        .bubble-saul .name { color: var(--saul-color); }
+
+        /* Burbuja Yade (Derecha) */
+        .bubble-yade {
+            align-self: flex-end;
+            background-color: var(--yade-bg);
+            border: 1px solid rgba(192, 132, 252, 0.3);
+            border-bottom-right-radius: 4px;
+        }
+        .bubble-yade .name { color: var(--yade-color); }
+
+        /* Variables dinámicas en el texto */
         .var-text {
-            background: rgba(255, 255, 255, 0.1);
-            padding: 2px 6px;
-            border-radius: 4px;
-            font-weight: 600;
+            font-weight: 700;
+            text-decoration: underline;
+            text-decoration-style: dashed;
+            text-underline-offset: 4px;
         }
-        .var-saul { color: #38bdf8; }
-        .var-yade { color: #d8b4fe; }
+        .var-saul { color: var(--saul-color); text-decoration-color: var(--saul-color); }
+        .var-yade { color: var(--yade-color); text-decoration-color: var(--yade-color); }
 
-        /* Bottom Navigation */
-        .bottom-nav {
+        .keyword {
+            color: #4ade80; /* Verde brillante para frases clave */
+            font-weight: bold;
+        }
+
+        /* MENÚ INFERIOR NAVEGACIÓN */
+        nav {
             position: fixed;
             bottom: 0;
-            left: 0;
             width: 100%;
-            background-color: var(--bg-card);
-            display: flex;
+            background-color: rgba(30, 41, 59, 0.95);
+            backdrop-filter: blur(10px);
             border-top: 1px solid #334155;
-            padding-bottom: env(safe-area-inset-bottom); /* For iPhone notch */
+            display: flex;
+            padding-bottom: env(safe-area-inset-bottom);
             z-index: 100;
         }
-
         .nav-btn {
             flex: 1;
             background: none;
@@ -186,221 +215,256 @@
             color: var(--text-muted);
             padding: 15px 0;
             font-size: 1rem;
-            font-weight: bold;
+            font-weight: 600;
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 5px;
+            gap: 4px;
+            cursor: pointer;
         }
-
         .nav-btn.active {
             color: var(--text-main);
         }
-
+        .nav-icon {
+            font-size: 1.4rem;
+        }
         .nav-indicator {
-            height: 3px;
-            width: 40px;
+            height: 4px;
+            width: 30px;
+            border-radius: 4px;
             background-color: transparent;
-            border-radius: 3px;
             margin-top: 4px;
-            transition: background-color 0.3s;
+            transition: all 0.3s;
         }
-
         .nav-btn.active .nav-indicator {
-            background-color: var(--saul-color);
+            background-color: white;
         }
 
+        /* Botón Flotante Copiar */
+        .btn-copy {
+            background: linear-gradient(90deg, var(--saul-color), var(--yade-color));
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-weight: bold;
+            font-size: 1rem;
+            margin: 20px auto;
+            display: block;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+        }
     </style>
 </head>
 <body>
 
-    <header class="app-header">
-        <span class="gradient-text">Saúl & Yade Script</span>
+    <header>
+        <span class="title-saul">Saúl</span> & <span class="title-yade">Yade</span>
     </header>
 
-    <main class="main-content">
+    <div class="content-area">
         
-        <div id="tab-edit" class="tab-content">
-            <p style="color: var(--text-muted); margin-bottom: 20px; font-size: 0.9rem; text-align: center;">
-                Edita los datos aquí y se actualizarán en el guion automáticamente.
+        <div id="view-edit" class="view">
+            <p style="text-align: center; color: var(--text-muted); margin-bottom: 20px; font-size: 0.9rem;">
+                Modifica los datos aquí. El guion se actualiza en la pestaña "Leer Guion".
             </p>
 
-            <div class="edit-section saul-section">
-                <h3 class="section-title" style="color: var(--saul-color);">Datos de Saúl</h3>
+            <div class="edit-card saul">
+                <div class="edit-title"><span class="title-saul">▶ Saúl</span> (Datos Reales)</div>
                 <div class="input-group">
-                    <label>Trabajo / Actividad</label>
+                    <label>A qué te dedicas</label>
                     <input type="text" id="in-saul-job" value="web development" oninput="updateScript()">
                 </div>
                 <div class="input-group">
-                    <label>Deporte / Hobby</label>
+                    <label>Deporte / Actividad</label>
                     <input type="text" id="in-saul-sport" value="padel" oninput="updateScript()">
                 </div>
                 <div class="input-group">
-                    <label>Hobby Social</label>
+                    <label>Hobby extra</label>
                     <input type="text" id="in-saul-social" value="parties" oninput="updateScript()">
                 </div>
                 <div class="input-group">
-                    <label>Comida Favorita</label>
+                    <label>Comida favorita</label>
                     <input type="text" id="in-saul-food" value="aguachiles" oninput="updateScript()">
                 </div>
             </div>
 
-            <div class="edit-section yade-section">
-                <h3 class="section-title" style="color: var(--yade-color);">Datos de Yade</h3>
+            <div class="edit-card yade">
+                <div class="edit-title"><span class="title-yade">▶ Yadeneiro</span> (Datos Reales)</div>
                 <div class="input-group">
-                    <label>Trabajo / Título</label>
+                    <label>A qué te dedicas</label>
                     <input type="text" id="in-yade-job" value="tax consulting firm" oninput="updateScript()">
                 </div>
                 <div class="input-group">
-                    <label>Deporte / Hobby</label>
+                    <label>Deporte / Actividad</label>
                     <input type="text" id="in-yade-sport" value="tennis" oninput="updateScript()">
                 </div>
                 <div class="input-group">
-                    <label>Comida Favorita</label>
+                    <label>Comida favorita</label>
                     <input type="text" id="in-yade-food" value="tamales" oninput="updateScript()">
                 </div>
             </div>
         </div>
 
-        <div id="tab-script" class="tab-content active">
+        <div id="view-script" class="view chat-view active">
             
-            <p class="direction" style="text-align: center; margin-bottom: 20px;">
+            <div class="stage-direction">
                 *(The scene starts in the school hallway. Yade is walking fast, looking at a watch. Saúl is walking the opposite way. They almost bump into each other!)*
-            </p>
+            </div>
 
-            <div class="dialogue-card card-yade">
-                <span class="char-name">Yade</span>
-                <span class="direction">*[Takes a step back surprised, smiles and points]*</span>
+            <div class="chat-bubble bubble-yade">
+                <span class="name">Yade</span>
+                <span class="action">*[Takes a step back surprised, smiles and points]*</span>
                 Saúl! What a surprise! I barely recognized you!
             </div>
 
-            <div class="dialogue-card card-saul">
-                <span class="char-name">Saúl</span>
-                <span class="direction">*[Laughs out loud and goes for a hug]*</span>
+            <div class="chat-bubble bubble-saul">
+                <span class="name">Saúl</span>
+                <span class="action">*[Laughs out loud and goes for a hug]*</span>
                 Yade?! Wow! It’s been forever. Look at you! Last time we talked you were studying. How is everything going now?
             </div>
 
-            <div class="dialogue-card card-yade">
-                <span class="char-name">Yade</span>
-                <span class="direction">*[Smiles, confident posture]*</span>
+            <div class="chat-bubble bubble-yade">
+                <span class="name">Yade</span>
+                <span class="action">*[Smiles, confident posture]*</span>
                 Oh, you know, surviving! Running my <span class="var-text var-yade out-yade-job"></span> is relentless, but <span class="keyword">here's the deal</span> — we just landed some major contracts, so all the hard work is finally paying off. How about you? Still coding?
             </div>
 
-            <div class="dialogue-card card-saul">
-                <span class="char-name">Saúl</span>
-                <span class="direction">*[Nods convinced and does a typing gesture]*</span>
+            <div class="chat-bubble bubble-saul">
+                <span class="name">Saúl</span>
+                <span class="action">*[Nods convinced and does a typing gesture]*</span>
                 Guilty! I'm still deep in the tech world. Specifically doing <span class="var-text var-saul out-saul-job"></span> and database automation. It's demanding but I love it.
             </div>
 
-            <div class="dialogue-card card-yade">
-                <span class="char-name">Yade</span>
-                <span class="direction">*[Shows genuine interest]* ♦ Hmm, now that is interesting. ♦</span>
+            <div class="chat-bubble bubble-yade">
+                <span class="name">Yade</span>
+                <span class="action">*[Shows genuine interest]*</span>
                 That kind of engineering is a complete game-changer nowadays. But how do you even unwind with so much screen time?
             </div>
 
-            <div class="dialogue-card card-saul">
-                <span class="char-name">Saúl</span>
-                <span class="direction">*[Laughs and shakes head]*</span>
-                That’s easy. I play <span class="var-text var-saul out-saul-sport"></span> to stay active. <span class="direction">*[Does a racket swing gesture]*</span> And honestly, I still love going out to <span class="var-text var-saul out-saul-social"></span> on the weekends, or just hanging out with my girlfriend. I need that balance. <span class="keyword">How about you?</span> I know you can’t be all business all the time.
+            <div class="chat-bubble bubble-saul">
+                <span class="name">Saúl</span>
+                <span class="action">*[Laughs and shakes head]*</span>
+                That’s easy. I play <span class="var-text var-saul out-saul-sport"></span> to stay active. And honestly, I still love going out to <span class="var-text var-saul out-saul-social"></span> on the weekends, or hanging out with my girlfriend. I need that balance. <span class="keyword">How about you?</span> I know you can’t be all business all the time.
             </div>
 
-            <div class="dialogue-card card-yade">
-                <span class="char-name">Yade</span>
-                <span class="direction">*[Smiles playfully, mimics a serve]*</span>
+            <div class="chat-bubble bubble-yade">
+                <span class="name">Yade</span>
+                <span class="action">*[Smiles playfully, mimics a serve]*</span>
                 Nope! I have a weekly date with a <span class="var-text var-yade out-yade-sport"></span> court. It's the only place where the stress of the <span class="var-text var-yade out-yade-job"></span> can't find me!
             </div>
 
-            <div class="dialogue-card card-saul">
-                <span class="char-name">Saúl</span>
-                <span class="direction">*[Surprised]*</span>
+            <div class="chat-bubble bubble-saul">
+                <span class="name">Saúl</span>
+                <span class="action">*[Surprised]*</span>
                 Oh, nice! We should play a match sometime. Or, you know, just grab some food and catch up properly!
             </div>
 
-            <div class="dialogue-card card-yade">
-                <span class="char-name">Yade</span>
-                <span class="direction">*[Rubs stomach or smiles brightly]*</span>
+            <div class="chat-bubble bubble-yade">
+                <span class="name">Yade</span>
+                <span class="action">*[Rubs stomach or smiles brightly]*</span>
                 Actually, I’m starving right now. I’ve been craving some really good <span class="var-text var-yade out-yade-food"></span> all morning. Do you know any spots around here?
             </div>
 
-            <div class="dialogue-card card-saul">
-                <span class="char-name">Saúl</span>
-                <span class="direction">*[Rubs chin thinking]*</span>
-                Those are great, but <span class="keyword">here's the deal</span> — I know this place near campus that has the absolute best <span class="var-text var-saul out-saul-food"></span>. It’s super fresh, perfectly spicy... <span class="direction">*[Does a chef's kiss 🤌 gesture]*</span> you have to try it.
+            <div class="chat-bubble bubble-saul">
+                <span class="name">Saúl</span>
+                <span class="action">*[Rubs chin thinking]*</span>
+                Those are great, but <span class="keyword">here's the deal</span> — I know this place near campus that has the absolute best <span class="var-text var-saul out-saul-food"></span>. It’s super fresh, perfectly spicy... <span class="action">*[Does a chef's kiss 🤌]*</span> you have to try it.
             </div>
 
-            <div class="dialogue-card card-yade">
-                <span class="char-name">Yade</span>
-                <span class="direction">*[Laughs out loud, pointing a finger]*</span>
-                <span class="var-text var-saul out-saul-food"></span> vs. <span class="var-text var-yade out-yade-food"></span>... you always have to raise the stakes! <span class="direction">♦ *[Dramatic 1-second pause]* ♦</span> Alright, I’m sold. Lead the way!
+            <div class="chat-bubble bubble-yade">
+                <span class="name">Yade</span>
+                <span class="action">*[Laughs out loud, pointing a finger]*</span>
+                <span class="var-text var-saul out-saul-food"></span> vs. <span class="var-text var-yade out-yade-food"></span>... you always have to raise the stakes! Alright, I’m sold. Lead the way!
             </div>
 
-            <div class="dialogue-card card-saul">
-                <span class="char-name">Saúl</span>
-                <span class="direction">*[Makes a wide gesture inviting to walk together]*</span>
+            <div class="chat-bubble bubble-saul">
+                <span class="name">Saúl</span>
+                <span class="action">*[Makes a wide gesture inviting to walk together]*</span>
                 Perfect! Let's go. We have a lot more catching up to do!
             </div>
             
-            <p class="direction" style="text-align: center; margin-top: 20px;">
+            <div class="stage-direction">
                 *(They start walking together to the side and the scene ends).*
-            </p>
+            </div>
+
+            <button class="btn-copy" onclick="copyToClipboard()">📋 Copiar Guion</button>
 
         </div>
-    </main>
+    </div>
 
-    <nav class="bottom-nav">
-        <button class="nav-btn" onclick="switchTab('edit', this)">
-            ✏️ Editar
+    <nav>
+        <button class="nav-btn" onclick="switchView('edit', this)">
+            <span class="nav-icon">✏️</span>
+            Editar
             <div class="nav-indicator"></div>
         </button>
-        <button class="nav-btn active" onclick="switchTab('script', this)">
-            📖 Guion
+        <button class="nav-btn active" onclick="switchView('script', this)">
+            <span class="nav-icon">💬</span>
+            Leer Guion
             <div class="nav-indicator"></div>
         </button>
     </nav>
 
     <script>
-        // Tab Switching Logic
-        function switchTab(tabId, btnElement) {
-            // Hide all tabs
-            document.querySelectorAll('.tab-content').forEach(tab => {
-                tab.classList.remove('active');
-            });
-            // Show selected tab
-            document.getElementById('tab-' + tabId).classList.add('active');
+        // Cambiar entre pestañas
+        function switchView(viewName, btn) {
+            // Ocultar todas las vistas
+            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+            // Quitar clase active a los botones
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
             
-            // Update active state on buttons
-            document.querySelectorAll('.nav-btn').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            btnElement.classList.add('active');
+            // Mostrar vista seleccionada
+            document.getElementById('view-' + viewName).classList.add('active');
+            btn.classList.add('active');
             
-            // Scroll to top when switching
-            document.querySelector('.main-content').scrollTop = 0;
+            // Scroll arriba
+            document.querySelector('.content-area').scrollTop = 0;
         }
 
-        // Variable Updating Logic
+        // Actualizar variables en tiempo real
         function updateScript() {
-            const saulJob = document.getElementById('in-saul-job').value || '[Job]';
-            const saulSport = document.getElementById('in-saul-sport').value || '[Sport]';
-            const saulSocial = document.getElementById('in-saul-social').value || '[Social]';
-            const saulFood = document.getElementById('in-saul-food').value || '[Food]';
+            const sJob = document.getElementById('in-saul-job').value || '[Trabajo]';
+            const sSport = document.getElementById('in-saul-sport').value || '[Deporte]';
+            const sSocial = document.getElementById('in-saul-social').value || '[Hobby]';
+            const sFood = document.getElementById('in-saul-food').value || '[Comida]';
             
-            const yadeJob = document.getElementById('in-yade-job').value || '[Job]';
-            const yadeSport = document.getElementById('in-yade-sport').value || '[Sport]';
-            const yadeFood = document.getElementById('in-yade-food').value || '[Food]';
+            const yJob = document.getElementById('in-yade-job').value || '[Trabajo]';
+            const ySport = document.getElementById('in-yade-sport').value || '[Deporte]';
+            const yFood = document.getElementById('in-yade-food').value || '[Comida]';
 
-            // Update all elements with specific classes
-            document.querySelectorAll('.out-saul-job').forEach(el => el.innerText = saulJob);
-            document.querySelectorAll('.out-saul-sport').forEach(el => el.innerText = saulSport);
-            document.querySelectorAll('.out-saul-social').forEach(el => el.innerText = saulSocial);
-            document.querySelectorAll('.out-saul-food').forEach(el => el.innerText = saulFood);
+            document.querySelectorAll('.out-saul-job').forEach(el => el.innerText = sJob);
+            document.querySelectorAll('.out-saul-sport').forEach(el => el.innerText = sSport);
+            document.querySelectorAll('.out-saul-social').forEach(el => el.innerText = sSocial);
+            document.querySelectorAll('.out-saul-food').forEach(el => el.innerText = sFood);
 
-            document.querySelectorAll('.out-yade-job').forEach(el => el.innerText = yadeJob);
-            document.querySelectorAll('.out-yade-sport').forEach(el => el.innerText = yadeSport);
-            document.querySelectorAll('.out-yade-food').forEach(el => el.innerText = yadeFood);
+            document.querySelectorAll('.out-yade-job').forEach(el => el.innerText = yJob);
+            document.querySelectorAll('.out-yade-sport').forEach(el => el.innerText = ySport);
+            document.querySelectorAll('.out-yade-food').forEach(el => el.innerText = yFood);
         }
 
-        // Initialize script with default values on load
+        // Copiar texto para mandarlo por WhatsApp
+        function copyToClipboard() {
+            let textToCopy = "🎬 GUION DE SAÚL & YADE 🎬\n\n";
+            const scriptView = document.getElementById('view-script');
+            
+            // Extraer solo el texto (sin los divs ocultos)
+            const elements = scriptView.querySelectorAll('.stage-direction, .chat-bubble');
+            elements.forEach(el => {
+                if(el.classList.contains('stage-direction')) {
+                    textToCopy += el.innerText + "\n\n";
+                } else {
+                    const name = el.querySelector('.name').innerText;
+                    const content = el.innerText.replace(name, '').trim();
+                    textToCopy += `${name}: ${content}\n\n`;
+                }
+            });
+
+            navigator.clipboard.writeText(textToCopy).then(() => {
+                alert("¡Guion copiado! Ya puedes pegarlo en WhatsApp.");
+            });
+        }
+
+        // Inicializar datos
         window.onload = updateScript;
     </script>
 </body>
